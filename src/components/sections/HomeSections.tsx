@@ -34,37 +34,42 @@ export function Hero() {
 export function LimitedEditions() { return <section className="limited section"><div className="limited-heading"><div><h2>Limited Editions</h2><p>Only 100 pieces. Never restocked.</p></div><Link to="/collection/limited">View All <ArrowRight size={15} /></Link></div><div className="limited-grid">{limitedProducts.map((product) => <ProductCard key={product.id} product={product} />)}</div></section> }
 
 const regularPositionMap: Record<number, { x: number; y: number; scale: number; opacity: number; zIndex: number }> = {
-  [-3]: { x: -450, y: 70, scale: .7, opacity: 0, zIndex: 20 },
-  [-2]: { x: -330, y: 52, scale: .8, opacity: .72, zIndex: 30 },
-  [-1]: { x: -180, y: 28, scale: .9, opacity: .9, zIndex: 40 },
+  [-4]: { x: -640, y: 88, scale: .65, opacity: 0, zIndex: 10 },
+  [-3]: { x: -500, y: 70, scale: .72, opacity: 1, zIndex: 20 },
+  [-2]: { x: -360, y: 52, scale: .8, opacity: 1, zIndex: 30 },
+  [-1]: { x: -200, y: 28, scale: .9, opacity: 1, zIndex: 40 },
   0: { x: 0, y: 0, scale: 1, opacity: 1, zIndex: 50 },
-  1: { x: 180, y: 28, scale: .9, opacity: .9, zIndex: 40 },
-  2: { x: 330, y: 52, scale: .8, opacity: .72, zIndex: 30 },
-  3: { x: 450, y: 70, scale: .7, opacity: 0, zIndex: 20 },
+  1: { x: 200, y: 28, scale: .9, opacity: 1, zIndex: 40 },
+  2: { x: 360, y: 52, scale: .8, opacity: 1, zIndex: 30 },
+  3: { x: 500, y: 70, scale: .72, opacity: 1, zIndex: 20 },
+  4: { x: 640, y: 88, scale: .65, opacity: 0, zIndex: 10 },
 }
 
 export function RegularCarousel() {
   const products = regularEditions.filter((product) => product.editionType === 'regular' && product.active).sort((first, second) => first.displayOrder - second.displayOrder)
-  const [active, setActive] = useState(0)
+  const productCount = products.length
+  const [virtualCenter, setVirtualCenter] = useState(() => productCount * 1000)
   const [paused, setPaused] = useState(false)
   const [timerVersion, setTimerVersion] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
   const touchStart = useRef<number | null>(null)
   const animationTimer = useRef<number | null>(null)
-  const animationLocked = useRef(false)
-  const productCount = products.length
-  const move = useCallback((amount: number, resetTimer = true) => { if (animationLocked.current) return; animationLocked.current = true; setActive((index) => (index + amount + productCount) % productCount); if (resetTimer) setTimerVersion((version) => version + 1); animationTimer.current = window.setTimeout(() => { animationLocked.current = false }, 650) }, [productCount, setActive, setTimerVersion])
+  const navigate = useCallback((direction: -1 | 1, resetTimer = true) => { if (isAnimating) return; const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches; setIsAnimating(true); setVirtualCenter((current) => current + direction); if (resetTimer) setTimerVersion((version) => version + 1); animationTimer.current = window.setTimeout(() => setIsAnimating(false), reduceMotion ? 0 : 700) }, [isAnimating])
+  const navigateNext = useCallback((resetTimer = true) => navigate(1, resetTimer), [navigate])
+  const navigatePrevious = useCallback((resetTimer = true) => navigate(-1, resetTimer), [navigate])
 
   useEffect(() => () => { if (animationTimer.current !== null) window.clearTimeout(animationTimer.current) }, [])
 
   useEffect(() => {
     if (paused || productCount < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
-    const interval = window.setInterval(() => move(1, false), 4500)
+    const interval = window.setInterval(() => navigateNext(false), 4500)
     return () => window.clearInterval(interval)
-  }, [move, paused, productCount, timerVersion])
+  }, [navigateNext, paused, productCount, timerVersion])
 
   if (!productCount) return null
-  return <section className="regular section" aria-roledescription="carousel" aria-label="Regular editions carousel" tabIndex={0} onKeyDown={(event) => { if (event.key === 'ArrowLeft') move(-1); if (event.key === 'ArrowRight') move(1) }} onPointerMove={(event) => { if (event.pointerType === 'mouse') setPaused(true) }} onPointerLeave={() => setPaused(false)} onPointerDown={(event) => { touchStart.current = event.clientX }} onPointerUp={(event) => { if (touchStart.current === null) return; const distance = event.clientX - touchStart.current; if (Math.abs(distance) > 45) move(distance < 0 ? 1 : -1); touchStart.current = null }}>
-    <div className="regular-heading"><h2>Regular Editions</h2></div><div className="regular-stage">{products.map((product, index) => { const position = ((index - active + productCount + Math.floor(productCount / 2)) % productCount) - Math.floor(productCount / 2); const presentation = regularPositionMap[position]; if (!presentation) return null; const isActive = position === 0; return <div className={`regular-card ${isActive ? 'is-active' : 'is-selectable'}`} data-position={position} key={product.id} role={isActive ? undefined : 'button'} tabIndex={isActive ? undefined : 0} aria-label={isActive ? undefined : `Show ${product.name}`} onClick={isActive ? undefined : () => move(position)} onKeyDown={isActive ? undefined : (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); move(position) } }} style={{ '--offset-x': presentation.x, '--offset-y': presentation.y, '--scale': presentation.scale, '--opacity': presentation.opacity, zIndex: presentation.zIndex } as React.CSSProperties}><img src={product.images[0].src} alt={product.images[0].alt} width={product.images[0].width} height={product.images[0].height} loading="lazy" /><div className="regular-card-view">{isActive ? <Link to={`/product/${product.slug}`} aria-label={`View ${product.name}`}>View</Link> : <span aria-disabled="true">View</span>}</div></div> })}</div>{productCount > 1 && <div className="regular-controls"><button className="icon-button" onClick={() => move(-1)} aria-label="Previous regular edition"><ArrowLeft size={19} /></button><button className="icon-button" onClick={() => move(1)} aria-label="Next regular edition"><ArrowRight size={19} /></button></div>}
+  const virtualIndexes = Array.from({ length: 9 }, (_, index) => virtualCenter - 4 + index)
+  return <section className="regular section" aria-roledescription="carousel" aria-label="Regular editions carousel" tabIndex={0} onKeyDown={(event) => { if (event.key === 'ArrowLeft') navigatePrevious(); if (event.key === 'ArrowRight') navigateNext() }} onPointerMove={(event) => { if (event.pointerType === 'mouse') setPaused(true) }} onPointerLeave={() => setPaused(false)} onPointerDown={(event) => { touchStart.current = event.clientX }} onPointerUp={(event) => { if (touchStart.current === null) return; const distance = event.clientX - touchStart.current; if (Math.abs(distance) > 45) { if (distance < 0) navigateNext(); else navigatePrevious() } touchStart.current = null }}>
+    <div className="regular-heading"><h2>Regular Editions</h2><p className="regular-quote">Everyday pieces, made to stand apart.</p></div><div className="regular-stage">{virtualIndexes.map((virtualIndex) => { const relativePosition = virtualIndex - virtualCenter; const presentation = regularPositionMap[relativePosition]; const product = products[((virtualIndex % productCount) + productCount) % productCount]; const isActive = relativePosition === 0; const isVisible = Math.abs(relativePosition) <= 3; return <article className={`regular-card ${isActive ? 'is-active' : isVisible ? 'is-selectable' : 'is-buffer'}`} data-position={relativePosition} key={`${product.id}-${virtualIndex}`} tabIndex={isVisible && !isActive ? 0 : -1} aria-hidden={!isVisible} aria-label={isVisible && !isActive ? `Show ${product.name}` : undefined} onClick={!isActive && isVisible ? () => relativePosition > 0 ? navigateNext() : navigatePrevious() : undefined} onKeyDown={!isActive && isVisible ? (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (relativePosition > 0) navigateNext(); else navigatePrevious() } } : undefined} style={{ '--offset-x': presentation.x, '--offset-y': presentation.y, '--scale': presentation.scale, '--opacity': presentation.opacity, zIndex: presentation.zIndex } as React.CSSProperties}><div className="regular-card-media"><img src={product.images[0].src} alt={product.images[0].alt} width={product.images[0].width} height={product.images[0].height} loading="lazy" /></div><div className="regular-card-view"><Link className={`regular-view-action ${isActive ? 'is-enabled' : ''}`} to={`/product/${product.slug}`} tabIndex={isActive ? 0 : -1} aria-hidden={!isActive} onClick={!isActive ? (event) => event.preventDefault() : undefined}>View</Link></div></article> })}</div>{productCount > 1 && <div className="regular-controls"><button className="icon-button" onClick={() => navigatePrevious()} aria-label="Previous regular edition" disabled={isAnimating}><ArrowLeft size={19} /></button><button className="icon-button" onClick={() => navigateNext()} aria-label="Next regular edition" disabled={isAnimating}><ArrowRight size={19} /></button></div>}
   </section>
 }
 
