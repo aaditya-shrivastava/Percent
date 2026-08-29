@@ -8,4 +8,6 @@ export interface LimitedEdition { id: string; name: string; image: ProductImage;
 export interface DesignCategory { id: string; slug: string; title: string; image: ProductImage; active: boolean; displayOrder: number }
 export interface BlogBanner { id: string; title: string; image: ProductImage; href: string; active: boolean }
 export interface NavigationItem { id: string; label: string; href: string; active: boolean; displayOrder: number }
+export interface FooterLink { label: string; to: string }
+export interface FooterGroup { title: string; links: FooterLink[] }
 export interface HomepageSection { id: string; title: string; active: boolean; displayOrder: number; ctaLabel?: string; ctaHref?: string }

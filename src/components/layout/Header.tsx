@@ -1,5 +1,5 @@
 import { Menu, Search, ShoppingBag, Sparkle, UserRound, X } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { collectionItems, navigation } from '../../data/homepage'
 
@@ -25,9 +25,13 @@ function MobileCollectionMenu({ onNavigate }: { onNavigate: () => void }) {
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const items = navigation.filter((item) => item.active).sort((first, second) => first.displayOrder - second.displayOrder)
 
-  return <header className="site-header">
+  useEffect(() => { const updateScrolled = () => setScrolled((value) => { const nextValue = window.scrollY > 16; return value === nextValue ? value : nextValue }); updateScrolled(); window.addEventListener('scroll', updateScrolled, { passive: true }); return () => window.removeEventListener('scroll', updateScrolled) }, [])
+  useEffect(() => { if (!menuOpen) return undefined; const previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = previousOverflow } }, [menuOpen])
+
+  return <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
     <div className="main-nav">
       <nav className="desktop-links" aria-label="Primary navigation"><CollectionDropdown />{items.filter((item) => item.id !== 'collection').map((item) => <Link className="icon-button nav-icon" key={item.id} to={item.href} aria-label={item.label} title={item.label} data-tooltip={item.label}><Sparkle size={22} strokeWidth={1.8} aria-hidden="true" /></Link>)}</nav>
       <button className="mobile-menu-trigger icon-button" aria-label="Open menu" aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(true)}><Menu /></button>

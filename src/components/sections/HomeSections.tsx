@@ -33,7 +33,40 @@ export function Hero() {
 
 export function LimitedEditions() { return <section className="limited section"><div className="limited-heading"><div><h2>Limited Editions</h2><p>Only 100 pieces. Never restocked.</p></div><Link to="/collection/limited">View All <ArrowRight size={15} /></Link></div><div className="limited-grid">{limitedProducts.map((product) => <ProductCard key={product.id} product={product} />)}</div></section> }
 
-export function RegularCarousel() { const rail = useRef<HTMLDivElement>(null); const pointerStart = useRef<{ x: number; scroll: number } | null>(null); const move = (direction: number) => rail.current?.scrollBy({ left: direction * 320, behavior: 'smooth' }); return <section className="regular section"><div className="section-heading"><h2>Regular Editions</h2><div><button onClick={() => move(-1)} aria-label="Previous regular editions"><ArrowLeft /></button><button onClick={() => move(1)} aria-label="Next regular editions"><ArrowRight /></button></div></div><div className="edition-rail" ref={rail} onPointerDown={(event) => { if (rail.current) pointerStart.current = { x: event.clientX, scroll: rail.current.scrollLeft } }} onPointerMove={(event) => { if (rail.current && pointerStart.current) rail.current.scrollLeft = pointerStart.current.scroll - (event.clientX - pointerStart.current.x) }} onPointerUp={() => { pointerStart.current = null }} onPointerLeave={() => { pointerStart.current = null }}>{regularEditions.map((product) => <Link to={`/product/${product.slug}`} key={product.id}><img src={product.images[0].src} alt={product.images[0].alt} width="300" height="360" loading="lazy" /><span>View</span></Link>)}</div></section> }
+const regularPositionMap: Record<number, { x: number; y: number; scale: number; opacity: number; zIndex: number }> = {
+  [-3]: { x: -450, y: 70, scale: .7, opacity: 0, zIndex: 20 },
+  [-2]: { x: -330, y: 52, scale: .8, opacity: .72, zIndex: 30 },
+  [-1]: { x: -180, y: 28, scale: .9, opacity: .9, zIndex: 40 },
+  0: { x: 0, y: 0, scale: 1, opacity: 1, zIndex: 50 },
+  1: { x: 180, y: 28, scale: .9, opacity: .9, zIndex: 40 },
+  2: { x: 330, y: 52, scale: .8, opacity: .72, zIndex: 30 },
+  3: { x: 450, y: 70, scale: .7, opacity: 0, zIndex: 20 },
+}
+
+export function RegularCarousel() {
+  const products = regularEditions.filter((product) => product.editionType === 'regular' && product.active).sort((first, second) => first.displayOrder - second.displayOrder)
+  const [active, setActive] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const [timerVersion, setTimerVersion] = useState(0)
+  const touchStart = useRef<number | null>(null)
+  const animationTimer = useRef<number | null>(null)
+  const animationLocked = useRef(false)
+  const productCount = products.length
+  const move = useCallback((amount: number, resetTimer = true) => { if (animationLocked.current) return; animationLocked.current = true; setActive((index) => (index + amount + productCount) % productCount); if (resetTimer) setTimerVersion((version) => version + 1); animationTimer.current = window.setTimeout(() => { animationLocked.current = false }, 650) }, [productCount, setActive, setTimerVersion])
+
+  useEffect(() => () => { if (animationTimer.current !== null) window.clearTimeout(animationTimer.current) }, [])
+
+  useEffect(() => {
+    if (paused || productCount < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+    const interval = window.setInterval(() => move(1, false), 4500)
+    return () => window.clearInterval(interval)
+  }, [move, paused, productCount, timerVersion])
+
+  if (!productCount) return null
+  return <section className="regular section" aria-roledescription="carousel" aria-label="Regular editions carousel" tabIndex={0} onKeyDown={(event) => { if (event.key === 'ArrowLeft') move(-1); if (event.key === 'ArrowRight') move(1) }} onPointerMove={(event) => { if (event.pointerType === 'mouse') setPaused(true) }} onPointerLeave={() => setPaused(false)} onPointerDown={(event) => { touchStart.current = event.clientX }} onPointerUp={(event) => { if (touchStart.current === null) return; const distance = event.clientX - touchStart.current; if (Math.abs(distance) > 45) move(distance < 0 ? 1 : -1); touchStart.current = null }}>
+    <div className="regular-heading"><h2>Regular Editions</h2></div><div className="regular-stage">{products.map((product, index) => { const position = ((index - active + productCount + Math.floor(productCount / 2)) % productCount) - Math.floor(productCount / 2); const presentation = regularPositionMap[position]; if (!presentation) return null; const isActive = position === 0; return <div className={`regular-card ${isActive ? 'is-active' : 'is-selectable'}`} data-position={position} key={product.id} role={isActive ? undefined : 'button'} tabIndex={isActive ? undefined : 0} aria-label={isActive ? undefined : `Show ${product.name}`} onClick={isActive ? undefined : () => move(position)} onKeyDown={isActive ? undefined : (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); move(position) } }} style={{ '--offset-x': presentation.x, '--offset-y': presentation.y, '--scale': presentation.scale, '--opacity': presentation.opacity, zIndex: presentation.zIndex } as React.CSSProperties}><img src={product.images[0].src} alt={product.images[0].alt} width={product.images[0].width} height={product.images[0].height} loading="lazy" /><div className="regular-card-view">{isActive ? <Link to={`/product/${product.slug}`} aria-label={`View ${product.name}`}>View</Link> : <span aria-disabled="true">View</span>}</div></div> })}</div>{productCount > 1 && <div className="regular-controls"><button className="icon-button" onClick={() => move(-1)} aria-label="Previous regular edition"><ArrowLeft size={19} /></button><button className="icon-button" onClick={() => move(1)} aria-label="Next regular edition"><ArrowRight size={19} /></button></div>}
+  </section>
+}
 
 export function ProductSection({ title, products, promo }: { title: string; products: Product[]; promo?: ProductCategory['promo'] }) { return <section className={`product-section section ${promo ? 'with-promo' : ''}`}><div className="section-heading"><h2>{title}</h2><Link to="/collection">View All <ArrowRight size={15} /></Link></div><div className="product-grid">{promo && <Link className="promo-card" to="/collection"><img src={promo.image.src} alt={promo.image.alt} width={promo.image.width} height={promo.image.height} loading="lazy" /><strong>{promo.copy}</strong></Link>}{products.map((product) => <ProductCard key={product.id} product={product} />)}</div></section> }
 

@@ -12,7 +12,7 @@ export const heroBanners: HeroBanner[] = [
   photo('photo-1539109136881-3be0616acf4b', 'Minimal apparel campaign in warm tones', 1800, 1000),
 ].map((image, index) => ({ id: `hero-${index + 1}`, image: image.src, alt: image.alt, width: image.width, height: image.height, active: true, displayOrder: index + 1 }))
 export const regularEditions = [
-  tee('photo-1521572163474-6864f9cf17ab', 'Sable Logo Tee', 42, 6), tee('photo-1503341504253-dff4815485f1', 'Off Script Tee', 45, 7), tee('photo-1618354691373-d851c5c3a990', 'Percent Type Tee', 44, 8), tee('photo-1576566588028-4147f3842f27', 'Clean Slate Tee', 40, 9), tee('photo-1485230895905-ec40ba36b9bc', 'Everyday Tee', 42, 10),
+  tee('photo-1521572163474-6864f9cf17ab', 'Sable Logo Tee', 42, 6), tee('photo-1503341504253-dff4815485f1', 'Off Script Tee', 45, 7), tee('photo-1618354691373-d851c5c3a990', 'Percent Type Tee', 44, 8), tee('photo-1576566588028-4147f3842f27', 'Clean Slate Tee', 40, 9), tee('photo-1485230895905-ec40ba36b9bc', 'Everyday Tee', 42, 10), tee('photo-1509631179647-0177331693ae', 'Drift Cotton Tee', 46, 11), tee('photo-1509942774463-acf339cf87d5', 'Quiet Form Tee', 48, 12),
 ]
 export const homepageProducts: Product[] = [tee('photo-1583743814966-8936f37f4678', 'Ink Bloom Tee', 54, 1), tee('photo-1586790170083-2f9ceadc732d', 'Echo Script Tee', 52, 2), tee('photo-1527719327859-2e3f8b4d89f8', 'Fragment Tee', 56, 3), tee('photo-1620799140408-edc6dcb6d633', 'Silent Waves Tee', 53, 4), tee('photo-1490481651871-ab68de25d43d', 'Studio Mark Tee', 55, 5)]
 export const limitedProducts = homepageProducts.filter((product) => product.editionType === 'limited' && product.active).sort((first, second) => first.displayOrder - second.displayOrder).slice(0, 5)
