@@ -3,9 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { collectionItems, navigation } from '../../data/homepage'
 
-const allProductsItem = navigation.find((item) => item.id === 'collection' && item.active)
-const mobileCollectionItems = allProductsItem ? [...collectionItems, { ...allProductsItem, id: 'all-products', label: 'All Products' }] : collectionItems
-
 function RunningTrolleyIcon() {
   return <svg className="running-trolley" viewBox="0 0 28 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 7h4l2.1 9.2h11.7l2.4-7.1H8" /><path d="M15.5 7h6M17.5 4.5h4" /><circle cx="10" cy="20" r="1.45" /><circle cx="18.5" cy="20" r="1.45" /></svg>
 }
@@ -23,7 +20,7 @@ function CollectionDropdown() {
 
 function MobileCollectionMenu({ onNavigate }: { onNavigate: () => void }) {
   const [open, setOpen] = useState(false)
-  return <div className="mobile-collection"><button aria-expanded={open} aria-controls="mobile-collection-links" onClick={() => setOpen((value) => !value)}>Collection <span className="mobile-collection-indicator" aria-hidden="true">{open ? '−' : '+'}</span></button><div id="mobile-collection-links" className={open ? 'is-open' : ''}>{mobileCollectionItems.map((item) => <Link key={item.id} to={item.href} onClick={onNavigate}>{item.label}</Link>)}</div></div>
+  return <div className="mobile-collection"><button aria-expanded={open} aria-controls="mobile-collection-links" onClick={() => setOpen((value) => !value)}>Collection <span className="mobile-collection-indicator" aria-hidden="true">{open ? '−' : '+'}</span></button><div id="mobile-collection-links" className={open ? 'is-open' : ''}>{collectionItems.map((item) => <Link key={item.id} to={item.href} onClick={onNavigate}>{item.label}</Link>)}</div></div>
 }
 
 export function Header() {
