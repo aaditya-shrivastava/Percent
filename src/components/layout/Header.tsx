@@ -20,7 +20,8 @@ function CollectionDropdown() {
 
 function MobileCollectionMenu({ onNavigate }: { onNavigate: () => void }) {
   const [open, setOpen] = useState(false)
-  return <div className="mobile-collection"><button aria-expanded={open} aria-controls="mobile-collection-links" onClick={() => setOpen((value) => !value)}>Collection <span className="mobile-collection-indicator" aria-hidden="true">{open ? '−' : '+'}</span></button><div id="mobile-collection-links" className={open ? 'is-open' : ''}>{collectionItems.map((item) => <Link key={item.id} to={item.href} onClick={onNavigate}>{item.label}</Link>)}</div></div>
+  const navigate = () => { setOpen(false); onNavigate() }
+  return <div className="mobile-collection"><button aria-expanded={open} aria-controls="mobile-collection-links" onClick={() => setOpen((value) => !value)}>Collection <span className="mobile-collection-indicator" aria-hidden="true">{open ? '−' : '+'}</span></button><div id="mobile-collection-links" className={open ? 'is-open' : ''}>{collectionItems.map((item) => <Link key={item.id} to={item.href} onClick={navigate}>{item.label}</Link>)}</div></div>
 }
 
 export function Header() {
@@ -31,6 +32,7 @@ export function Header() {
   const [menuState, setMenuState] = useState({ open: false, pathname: location.pathname })
   const menuOpen = menuState.open && menuState.pathname === location.pathname
   const closeMenu = () => setMenuState({ open: false, pathname: location.pathname })
+  const closeMenuAfterNavigation = () => { closeMenu(); window.scrollTo({ top: 0, behavior: 'auto' }) }
   const toggleMenu = () => setMenuState((current) => ({ open: current.pathname === location.pathname ? !current.open : true, pathname: location.pathname }))
   const items = navigation.filter((item) => item.active).sort((first, second) => first.displayOrder - second.displayOrder)
 
@@ -39,14 +41,14 @@ export function Header() {
 
   return <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
     <div className="main-nav">
-      <nav className="desktop-links" aria-label="Primary navigation"><CollectionDropdown />{items.filter((item) => item.id !== 'collection').map((item) => <Link className="icon-button nav-icon" key={item.id} to={item.href} aria-label={item.label} title={item.label} data-tooltip={item.label}><Sparkle size={22} strokeWidth={1.8} aria-hidden="true" /></Link>)}</nav>
+      <nav className="desktop-links" aria-label="Primary navigation"><CollectionDropdown />{items.filter((item) => item.id === 'shop').map((item) => <Link className={`desktop-shop-link ${location.pathname === '/shop' ? 'is-active' : ''}`} key={item.id} to={item.href} aria-current={location.pathname === '/shop' ? 'page' : undefined}>{item.label}</Link>)}{items.filter((item) => item.id !== 'collection' && item.id !== 'shop').map((item) => <Link className="icon-button nav-icon" key={item.id} to={item.href} aria-label={item.label} title={item.label} data-tooltip={item.label}><Sparkle size={22} strokeWidth={1.8} aria-hidden="true" /></Link>)}</nav>
       <button ref={menuTrigger} className={`mobile-menu-trigger icon-button ${menuOpen ? 'is-open' : ''}`} aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={menuOpen} aria-controls="mobile-navigation-menu" onClick={toggleMenu}><span className="mobile-menu-glyph" aria-hidden="true"><Menu className="mobile-menu-open-icon" /><X className="mobile-menu-close-icon" /></span></button>
       <Link className="wordmark" to="/" aria-label="Percent home"><strong>% PERCENT</strong><small>LESS ORDINARY. MORE YOU.</small></Link>
       <nav className="header-actions" aria-label="Customer actions"><Link className="icon-button" to="/shop" aria-label="Search collection"><Search /></Link><Link className="icon-button" to="/profile" aria-label="Profile"><UserRound /></Link><Link className="icon-button" to="/cart" aria-label="Shopping bag"><ShoppingBag /></Link></nav>
     </div>
     <button className={`mobile-menu-backdrop ${menuOpen ? 'is-open' : ''}`} aria-label="Dismiss navigation menu" tabIndex={-1} onClick={closeMenu} />
     <div ref={menuPopover} id="mobile-navigation-menu" className={`mobile-menu-popover ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
-      <nav aria-label="Mobile primary navigation"><MobileCollectionMenu onNavigate={closeMenu} />{items.filter((item) => item.id !== 'collection').map((item) => <Link key={item.id} to={item.href} onClick={closeMenu}>{item.label}</Link>)}</nav>
+      <nav aria-label="Mobile primary navigation"><MobileCollectionMenu onNavigate={closeMenuAfterNavigation} />{items.filter((item) => item.id !== 'collection').map((item) => <Link key={item.id} to={item.href} onClick={closeMenuAfterNavigation}>{item.label}</Link>)}</nav>
     </div>
   </header>
 }

@@ -105,6 +105,11 @@ footer { border-top:1px solid var(--border); padding:2rem clamp(1rem,4vw,4rem); 
 .regular-card-view .regular-view-action { opacity:.42; pointer-events:none; transition:opacity 240ms ease,background 240ms ease,color 240ms ease; }
 .regular-card.is-active .regular-view-action { opacity:1; pointer-events:auto; }
 .regular-heading .regular-quote { margin:.35rem 0 0; color:#77736d; font-size:.82rem; line-height:1.4; }
+.regular-heading { position:relative; }
+.regular-heading-link { position:absolute; top:.25rem; right:0; display:inline-flex; align-items:center; gap:.35rem; color:var(--muted); font-size:.72rem; font-weight:700; }
+.regular-heading-link:hover,.regular-heading-link:focus-visible { color:var(--accent); }
+.desktop-links .desktop-shop-link.is-active { color:var(--accent); }
+.desktop-links .desktop-shop-link.is-active::after { background:var(--accent); transform:scaleX(1); transform-origin:left; }
 @media (prefers-reduced-motion:reduce) { .regular-card { transition:none; }.regular-card-view .regular-view-action { transition:none; } }
 
 .hero-media img { opacity:0; transform:translateX(32px) scale(1.01); transition:opacity 750ms cubic-bezier(.22,1,.36,1),transform 750ms cubic-bezier(.22,1,.36,1); }
@@ -148,7 +153,7 @@ footer { border-top:1px solid var(--border); padding:2rem clamp(1rem,4vw,4rem); 
   .mobile-collection-indicator { display:inline-grid; min-width:20px; place-items:center; color:var(--muted); transition:transform .22s cubic-bezier(.22,1,.36,1); }
   .mobile-collection>button[aria-expanded="true"] .mobile-collection-indicator { transform:rotate(180deg); }
   .mobile-collection>div { display:grid; max-height:0; overflow:hidden; opacity:0; transform:translateY(-4px); transition:max-height .23s cubic-bezier(.22,1,.36,1),opacity .2s ease,transform .23s cubic-bezier(.22,1,.36,1); }
-  .mobile-collection>div.is-open { max-height:214px; padding-block:4px; opacity:1; transform:translateY(0); }
+  .mobile-collection>div.is-open { max-height:290px; padding-block:4px; opacity:1; transform:translateY(0); }
   .mobile-collection>div a { min-height:38px; padding:0 4px 0 12px; display:flex; align-items:center; color:var(--muted); font-size:.84rem; transition:color .16s ease,background .16s ease; }
   .mobile-collection>div a:hover,.mobile-collection>div a:focus-visible,.mobile-menu-popover nav>a:hover,.mobile-menu-popover nav>a:focus-visible { color:var(--accent); background:rgba(229,225,216,.55); }
 

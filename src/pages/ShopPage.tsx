@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronLeft, ChevronRight, Grid2X2, Heart, List, SlidersHorizontal, X } from 'lucide-react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { formatInr, type ShopFacets, type ShopFilters, type ShopQuery, type ShopSort, type ShopTab, type ShopView } from '../data/shop'
+import { formatInr, shopColourSlugs, shopTagSlugs, type ShopFacets, type ShopFilters, type ShopQuery, type ShopSort, type ShopTab, type ShopView } from '../data/shop'
 import { useShopProducts } from '../hooks/useShopProducts'
 import type { Product } from '../types'
 
@@ -14,15 +14,19 @@ const cleanNumber = (value: string | null) => { const number = Number(value); re
 function queryFromParams(params: URLSearchParams): ShopQuery {
   const sort = params.get('sort') as ShopSort
   const tab = params.get('tab') as ShopTab
+  const fits = cleanList(params.get('fit'), ['standard', 'oversized']) as ShopQuery['fits']
+  const tags = cleanList(params.get('tags'), shopTagSlugs)
+  const explicitTab = tabs.some((item) => item.value === tab) ? tab : undefined
+  const inferredTab: ShopTab = tags.includes('limited-edition') ? 'limited' : fits.length === 1 && fits[0] === 'standard' ? 'standard' : fits.length === 1 && fits[0] === 'oversized' ? 'oversized' : 'all'
   return {
     page: Math.max(1, Number.parseInt(params.get('page') ?? '1', 10) || 1),
     pageSize: 12,
     sort: sortOptions.some((option) => option.value === sort) ? sort : 'featured',
-    tab: tabs.some((item) => item.value === tab) ? tab : 'all',
-    fits: cleanList(params.get('fit'), ['standard', 'oversized']) as ShopQuery['fits'],
+    tab: explicitTab ?? inferredTab,
+    fits,
     availability: cleanList(params.get('availability'), ['available', 'sold-out']) as ShopQuery['availability'],
-    colours: cleanList(params.get('colors')),
-    tags: cleanList(params.get('tags')),
+    colours: cleanList(params.get('colors'), shopColourSlugs),
+    tags,
     minPrice: cleanNumber(params.get('minPrice')),
     maxPrice: cleanNumber(params.get('maxPrice')),
   }

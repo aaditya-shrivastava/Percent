@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import type { FooterGroup } from '../../types'
 
 const footerGroups: FooterGroup[] = [
-  { title: 'Collection', links: [{ label: 'Limited Editions', to: '/collection/limited' }, { label: 'Best Sellers', to: '/collection/regular' }, { label: 'Trending', to: '/collection/trending' }, { label: 'Sold Out Designs', to: '/collection/sold-out' }, { label: 'All Products', to: '/shop' }] },
+  { title: 'Collection', links: [{ label: 'All Products', to: '/shop' }, { label: 'Limited Editions', to: '/shop?tags=limited-edition' }, { label: 'Best Sellers', to: '/shop?tags=best-seller' }, { label: 'Trending', to: '/shop?tags=trending' }, { label: 'Standard Fit', to: '/shop?fit=standard' }, { label: 'Oversized Fit', to: '/shop?fit=oversized' }, { label: 'Sold Out Designs', to: '/shop?availability=sold-out' }] },
   { title: 'Company', links: [{ label: 'About Us', to: '/about' }, { label: 'Blogs', to: '/blog' }, { label: 'Contact', to: '/contact' }] },
   { title: 'Account', links: [{ label: 'Profile', to: '/profile' }, { label: 'Cart', to: '/cart' }] },
   { title: 'Legal', links: [{ label: 'Privacy Policy', to: '/privacy' }, { label: 'Terms and Conditions', to: '/terms' }] },

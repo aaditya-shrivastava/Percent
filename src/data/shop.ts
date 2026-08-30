@@ -4,6 +4,8 @@ import type { FitType, Product, ProductColour, ProductStatus, ProductTag } from 
 export type ShopSort = 'featured' | 'newest' | 'price-asc' | 'price-desc' | 'best-selling' | 'trending'
 export type ShopTab = 'all' | 'standard' | 'oversized' | 'limited'
 export type ShopView = 'grid' | 'list'
+export const shopTagSlugs = productTags.filter((tag) => tag.isActive && tag.isFilterable).map((tag) => tag.slug)
+export const shopColourSlugs = productColours.map((colour) => colour.slug)
 
 export interface ShopFilters {
   fits: FitType[]
@@ -204,7 +206,8 @@ const localShopBackend = async (query: ShopQuery, signal?: AbortSignal): Promise
   if (query.fits.length) filtered = filtered.filter((product) => query.fits.includes(product.fitType))
   if (query.availability.length) filtered = filtered.filter((product) => query.availability.includes(product.isSoldOut ? 'sold-out' : 'available'))
   if (query.colours.length) filtered = filtered.filter((product) => product.colors.some((colour) => query.colours.includes(colour.slug)))
-  if (query.tags.length) filtered = filtered.filter((product) => query.tags.every((slug) => product.tags?.some((item) => item.slug === slug)))
+  const supportedTags = query.tags.filter((slug) => shopTagSlugs.includes(slug))
+  if (supportedTags.length) filtered = filtered.filter((product) => supportedTags.every((slug) => product.tags?.some((item) => item.slug === slug)))
   if (query.minPrice !== undefined) filtered = filtered.filter((product) => product.price >= query.minPrice!)
   if (query.maxPrice !== undefined) filtered = filtered.filter((product) => product.price <= query.maxPrice!)
   const sorted = sortProducts(filtered, query.sort)
