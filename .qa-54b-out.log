@@ -1,0 +1,13 @@
+
+> percent-storefront@0.1.0 dev
+> vite --force --host 127.0.0.1 --port 8081
+
+9:28:12 AM [vite] (client) Forced re-optimization of dependencies
+
+  VITE v8.2.2  ready in 1556 ms
+
+  ➜  Local:   http://127.0.0.1:8081/
+  ➜  press h + enter to show help
+9:28:13 AM [vite] (client) [optimizer] bundling dependencies...
+9:31:24 AM [vite] (client) hmr update /src/components/layout/Header.tsx, /src/index.css
+9:31:27 AM [vite] (client) hmr update /src/index.css
