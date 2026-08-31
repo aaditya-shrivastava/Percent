@@ -63,6 +63,9 @@ interface ShopSeed {
   shop?: boolean
   soldOut?: boolean
   remainingPieces?: number
+  collaboratorName?: string
+  collaborationTitle?: string
+  collaborationDescription?: string
 }
 
 const seeds: ShopSeed[] = [
@@ -75,7 +78,7 @@ const seeds: ShopSeed[] = [
   { name: 'Common Ground Tee', imageId: 'photo-1521572163474-6864f9cf17ab', hoverImageId: 'photo-1620799140408-edc6dcb6d633', price: 1299, fitType: 'standard', colour: 1, tags: ['best-seller'], bestSeller: true },
   { name: 'Archive Form Tee', imageId: 'photo-1618354691373-d851c5c3a990', hoverImageId: 'photo-1583743814966-8936f37f4678', price: 1499, fitType: 'oversized', colour: 2, tags: ['minimal', 'new'], isNew: true },
   { name: 'Quiet Geometry Tee', imageId: 'photo-1562157873-818bc0726f68', hoverImageId: 'photo-1622445275463-afa2ab738c34', price: 1199, fitType: 'standard', colour: 0, tags: ['minimal'] },
-  { name: 'Edition No. 09 Tee', imageId: 'photo-1576566588028-4147f3842f27', hoverImageId: 'photo-1539109136881-3be0616acf4b', price: 1799, fitType: 'oversized', colour: 3, tags: ['limited-edition', 'artist-collaboration'], limited: true },
+  { name: 'Edition No. 09 Tee', imageId: 'photo-1576566588028-4147f3842f27', hoverImageId: 'photo-1539109136881-3be0616acf4b', price: 1799, fitType: 'oversized', colour: 3, tags: ['limited-edition', 'artist-collaboration'], limited: true, collaboratorName: 'Studio Ninth', collaborationTitle: 'Edition No. 09', collaborationDescription: 'A study in repetition, balance, and the quiet tension between structure and movement.' },
   { name: 'Daily Ritual Tee', imageId: 'photo-1622445275463-afa2ab738c34', hoverImageId: 'photo-1586790170083-2f9ceadc732d', price: 1099, fitType: 'standard', colour: 4, tags: ['best-seller'], bestSeller: true },
   { name: 'Soft Focus Tee', imageId: 'photo-1627225924765-552d49cf47ad', hoverImageId: 'photo-1490481651871-ab68de25d43d', price: 1399, fitType: 'oversized', colour: 1, tags: ['graphic', 'trending'], trending: true },
   { name: 'Internal Draft Tee', imageId: 'photo-1521572163474-6864f9cf17ab', hoverImageId: 'photo-1586790170083-2f9ceadc732d', price: 999, fitType: 'standard', colour: 0, tags: ['minimal'], status: 'draft' },
@@ -157,6 +160,9 @@ const seededProducts: Product[] = seeds.map((seed, index) => {
     salesCount: 180 + (index * 37) % 320,
     retirementState: seed.soldOut ? 'sold-out' : 'active',
     availabilityStatus: seed.soldOut ? 'sold-out' : 'available',
+    collaboratorName: seed.collaboratorName,
+    collaborationTitle: seed.collaborationTitle,
+    collaborationDescription: seed.collaborationDescription,
     featured: index < 8,
     active: seed.status !== 'archived',
     displayOrder: index + 13,
@@ -168,6 +174,7 @@ const catalog = [...sharedProducts, ...seededProducts]
 const hasValidInventory = (product: Product) => Number.isInteger(product.totalPieces) && product.totalPieces > 0 && Number.isInteger(product.soldPieces) && product.soldPieces >= 0 && Number.isInteger(product.remainingPieces) && product.remainingPieces >= 0 && product.soldPieces <= product.totalPieces && product.remainingPieces <= product.totalPieces && product.soldPieces + product.remainingPieces === product.totalPieces
 const hasRequiredCardImages = (product: Product) => Boolean(product.images[0]?.src && product.hoverImage?.src)
 const isPublicShopProduct = (product: Product) => product.status === 'published' && product.isVisible && product.isShopAvailable && !product.isDeleted && product.active && hasValidInventory(product) && hasRequiredCardImages(product)
+export const getPublicShopProducts = () => catalog.filter(isPublicShopProduct)
 
 const sortProducts = (products: Product[], sort: ShopSort) => [...products].sort((first, second) => {
   if (sort === 'price-asc') return first.price - second.price
@@ -198,7 +205,7 @@ const localShopBackend = async (query: ShopQuery, signal?: AbortSignal): Promise
     const timer = window.setTimeout(resolve, 220)
     signal?.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('Request aborted', 'AbortError')) }, { once: true })
   })
-  const publicProducts = catalog.filter(isPublicShopProduct)
+  const publicProducts = getPublicShopProducts()
   let filtered = publicProducts
   if (query.tab === 'standard') filtered = filtered.filter((product) => product.fitType === 'standard')
   if (query.tab === 'oversized') filtered = filtered.filter((product) => product.fitType === 'oversized')

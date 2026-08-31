@@ -5,6 +5,7 @@ import { Header } from './components/layout/Header'
 import { ComingSoonPage } from './pages/ComingSoonPage'
 import { HomePage } from './pages/HomePage'
 import { ShopPage } from './pages/ShopPage'
+import { ProductDetailsPage } from './pages/ProductDetailsPage'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -18,4 +19,4 @@ function ScrollToTop() {
   return null
 }
 
-export default function App() { return <><ScrollToTop /><Header /><Routes><Route path="/" element={<HomePage />} /><Route path="/shop" element={<ShopPage />} /><Route path="/collection" element={<Navigate to="/shop" replace />} /><Route path="/collection/limited" element={<Navigate to="/shop?tags=limited-edition" replace />} /><Route path="/collection/regular" element={<Navigate to="/shop?tags=best-seller" replace />} /><Route path="/collection/trending" element={<Navigate to="/shop?tags=trending" replace />} /><Route path="/collection/sold-out" element={<Navigate to="/shop?availability=sold-out" replace />} />{['/product/:slug', '/products/:slug', '/design/:slug', '/contact', '/about', '/blog', '/profile', '/cart', '/privacy', '/terms'].map((path) => <Route key={path} path={path} element={<ComingSoonPage />} />)}<Route path="*" element={<ComingSoonPage />} /></Routes><Footer /></> }
+export default function App() { return <><ScrollToTop /><Header /><Routes><Route path="/" element={<HomePage />} /><Route path="/shop" element={<ShopPage />} /><Route path="/products/:slug" element={<ProductDetailsPage />} /><Route path="/product/:slug" element={<Navigate to="/shop" replace />} /><Route path="/collection" element={<Navigate to="/shop" replace />} /><Route path="/collection/limited" element={<Navigate to="/shop?tags=limited-edition" replace />} /><Route path="/collection/regular" element={<Navigate to="/shop?tags=best-seller" replace />} /><Route path="/collection/trending" element={<Navigate to="/shop?tags=trending" replace />} /><Route path="/collection/sold-out" element={<Navigate to="/shop?availability=sold-out" replace />} />{['/design/:slug', '/contact', '/about', '/blog', '/profile', '/cart', '/privacy', '/terms'].map((path) => <Route key={path} path={path} element={<ComingSoonPage />} />)}<Route path="*" element={<ComingSoonPage />} /></Routes><Footer /></> }

@@ -1,13 +1,13 @@
-import { ChevronDown, ChevronLeft, ChevronRight, Grid2X2, Heart, List, SlidersHorizontal, X } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, Grid2X2, List, SlidersHorizontal, X } from 'lucide-react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { formatInr, shopColourSlugs, shopTagSlugs, type ShopFacets, type ShopFilters, type ShopQuery, type ShopSort, type ShopTab, type ShopView } from '../data/shop'
 import { useShopProducts } from '../hooks/useShopProducts'
-import type { Product } from '../types'
+import { useWishlist } from '../hooks/useCommerce'
+import { ShopProductCard } from '../components/product/ShopProductCard'
 
 const sortOptions: Array<{ value: ShopSort; label: string }> = [{ value: 'featured', label: 'Featured' }, { value: 'newest', label: 'Newest' }, { value: 'price-asc', label: 'Price: Low to High' }, { value: 'price-desc', label: 'Price: High to Low' }, { value: 'best-selling', label: 'Best Selling' }, { value: 'trending', label: 'Trending' }]
 const tabs: Array<{ value: ShopTab; label: string }> = [{ value: 'all', label: 'All' }, { value: 'standard', label: 'Standard' }, { value: 'oversized', label: 'Oversized' }, { value: 'limited', label: 'Limited' }]
-const fallbackProductImage = 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?auto=format&fit=crop&w=900&q=84'
 const cleanList = (value: string | null, allowed?: readonly string[]) => (value ?? '').split(',').map((item) => item.trim().toLowerCase()).filter((item, index, items) => /^[a-z0-9-]+$/.test(item) && (!allowed || allowed.includes(item)) && items.indexOf(item) === index).slice(0, 20)
 const cleanNumber = (value: string | null) => { const number = Number(value); return value && Number.isFinite(number) && number >= 0 ? Math.round(number) : undefined }
 
@@ -74,32 +74,6 @@ function FilterPanel({ facets, selected, onApply, onClear, mobile = false }: { f
     {facets.tagGroups.map((group) => checkGroup(group.group, group.options.filter((option) => option.count > 0), 'tags'))}
     <div className="shop-filter-actions"><button type="button" onClick={() => { setDraft(emptyFilters); onClear() }}>Clear All</button><button type="submit">Apply Filters</button></div>
   </form>
-}
-
-function useWishlist() {
-  const [items, setItems] = useState<string[]>(() => { try { return JSON.parse(localStorage.getItem('percent-wishlist') ?? '[]') as string[] } catch { return [] } })
-  const toggle = (id: string) => setItems((current) => { const next = current.includes(id) ? current.filter((item) => item !== id) : [...current, id]; localStorage.setItem('percent-wishlist', JSON.stringify(next)); return next })
-  return { items, toggle }
-}
-
-function InventoryProgress({ total, remaining, soldOut }: { total: number; remaining: number; soldOut: boolean }) {
-  const safeTotal = Number.isFinite(total) ? Math.max(0, Math.trunc(total)) : 0
-  const safeRemaining = soldOut ? 0 : Number.isFinite(remaining) ? Math.min(Math.max(0, Math.trunc(remaining)), safeTotal) : 0
-  const remainingPercentage = safeTotal > 0 ? Math.min(100, Math.max(0, safeRemaining / safeTotal * 100)) : 0
-  return <div className="shop-edition-progress"><span>{safeRemaining} of {safeTotal} remaining</span><i><b style={{ width: `${remainingPercentage}%` }} /></i></div>
-}
-
-function ShopProductCard({ product, view, wished, onWishlist }: { product: Product; view: ShopView; wished: boolean; onWishlist: () => void }) {
-  const [hoverReady, setHoverReady] = useState(false)
-  const badges = [{ show: product.isSoldOut, label: 'Sold Out' }, { show: product.isLimitedEdition, label: 'Limited' }, { show: product.isNew, label: 'New' }, { show: product.isBestSeller, label: 'Best Seller' }, { show: product.isTrending, label: 'Trending' }].filter((badge) => badge.show).slice(0, 2)
-  return <article className={`shop-product-card ${view === 'list' ? 'is-list' : ''} ${hoverReady ? 'is-hover-ready' : ''}`}>
-    <div className="shop-product-media">
-      <Link to={`/products/${product.slug}`} aria-label={`View ${product.name}`}><img className="shop-product-primary" src={product.images[0].src} alt={product.images[0].alt} width={product.images[0].width} height={product.images[0].height} loading="lazy" decoding="async" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = fallbackProductImage }} /><img className="shop-product-hover" src={product.hoverImage?.src ?? product.images[0].src} alt="" aria-hidden="true" width={product.hoverImage?.width ?? product.images[0].width} height={product.hoverImage?.height ?? product.images[0].height} loading="lazy" decoding="async" fetchPriority="low" onLoad={() => setHoverReady(Boolean(product.hoverImage?.src))} onError={(event) => { event.currentTarget.style.visibility = 'hidden'; setHoverReady(false) }} /></Link>
-      {badges.length > 0 && <div className="shop-badges">{badges.map((badge) => <span key={badge.label}>{badge.label}</span>)}</div>}
-      <button className={`shop-wishlist ${wished ? 'is-active' : ''}`} type="button" aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`} aria-pressed={wished} onClick={(event) => { event.preventDefault(); event.stopPropagation(); onWishlist() }}><Heart size={18} fill={wished ? 'currentColor' : 'none'} /></button>
-    </div>
-    <div className="shop-product-info"><div className="shop-product-heading"><Link to={`/products/${product.slug}`}><h2>{product.name}</h2></Link><p>{product.fitType === 'standard' ? 'Standard Fit' : 'Oversized Fit'}</p></div><div className="shop-product-price"><strong>{formatInr(product.price)}</strong>{product.compareAtPrice && <del>{formatInr(product.compareAtPrice)}</del>}</div><InventoryProgress total={product.totalPieces} remaining={product.remainingPieces} soldOut={product.isSoldOut} /></div>
-  </article>
 }
 
 function Pagination({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (page: number) => void }) {
