@@ -1,7 +1,7 @@
 import { Menu, Search, ShoppingBag, Sparkle, UserRound, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { collectionItems, navigation } from '../../data/homepage'
+import { navigation, shopNavigationItems } from '../../data/homepage'
 import { useCartCount } from '../../hooks/useCommerce'
 
 function RunningTrolleyIcon() {
@@ -11,18 +11,43 @@ function RunningTrolleyIcon() {
 function CollectionDropdown() {
   const [open, setOpen] = useState(false)
   const links = useRef<Array<HTMLAnchorElement | null>>([])
-  const moveFocus = (index: number) => links.current[(index + collectionItems.length) % collectionItems.length]?.focus()
+  const moveFocus = (index: number) => links.current[(index + shopNavigationItems.length) % shopNavigationItems.length]?.focus()
 
   return <div className="collection-dropdown" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
     <button className="collection-trigger icon-button" aria-label="Collection" title="Collection" aria-expanded={open} aria-haspopup="menu" onClick={() => setOpen((value) => !value)} onKeyDown={(event) => { if (event.key === 'Escape') setOpen(false); if (event.key === 'ArrowDown') { event.preventDefault(); setOpen(true); requestAnimationFrame(() => moveFocus(0)) } }}><RunningTrolleyIcon /></button>
-    <div className={`collection-menu ${open ? 'is-open' : ''}`} role="menu" aria-label="Collection categories">{collectionItems.map((item, index) => <Link key={item.id} ref={(element) => { links.current[index] = element }} role="menuitem" to={item.href} onClick={() => setOpen(false)} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.closest('.collection-dropdown')?.querySelector<HTMLButtonElement>('button')?.focus() } if (event.key === 'ArrowDown') { event.preventDefault(); moveFocus(index + 1) } if (event.key === 'ArrowUp') { event.preventDefault(); moveFocus(index - 1) } }}>{item.label}</Link>)}</div>
+    <div className={`collection-menu ${open ? 'is-open' : ''}`} role="menu" aria-label="Collection categories">{shopNavigationItems.map((item, index) => <Link key={item.id} ref={(element) => { links.current[index] = element }} role="menuitem" to={item.href} onClick={() => setOpen(false)} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.closest('.collection-dropdown')?.querySelector<HTMLButtonElement>('button')?.focus() } if (event.key === 'ArrowDown') { event.preventDefault(); moveFocus(index + 1) } if (event.key === 'ArrowUp') { event.preventDefault(); moveFocus(index - 1) } }}>{item.label}</Link>)}</div>
   </div>
 }
 
 function MobileCollectionMenu({ onNavigate }: { onNavigate: () => void }) {
   const [open, setOpen] = useState(false)
   const navigate = () => { setOpen(false); onNavigate() }
-  return <div className="mobile-collection"><button aria-expanded={open} aria-controls="mobile-collection-links" onClick={() => setOpen((value) => !value)}>Collection <span className="mobile-collection-indicator" aria-hidden="true">{open ? '−' : '+'}</span></button><div id="mobile-collection-links" className={open ? 'is-open' : ''}>{collectionItems.map((item) => <Link key={item.id} to={item.href} onClick={navigate}>{item.label}</Link>)}</div></div>
+  return <div className="mobile-collection"><button aria-expanded={open} aria-controls="mobile-collection-links" onClick={() => setOpen((value) => !value)}>Collection <span className="mobile-collection-indicator" aria-hidden="true">{open ? '−' : '+'}</span></button><div id="mobile-collection-links" className={open ? 'is-open' : ''}>{shopNavigationItems.map((item) => <Link key={item.id} to={item.href} onClick={navigate}>{item.label}</Link>)}</div></div>
+}
+
+function ShopDropdown({ cartCount }: { cartCount: number }) {
+  const [open, setOpen] = useState(false)
+  const root = useRef<HTMLDivElement>(null)
+  const trigger = useRef<HTMLButtonElement>(null)
+  const links = useRef<Array<HTMLAnchorElement | null>>([])
+  const closeTimer = useRef<number | null>(null)
+  const moveFocus = (index: number) => links.current[(index + shopNavigationItems.length) % shopNavigationItems.length]?.focus()
+  const usesDesktopHover = () => window.innerWidth > 639 && window.matchMedia('(hover:hover) and (pointer:fine)').matches
+  const cancelPendingClose = () => { if (closeTimer.current !== null) { window.clearTimeout(closeTimer.current); closeTimer.current = null } }
+  const schedulePointerClose = () => { cancelPendingClose(); closeTimer.current = window.setTimeout(() => { setOpen(false); closeTimer.current = null }, 140) }
+
+  useEffect(() => {
+    if (!open) return undefined
+    const closeOnOutsidePress = (event: PointerEvent) => { if (!root.current?.contains(event.target as Node)) { cancelPendingClose(); setOpen(false) } }
+    document.addEventListener('pointerdown', closeOnOutsidePress)
+    return () => document.removeEventListener('pointerdown', closeOnOutsidePress)
+  }, [open])
+  useEffect(() => () => { if (closeTimer.current !== null) window.clearTimeout(closeTimer.current) }, [])
+
+  return <div ref={root} className="shop-dropdown" onPointerEnter={() => { if (usesDesktopHover()) { cancelPendingClose(); setOpen(true) } }} onPointerLeave={() => { if (usesDesktopHover()) schedulePointerClose() }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) { cancelPendingClose(); setOpen(false) } }}>
+    <button ref={trigger} type="button" className="icon-button cart-action shop-trigger" aria-label={`Shop menu${cartCount ? `, cart has ${cartCount} items` : ''}`} title="Shop" aria-expanded={open} aria-haspopup="menu" onClick={(event) => { cancelPendingClose(); setOpen((value) => event.detail > 0 && usesDesktopHover() ? true : !value) }} onKeyDown={(event) => { if (event.key === 'Escape') { cancelPendingClose(); setOpen(false) } if (event.key === 'ArrowDown') { event.preventDefault(); cancelPendingClose(); setOpen(true); requestAnimationFrame(() => moveFocus(0)) } }}><ShoppingBag />{cartCount > 0 && <span aria-hidden="true">{Math.min(cartCount, 99)}</span>}</button>
+    <div className={`shop-menu ${open ? 'is-open' : ''}`} role="menu" aria-label="Shop products" aria-hidden={!open} onPointerEnter={() => { if (usesDesktopHover()) { cancelPendingClose(); setOpen(true) } }}>{shopNavigationItems.map((item, index) => <Link key={item.id} ref={(element) => { links.current[index] = element }} role="menuitem" tabIndex={open ? 0 : -1} to={item.href} onClick={() => { cancelPendingClose(); setOpen(false) }} onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); cancelPendingClose(); setOpen(false); trigger.current?.focus() } if (event.key === 'ArrowDown') { event.preventDefault(); moveFocus(index + 1) } if (event.key === 'ArrowUp') { event.preventDefault(); moveFocus(index - 1) } }}>{item.label}</Link>)}</div>
+  </div>
 }
 
 export function Header() {
@@ -43,10 +68,10 @@ export function Header() {
 
   return <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
     <div className="main-nav">
-      <nav className="desktop-links" aria-label="Primary navigation"><CollectionDropdown />{items.filter((item) => item.id === 'shop').map((item) => <Link className={`desktop-shop-link ${location.pathname === '/shop' ? 'is-active' : ''}`} key={item.id} to={item.href} aria-current={location.pathname === '/shop' ? 'page' : undefined}>{item.label}</Link>)}{items.filter((item) => item.id !== 'collection' && item.id !== 'shop').map((item) => <Link className="icon-button nav-icon" key={item.id} to={item.href} aria-label={item.label} title={item.label} data-tooltip={item.label}><Sparkle size={22} strokeWidth={1.8} aria-hidden="true" /></Link>)}</nav>
+      <nav className="desktop-links" aria-label="Primary navigation"><CollectionDropdown />{items.filter((item) => item.id !== 'collection').map((item) => <Link className="icon-button nav-icon" key={item.id} to={item.href} aria-label={item.label} title={item.label} data-tooltip={item.label}><Sparkle size={22} strokeWidth={1.8} aria-hidden="true" /></Link>)}</nav>
       <button ref={menuTrigger} className={`mobile-menu-trigger icon-button ${menuOpen ? 'is-open' : ''}`} aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={menuOpen} aria-controls="mobile-navigation-menu" onClick={toggleMenu}><span className="mobile-menu-glyph" aria-hidden="true"><Menu className="mobile-menu-open-icon" /><X className="mobile-menu-close-icon" /></span></button>
       <Link className="wordmark" to="/" aria-label="Percent home"><strong>% PERCENT</strong><small>LESS ORDINARY. MORE YOU.</small></Link>
-      <nav className="header-actions" aria-label="Customer actions"><Link className="icon-button" to="/shop" aria-label="Search collection"><Search /></Link><Link className="icon-button" to="/profile" aria-label="Profile"><UserRound /></Link><Link className="icon-button cart-action" to="/cart" aria-label={`Shopping bag${cartCount ? `, ${cartCount} items` : ''}`}><ShoppingBag />{cartCount > 0 && <span aria-hidden="true">{Math.min(cartCount, 99)}</span>}</Link></nav>
+      <nav className="header-actions" aria-label="Customer actions"><Link className="icon-button" to="/shop" aria-label="Search collection"><Search /></Link><Link className="icon-button" to="/profile" aria-label="Profile"><UserRound /></Link><ShopDropdown cartCount={cartCount} /></nav>
     </div>
     <button className={`mobile-menu-backdrop ${menuOpen ? 'is-open' : ''}`} aria-label="Dismiss navigation menu" tabIndex={-1} onClick={closeMenu} />
     <div ref={menuPopover} id="mobile-navigation-menu" className={`mobile-menu-popover ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
