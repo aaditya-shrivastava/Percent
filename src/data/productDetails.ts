@@ -1,4 +1,5 @@
 import { getPublicShopProducts } from './shop'
+import { getArchivedProductBySlug } from './archive'
 import { productColours } from './homepage'
 import type { Product, ProductDetails, ProductImage, ProductReview, ProductVariant } from '../types'
 
@@ -96,7 +97,7 @@ const localProductDetailsBackend = async (slug: string, signal?: AbortSignal): P
     signal?.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('Request aborted', 'AbortError')) }, { once: true })
   })
   const products = getPublicShopProducts()
-  const product = products.find((item) => item.slug === slug)
+  const product = products.find((item) => item.slug === slug) ?? getArchivedProductBySlug(slug)
   if (!product) throw new ProductNotFoundError()
   const related = products.filter((item) => item.id !== product.id).sort((first, second) => relatedScore(product, second) - relatedScore(product, first) || first.displayOrder - second.displayOrder).slice(0, 4)
   return { product: buildDetails(product), related }

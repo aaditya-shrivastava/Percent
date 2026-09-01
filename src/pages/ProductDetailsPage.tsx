@@ -1,7 +1,8 @@
-import { Check, ChevronDown, ChevronLeft, ChevronRight, Heart, Minus, Plus, Star, X } from 'lucide-react'
+import { Check, ChevronDown, Heart, Minus, Plus, Star, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ShopProductCard } from '../components/product/ShopProductCard'
+import { ProductReviews } from '../components/product/ProductReviews'
 import type { ProductDetailsResponse } from '../data/productDetails'
 import { formatInr, safeSwatch } from '../data/shop'
 import { addCartItem, useWishlist } from '../hooks/useCommerce'
@@ -37,7 +38,7 @@ function Gallery({ images, activeImage, onSelect }: { images: ProductImage[]; ac
 }
 
 function ProductBadges({ product }: { product: ProductDetails }) {
-  const badges = [{ show: product.isSoldOut, label: 'Sold Out' }, { show: product.isLimitedEdition, label: 'Limited' }, { show: product.isNew, label: 'New' }, { show: product.isBestSeller, label: 'Best Seller' }, { show: product.isTrending, label: 'Trending' }].filter((badge) => badge.show)
+  const badges = [{ show: product.retirementState === 'retired', label: 'Archived' }, { show: product.isSoldOut, label: 'Sold Out' }, { show: product.isLimitedEdition && product.retirementState !== 'retired', label: 'Limited' }, { show: product.isNew && product.retirementState !== 'retired', label: 'New' }, { show: product.isBestSeller && product.retirementState !== 'retired', label: 'Best Seller' }, { show: product.isTrending && product.retirementState !== 'retired', label: 'Trending' }].filter((badge) => badge.show)
   return badges.length ? <div className="pdp-badges">{badges.map((badge) => <span key={badge.label}>{badge.label}</span>)}</div> : null
 }
 
@@ -58,7 +59,7 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
   const [selectionError, setSelectionError] = useState('')
   const [feedback, setFeedback] = useState('')
-  const [reviewIndex, setReviewIndex] = useState(0)
+  const [displayReviewSummary, setDisplayReviewSummary] = useState(product.reviewSummary)
   const sizeGroup = useRef<HTMLFieldSetElement>(null)
 
   const colourVariants = useMemo(() => product.variants.filter((variant) => variant.colour.id === selectedColourId), [product, selectedColourId])
@@ -66,6 +67,7 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
   const selectedVariant = colourVariants.find((variant) => variant.size === selectedSize)
   const displayVariant = selectedVariant ?? colourVariants[0]
   const displayedImage = gallery.find((image) => image.src === activeImage.src) ?? gallery[0]
+  const archived = product.retirementState === 'retired'
 
   useEffect(() => {
     if (!product) return undefined
@@ -100,15 +102,17 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
       <div className="pdp-info">
         <ProductBadges product={product} />
         <div className="pdp-title"><p>{product.fitType === 'standard' ? 'Standard Fit' : 'Oversized Fit'}</p><h1>{product.name}</h1></div>
-        <div className="pdp-rating">{product.reviewSummary.reviewCount ? <><Stars rating={product.reviewSummary.averageRating} /><a href="#customer-reviews">{product.reviewSummary.averageRating.toFixed(1)} · {product.reviewSummary.reviewCount} reviews</a></> : <a href="#customer-reviews">No reviews yet</a>}</div>
+        <div className="pdp-rating">{displayReviewSummary.reviewCount ? <><Stars rating={displayReviewSummary.averageRating} /><a href="#customer-reviews">{displayReviewSummary.averageRating.toFixed(1)} · {displayReviewSummary.reviewCount} reviews</a></> : <a href="#customer-reviews">No reviews yet</a>}</div>
         <div className="pdp-price"><strong>{formatInr(displayVariant?.price ?? product.price)}</strong>{displayVariant?.compareAtPrice && <del>{formatInr(displayVariant.compareAtPrice)}</del>}{discount > 0 && <span>{discount}% off</span>}</div>
         <p className="pdp-short-description">{product.shortDescription}</p>
-        <div className={`pdp-inventory ${product.isSoldOut ? 'is-sold-out' : ''}`}><div><strong>{product.soldPieces} of {product.totalPieces} sold</strong><span>{product.remainingPieces} of {product.totalPieces} remaining</span></div><i><b style={{ width: `${soldPercentage}%` }} /></i></div>
-        <fieldset className="pdp-option-group"><legend>Colour <span>{product.colors.find((colour) => colour.id === selectedColourId)?.label}</span></legend><div className="pdp-colours">{product.colors.map((colour) => <button key={colour.id} type="button" className={selectedColourId === colour.id ? 'is-selected' : ''} aria-label={`Select ${colour.label}`} aria-pressed={selectedColourId === colour.id} onClick={() => { setSelectedColourId(colour.id); setSelectedSize(''); setSelectionError(''); const nextImages = product.variants.find((variant) => variant.colour.id === colour.id)?.images; if (nextImages?.[0]) setActiveImage(nextImages[0]) }}><i style={{ background: safeSwatch(colour) }} />{selectedColourId === colour.id && <Check />}</button>)}</div></fieldset>
-        <fieldset ref={sizeGroup} className="pdp-option-group product-size-section" tabIndex={-1} aria-labelledby="product-size-label"><div className="product-size-header"><span id="product-size-label">Size</span><button className="pdp-size-guide-trigger product-size-guide" type="button" onClick={() => setSizeGuideOpen(true)}>Size Guide <ChevronDown /></button></div><div className="pdp-sizes product-size-options">{uniqueSizes.map((size) => { const variant = colourVariants.find((item) => item.size === size); const available = Boolean(variant?.isAvailable) && !product.isSoldOut; return <button key={size} type="button" disabled={!available} className={`product-size-option ${selectedSize === size ? 'is-selected' : ''}`} aria-pressed={selectedSize === size} onClick={() => { setSelectedSize(size); setSelectionError('') }}>{size}</button> })}</div></fieldset>
-        {selectionError && <p className="pdp-validation" role="alert">{selectionError}</p>}
-        <div className="pdp-purchase product-purchase-actions"><button type="button" className="pdp-primary-action" disabled={product.isSoldOut} onClick={addToCart}>{product.isSoldOut ? 'Sold Out' : 'Add to Cart'}</button><button type="button" className={`pdp-wishlist ${wished ? 'is-active' : ''}`} aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`} aria-pressed={wished} onClick={() => { wishlist.toggle(product.id); setFeedback(wished ? 'Removed from your wishlist.' : 'Saved to your wishlist.') }}><Heart fill={wished ? 'currentColor' : 'none'} /></button></div>
-        <p className="pdp-feedback" aria-live="polite">{feedback}</p>
+        <div className={`pdp-inventory ${product.isSoldOut ? 'is-sold-out' : ''}`}><div><strong>{archived ? '100 / 100 sold' : `${product.soldPieces} of ${product.totalPieces} sold`}</strong><span>{archived ? 'Forever archived' : `${product.remainingPieces} of ${product.totalPieces} remaining`}</span></div><i><b style={{ width: `${soldPercentage}%` }} /></i></div>
+        {archived ? <div className="pdp-archive-notice"><strong>This design is archived.</strong><span>One hundred pieces were made. There will be no restock or repeat.</span><Link to="/sold-out-designs">Return to the archive</Link></div> : <>
+          <fieldset className="pdp-option-group"><legend>Colour <span>{product.colors.find((colour) => colour.id === selectedColourId)?.label}</span></legend><div className="pdp-colours">{product.colors.map((colour) => <button key={colour.id} type="button" className={selectedColourId === colour.id ? 'is-selected' : ''} aria-label={`Select ${colour.label}`} aria-pressed={selectedColourId === colour.id} onClick={() => { setSelectedColourId(colour.id); setSelectedSize(''); setSelectionError(''); const nextImages = product.variants.find((variant) => variant.colour.id === colour.id)?.images; if (nextImages?.[0]) setActiveImage(nextImages[0]) }}><i style={{ background: safeSwatch(colour) }} />{selectedColourId === colour.id && <Check />}</button>)}</div></fieldset>
+          <fieldset ref={sizeGroup} className="pdp-option-group product-size-section" tabIndex={-1} aria-labelledby="product-size-label"><div className="product-size-header"><span id="product-size-label">Size</span><button className="pdp-size-guide-trigger product-size-guide" type="button" onClick={() => setSizeGuideOpen(true)}>Size Guide <ChevronDown /></button></div><div className="pdp-sizes product-size-options">{uniqueSizes.map((size) => { const variant = colourVariants.find((item) => item.size === size); const available = Boolean(variant?.isAvailable) && !product.isSoldOut; return <button key={size} type="button" disabled={!available} className={`product-size-option ${selectedSize === size ? 'is-selected' : ''}`} aria-pressed={selectedSize === size} onClick={() => { setSelectedSize(size); setSelectionError('') }}>{size}</button> })}</div></fieldset>
+          {selectionError && <p className="pdp-validation" role="alert">{selectionError}</p>}
+          <div className="pdp-purchase product-purchase-actions"><button type="button" className="pdp-primary-action" disabled={product.isSoldOut} onClick={addToCart}>{product.isSoldOut ? 'Sold Out' : 'Add to Cart'}</button><button type="button" className={`pdp-wishlist ${wished ? 'is-active' : ''}`} aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`} aria-pressed={wished} onClick={() => { wishlist.toggle(product.id); setFeedback(wished ? 'Removed from your wishlist.' : 'Saved to your wishlist.') }}><Heart fill={wished ? 'currentColor' : 'none'} /></button></div>
+          <p className="pdp-feedback" aria-live="polite">{feedback}</p>
+        </>}
       </div>
     </section>
 
@@ -116,7 +120,7 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
 
     <section className="pdp-details"><div><p>Details</p><h2>Made to live beyond the drop.</h2><span>{product.fullDescription}</span><dl><div><dt>Size & Fit</dt><dd>{product.fitType === 'standard' ? 'Standard Fit' : 'Oversized Fit'}</dd></div><div><dt>Material</dt><dd>{product.material}</dd></div>{product.style && <div><dt>Style</dt><dd>{product.style}</dd></div>}{product.shippingAndReturns && <div><dt>Shipping & Returns</dt><dd>{product.shippingAndReturns}</dd></div>}</dl></div><img src={(product.images[1] ?? product.images[0]).src} alt={(product.images[1] ?? product.images[0]).alt} width={(product.images[1] ?? product.images[0]).width} height={(product.images[1] ?? product.images[0]).height} loading="lazy" /></section>
 
-    <section className="pdp-reviews" id="customer-reviews"><header className="reviews-header"><div><p>Customer Reviews</p><h2 className="reviews-headline">Worn, lived in, remembered.</h2></div><Link className="reviews-submit" to={`/profile?returnTo=${encodeURIComponent(`/products/${product.slug}#customer-reviews`)}`}>Submit Review</Link></header>{product.reviews.length ? <><div className="pdp-review-summary reviews-summary"><strong className="reviews-average">{product.reviewSummary.averageRating.toFixed(1)}</strong><div><Stars rating={product.reviewSummary.averageRating} /><span className="reviews-count">Based on {product.reviewSummary.reviewCount} reviews</span></div></div><article className="pdp-review-card review-card"><Stars rating={product.reviews[reviewIndex].rating} /><blockquote className="review-card-quote">“{product.reviews[reviewIndex].text}”</blockquote><div className="pdp-review-author review-card-author"><strong>{product.reviews[reviewIndex].customerName}</strong><time className="review-card-date" dateTime={product.reviews[reviewIndex].date}>{new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(product.reviews[reviewIndex].date))}</time></div></article>{product.reviews.length > 1 && <div className="pdp-review-controls reviews-controls"><button type="button" aria-label="Previous review" onClick={() => setReviewIndex((index) => (index - 1 + product.reviews.length) % product.reviews.length)}><ChevronLeft /></button><div>{product.reviews.map((review, index) => <button key={review.id} type="button" className={index === reviewIndex ? 'is-active' : ''} aria-label={`Show review ${index + 1}`} aria-pressed={index === reviewIndex} onClick={() => setReviewIndex(index)} />)}</div><button type="button" aria-label="Next review" onClick={() => setReviewIndex((index) => (index + 1) % product.reviews.length)}><ChevronRight /></button></div>}</> : <div className="pdp-no-reviews"><p>Be the first to review this design.</p><Link to={`/profile?returnTo=${encodeURIComponent(`/products/${product.slug}#customer-reviews`)}`}>Sign in to review</Link></div>}</section>
+    <ProductReviews productSlug={product.slug} initialReviews={product.reviews} onSummaryChange={setDisplayReviewSummary} />
 
     <section className="pdp-extra"><p>Extra Product Details</p><h2>Everything worth knowing.</h2><div>{extraDetails.map((item, index) => <DetailAccordion key={item.title} title={item.title} initiallyOpen={index === 0}>{item.content}</DetailAccordion>)}</div></section>
 

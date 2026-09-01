@@ -12,7 +12,7 @@ const tee = (id: string, name: string, price: number, order: number, placement: 
 }
 
 export const navigation: NavigationItem[] = [{ id: 'collection', label: 'Collection', href: '/shop', active: true, displayOrder: 1 }, { id: 'about', label: 'About Us', href: '/about', active: true, displayOrder: 2 }]
-export const shopNavigationItems: NavigationItem[] = [{ id: 'all-products', label: 'All Products', href: '/shop', active: true, displayOrder: 1 }, { id: 'oversized-fits', label: 'Oversized Fits', href: '/shop?fit=oversized', active: true, displayOrder: 2 }, { id: 'standard-fits', label: 'Standard Fits', href: '/shop?fit=standard', active: true, displayOrder: 3 }, { id: 'sold-out-designs', label: 'Sold Out Designs', href: '/shop?availability=sold-out', active: true, displayOrder: 4 }]
+export const shopNavigationItems: NavigationItem[] = [{ id: 'all-products', label: 'All Products', href: '/shop', active: true, displayOrder: 1 }, { id: 'oversized-fits', label: 'Oversized Fits', href: '/shop?fit=oversized', active: true, displayOrder: 2 }, { id: 'standard-fits', label: 'Standard Fits', href: '/shop?fit=standard', active: true, displayOrder: 3 }, { id: 'sold-out-designs', label: 'Sold Out Designs', href: '/sold-out-designs', active: true, displayOrder: 4 }]
 export const heroBanners: HeroBanner[] = [
   photo('photo-1529139574466-a303027c1d8b', 'Model wearing a white Percent t-shirt', 1800, 1000),
   photo('photo-1515886657613-9f3515b0c78f', 'Streetwear model in a fashion campaign', 1800, 1000),
