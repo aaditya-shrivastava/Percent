@@ -1,5 +1,5 @@
 import { getPublicShopProducts } from './shop'
-import { getArchivedProductBySlug } from './archive'
+import { getArchivedProductBySlug, getArchivedProducts } from './archive'
 import { productColours } from './homepage'
 import type { Product, ProductDetails, ProductImage, ProductReview, ProductVariant } from '../types'
 
@@ -87,6 +87,11 @@ const buildDetails = (product: Product): ProductDetails => {
     reviews,
     reviewSummary: { averageRating, reviewCount: reviews.length },
   }
+}
+
+export function getProductDetailsById(productId: string) {
+  const product = getPublicShopProducts().find((item) => item.id === productId) ?? getArchivedProducts().find((item) => item.id === productId)
+  return product ? buildDetails(product) : undefined
 }
 
 const relatedScore = (current: Product, candidate: Product) => Number(current.fitType === candidate.fitType) * 4 + Number(current.colors.some((colour) => candidate.colors.some((item) => item.id === colour.id))) * 2 + (current.tags ?? []).filter((tag) => candidate.tags?.some((item) => item.id === tag.id)).length

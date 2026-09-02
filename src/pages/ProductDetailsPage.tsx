@@ -91,7 +91,7 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
     if (!selectedColourId) { setSelectionError('Choose a colour before adding this piece.'); return }
     if (!selectedSize) { setSelectionError('Select an available size before adding this piece.'); sizeGroup.current?.focus(); return }
     if (!selectedVariant?.isAvailable || product.isSoldOut) { setSelectionError('This variant is currently unavailable.'); return }
-    addCartItem(product.id, selectedVariant.id); setSelectionError(''); setFeedback(`${product.name}, ${selectedVariant.colour.label}, size ${selectedVariant.size} added to your bag.`)
+    addCartItem(product.id, selectedVariant.id, selectedVariant.stock); setSelectionError(''); setFeedback(`${product.name}, ${selectedVariant.colour.label}, size ${selectedVariant.size} added to your bag.`)
   }
   const extraDetails = [{ title: 'Product Details', content: product.fullDescription }, { title: 'Material and Care', content: [product.material, product.careInstructions].filter(Boolean).join(' · ') }, { title: 'Fit and Size', content: `${product.fitType === 'standard' ? 'Standard Fit' : 'Oversized Fit'}. Available sizes: ${uniqueSizes.join(', ')}.` }, { title: 'Shipping and Returns', content: product.shippingAndReturns }, ...(product.collaborator ? [{ title: 'Collaboration Information', content: [product.collaborator.title, product.collaborator.description].filter(Boolean).join(' — ') }] : [])].filter((item) => item.content)
 

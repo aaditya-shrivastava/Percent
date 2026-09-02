@@ -1,6 +1,6 @@
 import { Menu, Search, ShoppingBag, Sparkle, UserRound, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { navigation, shopNavigationItems } from '../../data/homepage'
 import { useCartCount } from '../../hooks/useCommerce'
 
@@ -26,6 +26,7 @@ function MobileCollectionMenu({ onNavigate }: { onNavigate: () => void }) {
 }
 
 function ShopDropdown({ cartCount }: { cartCount: number }) {
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const root = useRef<HTMLDivElement>(null)
   const trigger = useRef<HTMLButtonElement>(null)
@@ -45,7 +46,7 @@ function ShopDropdown({ cartCount }: { cartCount: number }) {
   useEffect(() => () => { if (closeTimer.current !== null) window.clearTimeout(closeTimer.current) }, [])
 
   return <div ref={root} className="shop-dropdown" onPointerEnter={() => { if (usesDesktopHover()) { cancelPendingClose(); setOpen(true) } }} onPointerLeave={() => { if (usesDesktopHover()) schedulePointerClose() }} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) { cancelPendingClose(); setOpen(false) } }}>
-    <button ref={trigger} type="button" className="icon-button cart-action shop-trigger" aria-label={`Shop menu${cartCount ? `, cart has ${cartCount} items` : ''}`} title="Shop" aria-expanded={open} aria-haspopup="menu" onClick={(event) => { cancelPendingClose(); setOpen((value) => event.detail > 0 && usesDesktopHover() ? true : !value) }} onKeyDown={(event) => { if (event.key === 'Escape') { cancelPendingClose(); setOpen(false) } if (event.key === 'ArrowDown') { event.preventDefault(); cancelPendingClose(); setOpen(true); requestAnimationFrame(() => moveFocus(0)) } }}><ShoppingBag />{cartCount > 0 && <span aria-hidden="true">{Math.min(cartCount, 99)}</span>}</button>
+    <button ref={trigger} type="button" className="icon-button cart-action shop-trigger" aria-label={cartCount ? `Open cart, ${cartCount} ${cartCount === 1 ? 'item' : 'items'}` : 'Shop menu'} title={cartCount ? 'Cart' : 'Shop'} aria-expanded={open} aria-haspopup="menu" onClick={(event) => { cancelPendingClose(); if (cartCount > 0) { setOpen(false); navigate('/cart'); return } setOpen((value) => event.detail > 0 && usesDesktopHover() ? true : !value) }} onKeyDown={(event) => { if (event.key === 'Escape') { cancelPendingClose(); setOpen(false) } if (event.key === 'ArrowDown') { event.preventDefault(); cancelPendingClose(); setOpen(true); requestAnimationFrame(() => moveFocus(0)) } }}><ShoppingBag />{cartCount > 0 && <span aria-hidden="true">{Math.min(cartCount, 99)}</span>}</button>
     <div className={`shop-menu ${open ? 'is-open' : ''}`} role="menu" aria-label="Shop products" aria-hidden={!open} onPointerEnter={() => { if (usesDesktopHover()) { cancelPendingClose(); setOpen(true) } }}>{shopNavigationItems.map((item, index) => <Link key={item.id} ref={(element) => { links.current[index] = element }} role="menuitem" tabIndex={open ? 0 : -1} to={item.href} onClick={() => { cancelPendingClose(); setOpen(false) }} onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); cancelPendingClose(); setOpen(false); trigger.current?.focus() } if (event.key === 'ArrowDown') { event.preventDefault(); moveFocus(index + 1) } if (event.key === 'ArrowUp') { event.preventDefault(); moveFocus(index - 1) } }}>{item.label}</Link>)}</div>
   </div>
 }
