@@ -36,8 +36,9 @@ export function useCart() {
     commit(readCart().map((line) => line.variantId === variantId ? { ...line, quantity: safeQuantity } : line))
   }, [commit])
   const removeItem = useCallback((variantId: string) => commit(readCart().filter((line) => line.variantId !== variantId)), [commit])
+  const clearCart = useCallback(() => commit([]), [commit])
   useEffect(() => { const sync = () => setLines(readCart()); window.addEventListener('percent:cart-changed', sync); window.addEventListener('storage', sync); return () => { window.removeEventListener('percent:cart-changed', sync); window.removeEventListener('storage', sync) } }, [])
-  return { lines, updateQuantity, removeItem }
+  return { lines, updateQuantity, removeItem, clearCart }
 }
 
 export function useCartCount() {
