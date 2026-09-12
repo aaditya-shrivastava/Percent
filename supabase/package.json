@@ -1,0 +1,15 @@
+{
+  "name": "percent-backend-foundation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test-local.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "supabase": "2.117.0"
+  },
+  "dependencies": {
+    "percent-storefront": "file:.."
+  }
+}

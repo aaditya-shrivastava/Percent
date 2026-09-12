@@ -9,12 +9,13 @@ const saveCart = (lines: CartLine[]) => { localStorage.setItem(cartKey, JSON.str
 
 export function useWishlist() {
   const [items, setItems] = useState<string[]>(() => readList<string>('percent-wishlist'))
-  const toggle = (productId: string) => setItems((current) => {
+  const toggle = useCallback((productId: string) => {
+    const current = readList<string>('percent-wishlist')
     const next = current.includes(productId) ? current.filter((item) => item !== productId) : [...current, productId]
     localStorage.setItem('percent-wishlist', JSON.stringify(next))
+    setItems(next)
     window.dispatchEvent(new CustomEvent('percent:wishlist-changed'))
-    return next
-  })
+  }, [])
   useEffect(() => { const sync = () => setItems(readList<string>('percent-wishlist')); window.addEventListener('percent:wishlist-changed', sync); return () => window.removeEventListener('percent:wishlist-changed', sync) }, [])
   return { items, toggle }
 }

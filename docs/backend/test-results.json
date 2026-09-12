@@ -1,0 +1,70 @@
+{
+  "runtime": "PGlite PostgreSQL; mocked auth.uid/Auth table and Storage bucket metadata only",
+  "remoteVerified": false,
+  "results": [
+    {
+      "name": "Migration executes on a fresh PostgreSQL database",
+      "status": "passed"
+    },
+    {
+      "name": "Seed is repeatable and creates only draft catalog/content",
+      "status": "passed"
+    },
+    {
+      "name": "Auth bootstrap ignores self-assigned role metadata",
+      "status": "passed"
+    },
+    {
+      "name": "Duplicate product/blog slugs and invalid foreign keys rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Limited runs reject 101 produced and activation without 100 allocated units",
+      "status": "passed"
+    },
+    {
+      "name": "Money, coupon values and variant-product consistency are constrained",
+      "status": "passed"
+    },
+    {
+      "name": "Public catalog is readable; draft products and their images/variants are private",
+      "status": "passed"
+    },
+    {
+      "name": "Published blog and sections readable; scheduled content remains private",
+      "status": "passed"
+    },
+    {
+      "name": "Customers can edit only their own profile and addresses",
+      "status": "passed"
+    },
+    {
+      "name": "Wishlist ownership and duplicate protection",
+      "status": "passed"
+    },
+    {
+      "name": "Review ownership, validation and moderation cannot be bypassed",
+      "status": "passed"
+    },
+    {
+      "name": "Normal clients cannot self-assign roles or modify operational inventory/orders",
+      "status": "passed"
+    },
+    {
+      "name": "Protected admin role grants catalog access but not role assignment",
+      "status": "passed"
+    },
+    {
+      "name": "Order items/address are immutable snapshots; private order reads enforced",
+      "status": "passed"
+    },
+    {
+      "name": "100th sale permanently archives; no restock, reuse, deletion or run expansion",
+      "status": "passed"
+    },
+    {
+      "name": "Every application table has RLS and Storage buckets remain private",
+      "status": "passed"
+    }
+  ]
+}
