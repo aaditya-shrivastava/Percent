@@ -61,7 +61,7 @@ create table public.products (
  fit_type text not null check(fit_type in ('standard','oversized')),
  status text not null default 'draft' check(status in ('draft','active','archived')),
  is_visible boolean not null default false, is_shop_available boolean not null default true,
- is_limited boolean not null default true, total_produced integer not null default 100 check(total_produced > 0),
+ is_limited boolean not null default true, production_limit integer not null default 100 check(production_limit > 0),
  price_paise integer not null check(price_paise >= 0), compare_at_price_paise integer check(compare_at_price_paise >= price_paise),
  currency text not null default 'INR' check(currency = 'INR'),
  material text, style text, care_instructions text, shipping_and_returns text,
@@ -69,7 +69,6 @@ create table public.products (
  featured boolean not null default false, display_order integer not null default 0, launch_at timestamptz,
  sold_out_at timestamptz, archived_at timestamptz, archive_number text unique,
  created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
- check(not is_limited or total_produced = 100),
  check((status = 'archived') = (archived_at is not null)),
  check(sold_out_at is null or status = 'archived')
 );
@@ -213,8 +212,12 @@ begin new.updated_at=now(); return new; end $$;
 create function private.keep_design_identity() returns trigger language plpgsql set search_path='' as $$
 begin
  if TG_OP='DELETE' then raise exception 'Design identities are permanent; archive instead'; end if;
- if (new.design_code,new.slug,new.is_limited,new.total_produced) is distinct from (old.design_code,old.slug,old.is_limited,old.total_produced) then
+ if (new.design_code,new.slug,new.is_limited) is distinct from (old.design_code,old.slug,old.is_limited) then
    raise exception 'Design identity and production run are immutable';
+ end if;
+ if new.production_limit is distinct from old.production_limit then
+  if old.status <> 'draft' then raise exception 'Configure production limit before activation'; end if;
+  if exists(select 1 from public.inventory_units where product_id=old.id and (piece_number>new.production_limit or sold_at is not null)) then raise exception 'Production limit cannot invalidate allocated or sold units'; end if;
  end if;
  if old.status='archived' and (new.status <> 'archived' or new.archived_at is distinct from old.archived_at) then raise exception 'Archived designs cannot be reopened'; end if;
  if old.sold_out_at is not null and new.sold_out_at is distinct from old.sold_out_at then raise exception 'Sold-out state is permanent'; end if;
@@ -226,7 +229,7 @@ declare p public.products;
 begin
  if TG_OP='DELETE' then raise exception 'Physical units cannot be deleted; withdraw instead'; end if;
  select * into p from public.products where id=new.product_id for update;
- if new.piece_number>p.total_produced then raise exception 'Piece number exceeds production run'; end if;
+ if new.piece_number>p.production_limit then raise exception 'Piece number exceeds production run'; end if;
  if TG_OP='INSERT' and p.status<>'draft' then raise exception 'Units can only be allocated while a design is draft'; end if;
  if TG_OP='UPDATE' then
   if (new.id,new.product_id,new.piece_number) is distinct from (old.id,old.product_id,old.piece_number) then raise exception 'Unit identity is immutable'; end if;
@@ -240,7 +243,7 @@ create function private.record_unit() returns trigger language plpgsql security 
 begin
  insert into public.inventory_adjustments(unit_id,actor_id,reason,old_state,new_state)
  values(new.id,auth.uid(),coalesce(nullif(current_setting('percent.inventory_reason',true),''),'Foundation inventory change'),case when TG_OP='UPDATE' then to_jsonb(old) else null end,to_jsonb(new));
- if new.sold_at is not null and (select count(*) from public.inventory_units where product_id=new.product_id and sold_at is not null) = (select total_produced from public.products where id=new.product_id) then
+ if new.sold_at is not null and (select count(*) from public.inventory_units where product_id=new.product_id and sold_at is not null) >= (select production_limit from public.products where id=new.product_id) then
   update public.products set status='archived',archived_at=coalesce(archived_at,now()),sold_out_at=coalesce(sold_out_at,now()) where id=new.product_id;
  end if;
  return new;
@@ -251,8 +254,8 @@ create function private.check_run_complete() returns trigger language plpgsql se
 declare p public.products;
 begin
  select * into p from public.products where id=new.id;
- if p.status<>'draft' and (select count(*) from public.inventory_units where product_id=p.id)<>p.total_produced then raise exception 'Allocate the complete production run before activation/archive'; end if;
- if p.sold_out_at is not null and (select count(*) from public.inventory_units where product_id=p.id and sold_at is not null)<>p.total_produced then raise exception 'Sold-out requires every piece to have sold'; end if;
+ if p.status<>'draft' and (select count(*) from public.inventory_units where product_id=p.id)<>p.production_limit then raise exception 'Allocate the complete production run before activation/archive'; end if;
+ if p.sold_out_at is not null and (select count(*) from public.inventory_units where product_id=p.id and sold_at is not null)<p.production_limit then raise exception 'Sold-out requires every piece to have sold'; end if;
  return null;
 end $$;
 create constraint trigger complete_production_run after insert or update on public.products deferrable initially deferred for each row execute function private.check_run_complete();
@@ -338,7 +341,7 @@ grant all on private.user_roles,private.audit_logs to service_role;
 -- Private physical unit data; expose only aggregate counts via a server adapter later.
 -- This view is deliberately not granted to anon; inventory read API is Phase 2.
 create view public.inventory_summary with(security_invoker=true) as
-select p.id product_id,p.total_produced,count(u.id)::integer allocated_pieces,
+select p.id product_id,p.production_limit,count(u.id)::integer allocated_pieces,
  count(u.id) filter(where u.sold_at is not null)::integer sold_pieces,
  count(u.id) filter(where u.sold_at is null and u.withdrawn_at is null)::integer remaining_pieces,
  count(u.id) filter(where u.withdrawn_at is not null)::integer withdrawn_pieces

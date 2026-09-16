@@ -1,0 +1,25 @@
+{
+  "projectRef": "gijyjdeohvdrnvqfqdha",
+  "results": [
+    {
+      "name": "Unauthenticated caller cannot execute or request another identity",
+      "status": "passed"
+    },
+    {
+      "name": "Hosted customer identity returns only its own scalar role",
+      "status": "passed"
+    },
+    {
+      "name": "Hosted admin identity returns only its own scalar role",
+      "status": "passed"
+    },
+    {
+      "name": "Hosted super_admin identity returns only its own scalar role",
+      "status": "passed"
+    },
+    {
+      "name": "Hosted missing-role identity returns only its own scalar role",
+      "status": "passed"
+    }
+  ]
+}

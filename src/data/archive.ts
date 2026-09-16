@@ -1,3 +1,4 @@
+import { hostedProducts } from '../backend/catalog'
 import { getPublicShopProducts } from './shop'
 import type { Product } from '../types'
 
@@ -19,7 +20,7 @@ const archiveSeeds = [
 
 const sourceProducts = new Map(getPublicShopProducts().map((product) => [product.slug, product]))
 
-const archivedProducts: ArchivedProduct[] = archiveSeeds.flatMap((seed, index) => {
+export const demoArchivedProducts: ArchivedProduct[] = archiveSeeds.flatMap((seed, index) => {
   const source = sourceProducts.get(seed.sourceSlug)
   if (!source) return []
   const archiveNumber = String(index + 1).padStart(3, '0')
@@ -47,5 +48,5 @@ const archivedProducts: ArchivedProduct[] = archiveSeeds.flatMap((seed, index) =
   }]
 })
 
-export const getArchivedProducts = () => archivedProducts
-export const getArchivedProductBySlug = (slug: string) => archivedProducts.find((product) => product.slug === slug)
+export const getArchivedProducts = () => hostedProducts.filter(p => p.isSoldOut)
+export const getArchivedProductBySlug = (slug: string) => getArchivedProducts().find((product) => product.slug === slug)

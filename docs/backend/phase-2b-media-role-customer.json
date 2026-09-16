@@ -1,0 +1,10 @@
+{
+  "projectRef": "gijyjdeohvdrnvqfqdha",
+  "role": "customer",
+  "results": [
+    "Customer denied upload",
+    "Customer denied delete",
+    "Customer denied cleanup",
+    "Customer denied read"
+  ]
+}

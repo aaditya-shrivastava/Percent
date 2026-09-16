@@ -1,0 +1,22 @@
+{
+  "projectRef": "gijyjdeohvdrnvqfqdha",
+  "fixtureAccounts": 4,
+  "results": [
+    {
+      "role": "customer",
+      "status": "passed"
+    },
+    {
+      "role": "admin",
+      "status": "passed"
+    },
+    {
+      "role": "super_admin",
+      "status": "passed"
+    },
+    {
+      "role": null,
+      "status": "passed"
+    }
+  ]
+}

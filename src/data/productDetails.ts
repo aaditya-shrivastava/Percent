@@ -1,5 +1,6 @@
+import { hostedProducts } from '../backend/catalog'
 import { getPublicShopProducts } from './shop'
-import { getArchivedProductBySlug, getArchivedProducts } from './archive'
+import { getArchivedProductBySlug } from './archive'
 import { productColours } from './homepage'
 import type { Product, ProductDetails, ProductImage, ProductReview, ProductVariant } from '../types'
 
@@ -90,8 +91,7 @@ const buildDetails = (product: Product): ProductDetails => {
 }
 
 export function getProductDetailsById(productId: string) {
-  const product = getPublicShopProducts().find((item) => item.id === productId) ?? getArchivedProducts().find((item) => item.id === productId)
-  return product ? buildDetails(product) : undefined
+  return hostedProducts.find(item => item.id === productId)
 }
 
 const relatedScore = (current: Product, candidate: Product) => Number(current.fitType === candidate.fitType) * 4 + Number(current.colors.some((colour) => candidate.colors.some((item) => item.id === colour.id))) * 2 + (current.tags ?? []).filter((tag) => candidate.tags?.some((item) => item.id === tag.id)).length
@@ -105,7 +105,7 @@ const localProductDetailsBackend = async (slug: string, signal?: AbortSignal): P
   const product = products.find((item) => item.slug === slug) ?? getArchivedProductBySlug(slug)
   if (!product) throw new ProductNotFoundError()
   const related = products.filter((item) => item.id !== product.id).sort((first, second) => relatedScore(product, second) - relatedScore(product, first) || first.displayOrder - second.displayOrder).slice(0, 4)
-  return { product: buildDetails(product), related }
+  return { product: hostedProducts.find(p => p.id === product.id) ?? buildDetails(product), related }
 }
 
 export async function fetchProductDetails(slug: string, signal?: AbortSignal): Promise<ProductDetailsResponse> {

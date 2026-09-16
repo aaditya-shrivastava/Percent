@@ -1,42 +1,29 @@
-import { useCallback, useState } from 'react'
-import { demoAccountAddress, type AccountAddress } from '../data/account'
-
-const addressKey = 'percent-profile-addresses'
-
-const readAddresses = (): AccountAddress[] => {
-  try {
-    const stored = localStorage.getItem(addressKey)
-    if (stored) {
-      const parsed = JSON.parse(stored) as AccountAddress[]
-      return Array.isArray(parsed) ? parsed : []
-    }
-    const checkoutAddress = JSON.parse(localStorage.getItem('percent-checkout-address') ?? 'null') as Partial<AccountAddress> | null
-    if (checkoutAddress?.fullName && checkoutAddress.addressLine1) return [{ ...demoAccountAddress, ...checkoutAddress, id: 'checkout-address', label: 'Default', isDefault: true }]
-  } catch {
-    return [demoAccountAddress]
-  }
-  return [demoAccountAddress]
-}
-
-const saveAddresses = (addresses: AccountAddress[]) => {
-  localStorage.setItem(addressKey, JSON.stringify(addresses))
-  window.dispatchEvent(new CustomEvent('percent:addresses-changed'))
-}
+import { useCallback, useEffect, useState } from 'react'
+import { supabase, checkError } from '../backend/client'
+import { usePercentSession } from './usePercentSession'
+import type { AccountAddress } from '../data/account'
 
 export function useAccountAddresses() {
-  const [addresses, setAddresses] = useState<AccountAddress[]>(readAddresses)
-  const commit = useCallback((next: AccountAddress[]) => { saveAddresses(next); setAddresses(next) }, [])
-  const saveAddress = useCallback((address: AccountAddress) => {
-    const current = readAddresses()
-    const exists = current.some((item) => item.id === address.id)
-    let next = exists ? current.map((item) => item.id === address.id ? address : item) : [...current, address]
-    if (address.isDefault) next = next.map((item) => ({ ...item, isDefault: item.id === address.id }))
-    else if (!next.some((item) => item.isDefault) && next.length) next = next.map((item, index) => ({ ...item, isDefault: index === 0 }))
-    commit(next)
-  }, [commit])
-  const removeAddress = useCallback((addressId: string) => {
-    const remaining = readAddresses().filter((address) => address.id !== addressId)
-    commit(remaining.some((address) => address.isDefault) ? remaining : remaining.map((address, index) => ({ ...address, isDefault: index === 0 })))
-  }, [commit])
-  return { addresses, saveAddress, removeAddress }
+ const {user}=usePercentSession()
+ const [state,setState]=useState<{owner?:string;items:AccountAddress[]}>({items:[]})
+ const [error,setError]=useState('')
+ const [loading,setLoading]=useState(true)
+ const refresh=useCallback(async()=>{
+  if(!user){setLoading(false);return}
+  const {data,error}=await supabase.from('addresses').select('*').eq('user_id',user.id).order('created_at')
+  checkError(error)
+  setState({owner:user.id,items:(data??[]).map(a=>({id:a.id,label:a.label,isDefault:a.is_default,fullName:a.full_name,phone:a.phone,addressLine1:a.address_line1,addressLine2:a.address_line2,city:a.city,state:a.state,pinCode:a.pin_code,country:'India'}))});setLoading(false)
+ },[user])
+ useEffect(()=>{void Promise.resolve().then(refresh).catch(e=>setError(e.message))},[refresh])
+ const saveAddress=async(a:AccountAddress)=>{
+  setError('')
+  try {
+   const {error}=await supabase.rpc('save_address',{address:{id:a.id.startsWith('address-')?null:a.id,label:a.label,is_default:a.isDefault,full_name:a.fullName,phone:a.phone,address_line1:a.addressLine1,address_line2:a.addressLine2,city:a.city,state:a.state,pin_code:a.pinCode}})
+   checkError(error);await refresh();return true
+  } catch(e){setError(e instanceof Error?e.message:'Unable to save address');return false}
+ }
+ const removeAddress=async(id:string)=>{
+  try {const {error}=await supabase.from('addresses').delete().eq('id',id);checkError(error);await refresh()}catch(e){setError(e instanceof Error?e.message:'Unable to remove address')}
+ }
+ return {addresses:state.owner===user?.id?state.items:[],saveAddress,removeAddress,error,loading}
 }

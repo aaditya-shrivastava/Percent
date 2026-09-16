@@ -19,7 +19,7 @@ await sql(`create role anon nologin; create role authenticated nologin; create r
  create schema auth; create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}');
  create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
  grant usage on schema auth to anon,authenticated,service_role; grant execute on function auth.uid() to anon,authenticated,service_role;
- create schema storage; create table storage.buckets(id text primary key,name text not null,public boolean,file_size_limit bigint,allowed_mime_types text[]);
+ create schema storage; create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text); alter table storage.objects enable row level security; create table storage.buckets(id text primary key,name text not null,public boolean,file_size_limit bigint,allowed_mime_types text[]);
 `)
 try {
  await test('Migration executes on a fresh PostgreSQL database',async()=>{ for(const f of fs.readdirSync('migrations').filter(f=>f.endsWith('.sql')).sort()) await sql(fs.readFileSync('migrations/'+f,'utf8')) })
@@ -45,8 +45,8 @@ try {
   await rejects(`insert into blog_posts(slug,title,excerpt,introduction,category,author) select slug,title,excerpt,introduction,category,author from blog_posts limit 1`,'23505')
   await rejects(`insert into wishlist_items(user_id,product_id) values('${u1}','00000000-0000-4000-a000-000000000000')`,'23503')
  })
- await test('Limited runs reject 101 produced and activation without 100 allocated units',async()=>{
-  await rejects("insert into products(design_code,slug,name,fit_type,price_paise,total_produced) values('bad','bad','Bad','standard',10,101)",'23514')
+ await test('Production limits must be positive and complete allocation is required',async()=>{
+  await rejects("insert into products(design_code,slug,name,fit_type,price_paise,production_limit) values('bad','bad','Bad','standard',10,0)",'23514')
   await rejects(`update products set status='active',is_visible=true where id='${p.id}'`,'P0001')
   await sql(`insert into inventory_units(product_id,variant_id,piece_number) select '${p.id}','${v.id}',n from generate_series(1,100)n; update products set status='active',is_visible=true where id='${p.id}';`)
   await rejects(`insert into inventory_units(product_id,variant_id,piece_number) values('${p.id}','${v.id}',101)`,'P0001')
@@ -146,12 +146,28 @@ try {
   await sql(`update inventory_units set sold_at=now() where product_id='${p.id}' and piece_number=100`)
   const final=(await rows(`select * from products where id='${p.id}'`))[0];assert.equal(final.status,'archived');assert.ok(final.sold_out_at)
   await rejects(`update products set status='active',archived_at=null where id='${p.id}'`,'P0001')
-  await rejects(`update products set total_produced=101 where id='${p.id}'`,'P0001')
+  await rejects(`update products set production_limit=101 where id='${p.id}'`,'P0001')
   await rejects(`update inventory_units set sold_at=null where product_id='${p.id}'`,'P0001')
   await rejects(`delete from inventory_units where product_id='${p.id}'`,'P0001')
   await rejects(`delete from products where id='${p.id}'`,'P0001')
   assert.equal((await rows(`select count(*)::int n from inventory_adjustments`))[0].n,200)
   await rejects('delete from inventory_adjustments','P0001')
+ })
+ await test('Admin-configured 250 and 1000 runs archive at their own limit, never at 100',async()=>{
+  for(const limit of [250,1000]) {
+   const product=(await rows(`insert into products(design_code,slug,name,fit_type,price_paise) values('run-${limit}','run-${limit}','Run','standard',100) returning id`))[0].id
+   await as('authenticated',admin,async()=>await sql(`update products set production_limit=${limit} where id='${product}'`))
+   const variant=(await rows(`insert into product_variants(product_id,colour_id,size,sku,price_paise) select '${product}',colour_id,'M','RUN-${limit}',100 from product_variants limit 1 returning id`))[0].id
+   await sql(`insert into inventory_units(product_id,variant_id,piece_number) select '${product}','${variant}',n from generate_series(1,${limit})n`)
+   await rejects(`update products set production_limit=${limit-1} where id='${product}'`,'P0001')
+   await rejects(`insert into inventory_units(product_id,variant_id,piece_number) values('${product}','${variant}',${limit+1})`,'P0001')
+   await sql(`update products set status='active' where id='${product}'; update inventory_units set sold_at=now() where product_id='${product}' and piece_number<=100`)
+   assert.equal((await rows(`select status from products where id='${product}'`))[0].status,'active')
+   await sql(`update inventory_units set sold_at=now() where product_id='${product}' and piece_number>100 and piece_number<${limit}`)
+   assert.equal((await rows(`select status from products where id='${product}'`))[0].status,'active')
+   await sql(`update inventory_units set sold_at=now() where product_id='${product}' and piece_number=${limit}`)
+   assert.equal((await rows(`select status from products where id='${product}'`))[0].status,'archived')
+  }
  })
  await test('Every application table has RLS and Storage buckets remain private',async()=>{
   assert.equal((await rows("select count(*)::int n from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname in ('public','private') and c.relkind='r' and not c.relrowsecurity"))[0].n,0)

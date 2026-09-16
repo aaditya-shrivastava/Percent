@@ -1,0 +1,49 @@
+{
+  "projectRef": "gijyjdeohvdrnvqfqdha",
+  "results": [
+    {
+      "name": "Hosted Auth password sign-in and profile bootstrap",
+      "status": "passed"
+    },
+    {
+      "name": "Anon catalog excludes all draft products, variants, reviews and blogs",
+      "status": "passed"
+    },
+    {
+      "name": "Hosted REST profile ownership and role escalation denied",
+      "status": "passed"
+    },
+    {
+      "name": "Transactional address defaults and cross-user isolation over REST",
+      "status": "passed"
+    },
+    {
+      "name": "Customer wishlist is private and invalid products rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Private Storage denies anonymous and direct customer upload",
+      "status": "passed"
+    },
+    {
+      "name": "Email confirmation setting",
+      "value": true
+    },
+    {
+      "name": "Real Auth settings endpoint reachable",
+      "status": "passed"
+    },
+    {
+      "name": "Hosted review image validation, upload, limit, publication gate and cleanup",
+      "status": "passed"
+    },
+    {
+      "name": "Hosted 100/250/1000 production limits and aggregate counts (rolled back)",
+      "status": "passed"
+    },
+    {
+      "name": "Temporary Auth users, reviews and Storage objects removed",
+      "status": "passed"
+    }
+  ]
+}

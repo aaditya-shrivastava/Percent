@@ -15,15 +15,16 @@ const accountNavigation = [
 const activeAccountPath = (pathname: string) => pathname.startsWith('/orders/') ? '/profile/orders' : accountNavigation.find((item) => item.href === pathname)?.href ?? '/profile'
 
 export function AccountShell({ children }: { children: ReactNode }) {
-  const { user, isAuthenticated, logout } = usePercentSession()
+  const { user, isAuthenticated, logout, loading } = usePercentSession()
   const location = useLocation()
   const navigate = useNavigate()
   const displayName = user?.displayName ?? 'Demo Member'
   const currentPath = activeAccountPath(location.pathname)
   const requestedReturnTo = new URLSearchParams(location.search).get('returnTo')
   const safeReturnTo = getSafeAuthReturnTo(requestedReturnTo, location.pathname)
-  const signOut = () => { logout(); navigate('/', { replace: true }) }
+  const signOut = async () => { await logout(); navigate('/', { replace: true }) }
 
+  if (loading) return <main className="account-page" role="status">Loading your account…</main>
   if (!isAuthenticated) return <main className="account-page account-signed-out"><section><p>Percent Account</p><h1>Sign In Required.</h1><span>Sign in through the existing Percent account flow to access your profile.</span><Link to={authRouteWithReturnTo('/login', safeReturnTo)}>Sign In <ArrowRight /></Link></section></main>
 
   return <main className="account-page">

@@ -1,0 +1,63 @@
+{
+  "projectRef": "gijyjdeohvdrnvqfqdha",
+  "role": "super_admin",
+  "verificationProductId": "9d0c1531-7dca-4360-b5b4-6478e5583933",
+  "results": [
+    {
+      "name": "Anonymous media rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Arbitrary bucket/path fields rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Invalid MIME rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Over 10 MB rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Empty upload rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Authorized PNG upload and transactional association",
+      "status": "passed"
+    },
+    {
+      "name": "Retry reuses image relation",
+      "status": "passed"
+    },
+    {
+      "name": "Signed authorized delivery returns real bytes",
+      "status": "passed"
+    },
+    {
+      "name": "Authorized jpg upload and deletion",
+      "status": "passed"
+    },
+    {
+      "name": "Authorized webp upload and deletion",
+      "status": "passed"
+    },
+    {
+      "name": "Failed association removes freshly uploaded Storage object",
+      "status": "passed"
+    },
+    {
+      "name": "Cross-product image delete cannot affect target",
+      "status": "passed"
+    },
+    {
+      "name": "Storage-first deletion and repeated delete",
+      "status": "passed"
+    },
+    {
+      "name": "All verification products stay invisible drafts",
+      "status": "passed"
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+> Historical Phase 1 report. Superseded by [Phase 2](phase-2.md): the verified target is gijyjdeohvdrnvqfqdha, and production_limit is configurable per design (default 100). The former exact-100 rule was removed before hosted deployment.
+
 # Percent backend foundation — local preparation
 
 Status: **implemented and tested locally; not connected or deployed**.

@@ -1,0 +1,22 @@
+[
+  {
+    "test": "single stale HTTP request",
+    "status": 409,
+    "code": "PT409",
+    "elapsedMs": 74,
+    "newerDataPreserved": true,
+    "automaticClientRetries": 0
+  },
+  {
+    "test": "relational failure rollback",
+    "passed": true
+  },
+  {
+    "test": "current-version save succeeds",
+    "passed": true
+  },
+  {
+    "test": "verification drafts hidden through anonymous API",
+    "passed": true
+  }
+]

@@ -25,6 +25,6 @@ const productSearchText = (product: Product) => [
 
 const blogSearchText = (article: BlogArticle) => [article.title, article.excerpt, article.introduction, article.category, article.author, article.pullQuote, ...article.sections.flatMap((section) => [section.heading, ...section.paragraphs])].join(' ')
 
-export const searchableProducts = [...getPublicShopProducts(), ...getArchivedProducts()]
-export const searchProducts = (query: string) => searchableProducts.filter((product) => includesQuery(productSearchText(product), query))
+export const getSearchableProducts = () => [...getPublicShopProducts(), ...getArchivedProducts()]
+export const searchProducts = (query: string) => getSearchableProducts().filter((product) => includesQuery(productSearchText(product), query))
 export const searchBlogArticles = (query: string) => blogArticles.filter((article) => includesQuery(blogSearchText(article), query))

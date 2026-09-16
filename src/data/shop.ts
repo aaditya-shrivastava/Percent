@@ -1,3 +1,4 @@
+import { hostedProducts } from '../backend/catalog'
 import { homepageProducts, productColours, productTags } from './homepage'
 import type { FitType, Product, ProductColour, ProductStatus, ProductTag } from '../types'
 
@@ -170,11 +171,11 @@ const seededProducts: Product[] = seeds.map((seed, index) => {
   return { ...product, tags: statusTags(product) }
 })
 
-const catalog = [...sharedProducts, ...seededProducts]
+export const demoCatalog = [...sharedProducts, ...seededProducts]
 const hasValidInventory = (product: Product) => Number.isInteger(product.totalPieces) && product.totalPieces > 0 && Number.isInteger(product.soldPieces) && product.soldPieces >= 0 && Number.isInteger(product.remainingPieces) && product.remainingPieces >= 0 && product.soldPieces <= product.totalPieces && product.remainingPieces <= product.totalPieces && product.soldPieces + product.remainingPieces === product.totalPieces
 const hasRequiredCardImages = (product: Product) => Boolean(product.images[0]?.src && product.hoverImage?.src)
-const isPublicShopProduct = (product: Product) => product.status === 'published' && product.isVisible && product.isShopAvailable && !product.isDeleted && product.active && hasValidInventory(product) && hasRequiredCardImages(product)
-export const getPublicShopProducts = () => catalog.filter(isPublicShopProduct)
+export const isPublicShopProduct = (product: Product) => product.status === 'published' && product.isVisible && product.isShopAvailable && !product.isDeleted && product.active && hasValidInventory(product) && hasRequiredCardImages(product)
+export const getPublicShopProducts = () => hostedProducts.filter(p => p.status === 'published' && p.isShopAvailable)
 
 const sortProducts = (products: Product[], sort: ShopSort) => [...products].sort((first, second) => {
   if (sort === 'price-asc') return first.price - second.price
@@ -194,8 +195,8 @@ const buildFacets = (products: Product[]): ShopFacets => {
   return {
     fits: [{ value: 'standard', label: 'Standard Fit', count: count(products, (product) => product.fitType === 'standard') }, { value: 'oversized', label: 'Oversized Fit', count: count(products, (product) => product.fitType === 'oversized') }],
     availability: [{ value: 'available', label: 'Available', count: count(products, (product) => product.isAvailable && !product.isSoldOut) }, { value: 'sold-out', label: 'Sold Out', count: count(products, (product) => product.isSoldOut) }],
-    colours: productColours.map((colour) => ({ id: colour.id, value: colour.slug, label: colour.label, swatchValue: colour.swatchValue, count: count(products, (product) => product.colors.some((item) => item.id === colour.id)) })),
-    tagGroups: Array.from(groups, ([group, options]) => ({ group, options: options.map((item) => ({ id: item.id, value: item.slug, label: item.name, count: count(products, (product) => product.tags?.some((tagItem) => tagItem.id === item.id) ?? false) })) })).filter((group) => group.options.some((option) => option.count > 0)),
+    colours: productColours.map((colour) => ({ id: colour.id, value: colour.slug, label: colour.label, swatchValue: colour.swatchValue, count: count(products, (product) => product.colors.some((item) => item.slug === colour.slug)) })),
+    tagGroups: Array.from(groups, ([group, options]) => ({ group, options: options.map((item) => ({ id: item.id, value: item.slug, label: item.name, count: count(products, (product) => product.tags?.some((tagItem) => tagItem.slug === item.slug) ?? false) })) })).filter((group) => group.options.some((option) => option.count > 0)),
     price: { min: prices.length ? Math.min(...prices) : 0, max: prices.length ? Math.max(...prices) : 0 },
   }
 }

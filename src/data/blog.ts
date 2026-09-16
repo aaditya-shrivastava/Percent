@@ -150,8 +150,14 @@ export const blogArticles: BlogArticle[] = [
   },
 ]
 
-export const featuredBlogArticle = blogArticles.find((article) => article.featured) ?? blogArticles[0]
-export const aboutBlogArticles = ['the-power-of-limited', 'intentional-design', 'style-in-real-life'].map((slug) => blogArticles.find((article) => article.slug === slug)).filter((article): article is BlogArticle => Boolean(article))
+export let featuredBlogArticle = blogArticles.find((article) => article.featured) ?? blogArticles[0]
+export let aboutBlogArticles = ['the-power-of-limited', 'intentional-design', 'style-in-real-life'].map((slug) => blogArticles.find((article) => article.slug === slug)).filter((article): article is BlogArticle => Boolean(article))
 export const getBlogArticle = (slug?: string) => blogArticles.find((article) => article.slug === slug)
 export const formatBlogDate = (date: string) => new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(`${date}T00:00:00`))
 export const getRelatedBlogArticles = (article: BlogArticle, limit = 3) => [...blogArticles.filter((candidate) => candidate.slug !== article.slug)].sort((first, second) => Number(second.category === article.category) - Number(first.category === article.category)).slice(0, limit)
+
+export function hydrateBlogs(articles: BlogArticle[]) {
+ blogArticles.splice(0,blogArticles.length,...articles)
+ featuredBlogArticle=articles.find(a=>a.featured) ?? articles[0]
+ aboutBlogArticles=articles.slice(0,3)
+}

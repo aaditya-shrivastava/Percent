@@ -20,7 +20,7 @@ const sortOptions: Array<{ value: ArchiveSort; label: string }> = [
 ]
 
 const archiveValues = [
-  { title: 'Limited to 100', copy: 'Each design is made in only 100 pieces.', icon: Shirt },
+  { title: 'Limited production', copy: 'Each design has its own fixed production limit.', icon: Shirt },
   { title: 'Once gone, never back', copy: 'No restocks. No second chances.', icon: LockKeyhole },
   { title: 'Exclusive by design', copy: 'Created for the few who value rarity.', icon: Gem },
   { title: 'Thank you', copy: 'For being a part of something rare.', icon: Heart },
@@ -34,7 +34,7 @@ function ArchiveCard({ product }: { product: ArchivedProduct }) {
       <span className="archive-number">{product.archiveNumber}</span>
       <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" />
       <strong className="archive-sold-overlay">Sold Out</strong>
-      <span className="archive-sold-count">100 / 100 sold</span>
+      <span className="archive-sold-count">{product.soldPieces} / {product.totalPieces} sold</span>
     </Link>
     <div className="archive-card-info"><div><p>{product.fitType === 'standard' ? 'Standard Fit' : 'Oversized Fit'}{colour ? ` · ${colour}` : ''}</p><h2>{product.name}</h2></div><Link to={`/products/${product.slug}`}>View Details <ArrowRight /></Link></div>
   </article>
@@ -57,14 +57,14 @@ export function SoldOutDesignsPage() {
     document.title = 'Sold Out Designs | Percent Archive'
     const description = document.querySelector<HTMLMetaElement>('meta[name="description"]') ?? document.head.appendChild(document.createElement('meta'))
     description.name = 'description'
-    description.content = 'Explore the Percent archive: 100 pieces made, 100 sold, never restocked.'
+    description.content = 'Explore the Percent archive: limited runs, fully collected, never restocked.'
     return () => { document.title = previousTitle }
   }, [])
 
   return <main className="archive-page">
     <section className="archive-hero">
-      <div className="archive-hero-copy"><p>Percent Archive</p><h1>Sold Out.</h1><h2>They’re gone, forever.</h2><span>Every design at % Percent is created in only 100 pieces.<br />When it’s sold out, it’s gone forever.<br />No restocks. No repeats. Just exclusivity.</span><Link className="archive-primary-action" to="/shop">Discover Current Drop <ArrowRight /></Link></div>
-      <div className="archive-seal" aria-label="Limited to 100 pieces. Once gone, never back."><span>Limited to 100 pieces</span><strong>%</strong><span>Once gone, never back</span></div>
+      <div className="archive-hero-copy"><p>Percent Archive</p><h1>Sold Out.</h1><h2>They’re gone, forever.</h2><span>Every design at % Percent is created in a fixed production run.<br />When it’s sold out, it’s gone forever.<br />No restocks. No repeats. Just exclusivity.</span><Link className="archive-primary-action" to="/shop">Discover Current Drop <ArrowRight /></Link></div>
+      <div className="archive-seal" aria-label="Limited production pieces. Once gone, never back."><span>Limited production pieces</span><strong>%</strong><span>Once gone, never back</span></div>
     </section>
 
     <section className="archive-catalog" aria-labelledby="archive-heading">

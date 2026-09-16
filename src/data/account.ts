@@ -2,7 +2,7 @@ import { getPublicShopProducts } from './shop'
 import { readOrderConfirmation, type OrderConfirmationAddress, type OrderConfirmationItem } from './orderConfirmation'
 import type { ProductImage } from '../types'
 
-export type AccountOrderStatus = 'Processing' | 'Shipped' | 'Out for Delivery' | 'Delivered' | 'Cancelled'
+export type AccountOrderStatus = string
 
 export interface AccountAddress extends Omit<OrderConfirmationAddress, 'email'> {
   id: string
@@ -24,8 +24,8 @@ export interface AccountOrder {
   shippingLabel: string
   discount: number
   total: number
-  paymentMethod: 'Razorpay'
-  paymentStatus: 'Paid / Confirmed'
+  paymentMethod: string
+  paymentStatus: string
   trackingNumber?: string
   estimatedDelivery?: string
   deliveredAt?: string
@@ -33,7 +33,7 @@ export interface AccountOrder {
   isDemo: boolean
 }
 
-export const accountStatusFilters = ['All', 'Processing', 'Shipped', 'Delivered', 'Cancelled'] as const
+export const accountStatusFilters = ['All', 'Pending', 'Confirmed', 'Completed', 'Cancelled'] as const
 export const demoMemberSince = 'Mar 2026'
 
 export const demoAccountAddress: AccountAddress = {
@@ -50,18 +50,16 @@ export const demoAccountAddress: AccountAddress = {
   phone: '9876543210',
 }
 
-const timelineFor = (status: AccountOrderStatus) => {
+export const timelineFor = (status: AccountOrderStatus) => {
   if (status === 'Cancelled') return [
     { label: 'Order Placed', detail: 'Frontend order snapshot recorded.', complete: true },
     { label: 'Cancelled', detail: 'This frontend order is marked as cancelled.', complete: true },
   ]
-  const stage = status === 'Delivered' ? 5 : status === 'Out for Delivery' ? 4 : status === 'Shipped' ? 3 : 2
+  const stage = status === 'Completed' ? 3 : status === 'Confirmed' ? 2 : 1
   return [
-    { label: 'Order Placed', detail: 'Frontend order snapshot recorded.', complete: stage >= 1 },
-    { label: 'Confirmed', detail: 'Payment and order details confirmed.', complete: stage >= 2 },
-    { label: 'Shipped', detail: 'Marked shipped in the frontend order state.', complete: stage >= 3 },
-    { label: 'Out for Delivery', detail: 'Awaiting a future courier status connection.', complete: stage >= 4 },
-    { label: 'Delivered', detail: 'Order marked as delivered.', complete: stage >= 5 },
+    { label: 'Order Created', detail: 'Authoritative pending order recorded.', complete: stage >= 1 },
+    { label: 'Confirmed', detail: 'Admin confirmed the order lifecycle.', complete: stage >= 2 },
+    { label: 'Completed', detail: 'Requires trusted payment and delivery evidence.', complete: stage >= 3 },
   ]
 }
 
@@ -93,10 +91,12 @@ const fromRecentConfirmation = (): AccountOrder | null => {
   return { id: snapshot.orderReference, placedAt: snapshot.placedAt, status: 'Processing', items: snapshot.items, address, subtotal: snapshot.subtotal, shippingLabel: snapshot.shippingLabel, discount: snapshot.discount, total: snapshot.total, paymentMethod: 'Razorpay', paymentStatus: 'Paid / Confirmed', timeline: timelineFor('Processing'), isDemo: true }
 }
 
-export function getAccountOrders() {
+export function getDemoAccountOrders() {
   const recent = fromRecentConfirmation()
   return recent ? [recent, ...demoOrders.filter((order) => order.id !== recent.id)] : demoOrders
 }
+
+export function getAccountOrders(): AccountOrder[] { return [] }
 
 export function getAccountOrder(orderId: string | undefined) {
   return getAccountOrders().find((order) => order.id === orderId)

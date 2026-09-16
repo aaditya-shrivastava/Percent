@@ -1,0 +1,21 @@
+import fs from 'node:fs'
+import assert from 'node:assert/strict'
+import { PGlite } from '@electric-sql/pglite'
+
+const db=new PGlite(),root=new URL('./',import.meta.url)
+const caller=async(role,uid,fn)=>{await db.exec(`set role ${role}; select set_config('request.jwt.claim.sub','${uid??''}',false)`);try{return await fn()}finally{await db.exec("reset role; select set_config('request.jwt.claim.sub','',false)")}}
+try{
+ await db.exec(`create role anon nologin;create role authenticated nologin;create role service_role nologin bypassrls;create schema auth;create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}');create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;grant usage on schema auth to anon,authenticated,service_role;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);create table storage.objects(id uuid primary key,bucket_id text,name text);alter table storage.objects enable row level security;`)
+ await db.exec("create function storage.allow_any_operation(text[]) returns boolean language sql stable as $$select coalesce(current_setting('storage.operation',true)=any($1),false)$$")
+ for(const name of fs.readdirSync(new URL('migrations/',root)).filter(f=>f.endsWith('.sql')).sort())await db.exec(fs.readFileSync(new URL('migrations/'+name,root),'utf8'))
+ const admin='10000000-0000-4000-a000-000000000001',customer='10000000-0000-4000-a000-000000000002',other='10000000-0000-4000-a000-000000000003',order='20000000-0000-4000-a000-000000000001'
+ await db.exec(`insert into auth.users(id)values('${admin}'),('${customer}'),('${other}');update public.profiles set display_name=case id when '${admin}' then 'Admin' when '${customer}' then 'Customer' else 'Other' end where id in ('${admin}','${customer}','${other}');update private.user_roles set role='admin' where user_id='${admin}';insert into public.orders(id,order_reference,user_id,subtotal_paise,total_paise)values('${order}','PCT-LOCAL-1','${customer}',129900,129900);insert into public.order_items(order_id,product_name,product_slug,sku,size,colour,quantity,unit_price_paise)values('${order}','Snapshot Tee','snapshot-tee','SNAP-M','M','Black',1,129900);insert into public.order_addresses(order_id,full_name,email,phone,address_line1,city,state,pin_code,country)values('${order}','Snapshot Customer','private@example.com','9999999999','1 Test Street','Mumbai','Maharashtra','400001','India')`)
+ await caller('anon',null,async()=>{await assert.rejects(db.query('select * from public.orders'),e=>e.code==='42501');await assert.rejects(db.query('select * from public.order_addresses'),e=>e.code==='42501')})
+ await caller('authenticated',other,async()=>{assert.equal((await db.query('select * from public.orders')).rows.length,0);assert.equal((await db.query('select * from public.order_items')).rows.length,0);assert.equal((await db.query('select * from public.order_addresses')).rows.length,0)})
+ await caller('authenticated',customer,async()=>{assert.equal((await db.query('select * from public.orders')).rows.length,1);assert.equal((await db.query('select * from public.order_addresses')).rows[0].email,'private@example.com')})
+ await caller('authenticated',admin,async()=>{assert.equal((await db.query('select * from public.orders')).rows.length,1);assert.equal((await db.query('select * from public.order_items')).rows[0].product_name,'Snapshot Tee');assert.equal((await db.query('select * from public.order_addresses')).rows[0].full_name,'Snapshot Customer')})
+ await db.exec(`update private.user_roles set role='super_admin' where user_id='${admin}'`)
+ await caller('authenticated',admin,async()=>assert.equal((await db.query('select * from public.orders')).rows.length,1))
+ for(const role of ['anon','authenticated'])for(const table of ['orders','order_items','order_addresses'])await caller(role,role==='authenticated'?admin:null,()=>assert.rejects(db.query(`insert into public.${table} default values`),e=>e.code==='42501'||e.code==='23502'))
+ console.log('PASS Admin Orders RLS: anon/unrelated customer denied; owner, admin and super_admin reads scoped; browser writes unavailable')
+}finally{await db.close()}

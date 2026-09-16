@@ -1,0 +1,16 @@
+{
+  "projectRef": "gijyjdeohvdrnvqfqdha",
+  "role": "admin",
+  "results": [
+    "Arbitrary storage access denied",
+    "Admin jpg upload",
+    "Admin jpg signed delivery",
+    "Admin jpg delete",
+    "Admin webp upload",
+    "Admin webp signed delivery",
+    "Admin webp delete",
+    "Admin png upload",
+    "Admin png signed delivery",
+    "Admin png delete"
+  ]
+}

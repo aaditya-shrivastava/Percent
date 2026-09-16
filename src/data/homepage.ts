@@ -41,3 +41,12 @@ export const newArrivals = activeProducts.slice(0, 4)
 export const categories: ProductCategory[] = [{ id: 'oversized', slug: 'oversized-fit', title: 'Oversized Fit', products: activeProducts.filter((product) => product.fitType === 'oversized').slice(0, 3), active: true, displayOrder: 1, promo: { image: photo('photo-1506629905607-d405b7a30db5', 'Model in oversized black t-shirt', 900, 1100), copy: 'LESS\nORDINARY.\nMORE YOU.' } }]
 export const designs: DesignCategory[] = [['quotes', 'Quotes', 'photo-1520975958225-85fdf45d7b20'], ['landscapes', 'Landscapes', 'photo-1523398002811-999ca8dec234'], ['abstract', 'Abstract', 'photo-1490481651871-ab68de25d43d'], ['minimal', 'Minimal', 'photo-1512436991641-6745cdb1723f']].map(([slug, title, src], index) => ({ id: slug, slug, title, image: photo(src, `${title} apparel collection`, 1100, 600), active: true, displayOrder: index + 1 }))
 export const blogBanner: BlogBanner = { id: 'journal', title: 'Our Blogs', image: photo('photo-1551488831-00ddcb6c6bd3', 'Close up of black apparel texture', 1600, 650), href: '/blog', active: true }
+
+export function hydrateHomepage(products: Product[]) {
+ homepageProducts.splice(0,homepageProducts.length,...products)
+ limitedProducts.splice(0,limitedProducts.length,...products.filter(p=>p.isLimitedEdition))
+ bestSellerProducts.splice(0,bestSellerProducts.length,...products.filter(p=>p.isBestSeller))
+ trendingProducts.splice(0,trendingProducts.length,...products.filter(p=>p.isTrending))
+ newArrivals.splice(0,newArrivals.length,...products.slice(0,4))
+ categories.forEach(c=>{ c.products=products.filter(p=>p.fitType==='oversized').slice(0,3) })
+}

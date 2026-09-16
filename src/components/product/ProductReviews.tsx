@@ -1,9 +1,10 @@
+import { submitReview } from '../../backend/reviews'
 import { ChevronLeft, ChevronRight, ImagePlus, Star, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { authRouteWithReturnTo } from '../../data/auth'
 import { usePercentSession, type PercentSessionUser } from '../../hooks/usePercentSession'
-import type { ProductImage, ProductReview } from '../../types'
+import type { ProductReview } from '../../types'
 
 const MAX_IMAGES = 3
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024
@@ -111,12 +112,12 @@ function ReviewForm({ productSlug, user, onSubmitted, onClose }: { productSlug: 
     const reviewKey = `${user.id}:${productSlug}`
     if (submittedReviewKeys.has(reviewKey)) { setErrors({ comment: 'You’ve already reviewed this product.' }); return }
     setSubmitting(true)
-    await new Promise((resolve) => window.setTimeout(resolve, 520))
-    const reviewImages: ProductImage[] = images.map(({ previewUrl }, index) => ({ id: `local-review-image-${index}`, src: previewUrl, alt: `${user.displayName}'s review image ${index + 1}`, width: 800, height: 800 }))
-    const review: ProductReview = { id: `local-review-${Date.now()}`, rating, title: title.trim() || undefined, customerName: user.displayName, text: comment.trim(), date: new Date().toISOString(), images: reviewImages, status: 'published' }
-    submittedReviewKeys.add(reviewKey)
-    setSubmitting(false)
-    onSubmitted(review)
+    try {
+      const review=await submitReview(productSlug,rating,title,comment,images.map(i=>i.file))
+      submittedReviewKeys.add(reviewKey)
+      onSubmitted(review)
+    } catch(e) { setErrors({comment:e instanceof Error?e.message:'Unable to submit review'}) }
+    finally { setSubmitting(false) }
   }
 
   return <form className="review-form" onSubmit={submit} noValidate>
@@ -144,6 +145,7 @@ export function ProductReviews({ productSlug, initialReviews, onSummaryChange }:
   const returnTo = `${location.pathname}#customer-reviews`
 
   const addReview = (review: ProductReview) => {
+    if(review.status === 'pending') { setFormOpen(false);setSuccess('Thanks. Your review is awaiting approval.');return }
     setReviews((current) => {
       const next = [review, ...current]
       onSummaryChange?.({ averageRating: next.reduce((total, item) => total + item.rating, 0) / next.length, reviewCount: next.length })

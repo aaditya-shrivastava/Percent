@@ -19,7 +19,7 @@
       "status": "passed"
     },
     {
-      "name": "Limited runs reject 101 produced and activation without 100 allocated units",
+      "name": "Production limits must be positive and complete allocation is required",
       "status": "passed"
     },
     {
@@ -60,6 +60,10 @@
     },
     {
       "name": "100th sale permanently archives; no restock, reuse, deletion or run expansion",
+      "status": "passed"
+    },
+    {
+      "name": "Admin-configured 250 and 1000 runs archive at their own limit, never at 100",
       "status": "passed"
     },
     {

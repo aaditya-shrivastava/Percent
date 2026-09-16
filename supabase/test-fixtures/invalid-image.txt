@@ -1,0 +1,1 @@
+Not an image. Product Editor validation fixture.
