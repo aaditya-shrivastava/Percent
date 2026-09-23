@@ -2,6 +2,7 @@ import { Check, ChevronDown, Heart, Minus, Plus, Star, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ShopProductCard } from '../components/product/ShopProductCard'
+import { pageSection, useWebsitePage, WebsitePageError } from '../components/layout/WebsitePageContext'
 import { ProductReviews } from '../components/product/ProductReviews'
 import type { ProductDetailsResponse } from '../data/productDetails'
 import { formatInr, safeSwatch } from '../data/shop'
@@ -20,10 +21,10 @@ function ProductSkeleton() { return <main className="pdp-page"><div className="p
 
 function ProductState({ failed = false }: { failed?: boolean }) { return <main className="pdp-state"><p>{failed ? 'Something interrupted the connection.' : 'This design may have moved or is no longer publicly available.'}</p><h1>{failed ? 'Unable to load design' : 'Design not found'}</h1><Link className="pdp-primary-action" to="/shop">Return to Shop</Link></main> }
 
-function SizeGuideModal({ fit, onClose }: { fit: FitType; onClose: () => void }) {
+function SizeGuideModal({ fit, onClose, eyebrow, copy }: { fit: FitType; onClose: () => void; eyebrow: string; copy: string }) {
   const closeButton = useRef<HTMLButtonElement>(null)
   useEffect(() => { const previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; closeButton.current?.focus(); const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose() }; window.addEventListener('keydown', closeOnEscape); return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', closeOnEscape) } }, [onClose])
-  return <div className="pdp-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}><section className="pdp-size-guide" role="dialog" aria-modal="true" aria-labelledby="size-guide-title"><header><div><p>Percent sizing</p><h2 id="size-guide-title">{fit === 'standard' ? 'Standard Fit' : 'Oversized Fit'}</h2></div><button ref={closeButton} type="button" aria-label="Close size guide" onClick={onClose}><X /></button></header><p>Measurements are garment measurements. Compare them with a T-shirt you already own.</p><div className="pdp-size-table" role="table" aria-label={`${fit} size guide`}><div role="row"><strong role="columnheader">Size</strong><strong role="columnheader">Chest</strong><strong role="columnheader">Length</strong></div>{sizeGuides[fit].map((row) => <div role="row" key={row.size}><span role="cell">{row.size}</span><span role="cell">{row.chest}</span><span role="cell">{row.length}</span></div>)}</div></section></div>
+  return <div className="pdp-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}><section className="pdp-size-guide" role="dialog" aria-modal="true" aria-labelledby="size-guide-title"><header><div><p>{eyebrow}</p><h2 id="size-guide-title">{fit === 'standard' ? 'Standard Fit' : 'Oversized Fit'}</h2></div><button ref={closeButton} type="button" aria-label="Close size guide" onClick={onClose}><X /></button></header><p>{copy}</p><div className="pdp-size-table" role="table" aria-label={`${fit} size guide`}><div role="row"><strong role="columnheader">Size</strong><strong role="columnheader">Chest</strong><strong role="columnheader">Length</strong></div>{sizeGuides[fit].map((row) => <div role="row" key={row.size}><span role="cell">{row.size}</span><span role="cell">{row.chest}</span><span role="cell">{row.length}</span></div>)}</div></section></div>
 }
 
 function DetailAccordion({ title, children, initiallyOpen = false }: { title: string; children: React.ReactNode; initiallyOpen?: boolean }) {
@@ -42,8 +43,9 @@ function ProductBadges({ product }: { product: ProductDetails }) {
   return badges.length ? <div className="pdp-badges">{badges.map((badge) => <span key={badge.label}>{badge.label}</span>)}</div> : null
 }
 
-export function ProductDetailsPage() {
-  const { slug } = useParams<{ slug: string }>()
+export function ProductDetailsPage({ previewSlug }: { previewSlug?: string } = {}) {
+  const { slug: routeSlug } = useParams<{ slug: string }>()
+  const slug = previewSlug ?? routeSlug
   const { data, loading, error } = useProductDetails(slug)
   if (loading) return <ProductSkeleton />
   if (error || !data) return <ProductState failed={error === 'failed'} />
@@ -51,6 +53,7 @@ export function ProductDetailsPage() {
 }
 
 function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
+  const { page, error: pageError } = useWebsitePage('product_details')
   const wishlist = useWishlist()
   const product = data.product
   const [selectedColourId, setSelectedColourId] = useState(product.colors[0]?.id ?? '')
@@ -95,6 +98,7 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
   }
   const extraDetails = [{ title: 'Product Details', content: product.fullDescription }, { title: 'Material and Care', content: [product.material, product.careInstructions].filter(Boolean).join(' · ') }, { title: 'Fit and Size', content: `${product.fitType === 'standard' ? 'Standard Fit' : 'Oversized Fit'}. Available sizes: ${uniqueSizes.join(', ')}.` }, { title: 'Shipping and Returns', content: product.shippingAndReturns }, ...(product.collaborator ? [{ title: 'Collaboration Information', content: [product.collaborator.title, product.collaborator.description].filter(Boolean).join(' — ') }] : [])].filter((item) => item.content)
 
+  if (pageError) return <WebsitePageError />
   return <main className="pdp-page product-details-page">
     <nav className="pdp-breadcrumb" aria-label="Breadcrumb"><Link to="/">Home</Link><span>/</span><Link to="/shop">Shop</Link><span>/</span><span aria-current="page">{product.name}</span></nav>
     <section className="pdp-primary">
@@ -106,7 +110,7 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
         <div className="pdp-price"><strong>{formatInr(displayVariant?.price ?? product.price)}</strong>{displayVariant?.compareAtPrice && <del>{formatInr(displayVariant.compareAtPrice)}</del>}{discount > 0 && <span>{discount}% off</span>}</div>
         <p className="pdp-short-description">{product.shortDescription}</p>
         <div className={`pdp-inventory ${product.isSoldOut ? 'is-sold-out' : ''}`}><div><strong>{archived ? `${product.soldPieces} / ${product.totalPieces} sold` : `${product.soldPieces} of ${product.totalPieces} sold`}</strong><span>{archived ? 'Forever archived' : `${product.remainingPieces} of ${product.totalPieces} remaining`}</span></div><i><b style={{ width: `${soldPercentage}%` }} /></i></div>
-        {archived ? <div className="pdp-archive-notice"><strong>This design is archived.</strong><span>One hundred pieces were made. There will be no restock or repeat.</span><Link to="/sold-out-designs">Return to the archive</Link></div> : <>
+        {archived ? <div className="pdp-archive-notice"><strong>{pageSection(page, 'archive_notice')?.heading}</strong><span>{pageSection(page, 'archive_notice')?.body}</span><Link to="/sold-out-designs">Return to the archive</Link></div> : <>
           <fieldset className="pdp-option-group"><legend>Colour <span>{product.colors.find((colour) => colour.id === selectedColourId)?.label}</span></legend><div className="pdp-colours">{product.colors.map((colour) => <button key={colour.id} type="button" className={selectedColourId === colour.id ? 'is-selected' : ''} aria-label={`Select ${colour.label}`} aria-pressed={selectedColourId === colour.id} onClick={() => { setSelectedColourId(colour.id); setSelectedSize(''); setSelectionError(''); const nextImages = product.variants.find((variant) => variant.colour.id === colour.id)?.images; if (nextImages?.[0]) setActiveImage(nextImages[0]) }}><i style={{ background: safeSwatch(colour) }} />{selectedColourId === colour.id && <Check />}</button>)}</div></fieldset>
           <fieldset ref={sizeGroup} className="pdp-option-group product-size-section" tabIndex={-1} aria-labelledby="product-size-label"><div className="product-size-header"><span id="product-size-label">Size</span><button className="pdp-size-guide-trigger product-size-guide" type="button" onClick={() => setSizeGuideOpen(true)}>Size Guide <ChevronDown /></button></div><div className="pdp-sizes product-size-options">{uniqueSizes.map((size) => { const variant = colourVariants.find((item) => item.size === size); const available = Boolean(variant?.isAvailable) && !product.isSoldOut; return <button key={size} type="button" disabled={!available} className={`product-size-option ${selectedSize === size ? 'is-selected' : ''}`} aria-pressed={selectedSize === size} onClick={() => { setSelectedSize(size); setSelectionError('') }}>{size}</button> })}</div></fieldset>
           {selectionError && <p className="pdp-validation" role="alert">{selectionError}</p>}
@@ -118,13 +122,13 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
 
     {product.collaborator && <section className="pdp-collaboration"><div><p>Limited collaboration</p><h2>{product.collaborator.title ?? product.collaborator.name}</h2><strong>With {product.collaborator.name}</strong><span>{product.collaborator.description}</span></div>{product.collaborator.image && <img src={product.collaborator.image.src} alt={product.collaborator.image.alt} width={product.collaborator.image.width} height={product.collaborator.image.height} loading="lazy" />}</section>}
 
-    <section className="pdp-details"><div><p>Details</p><h2>Made to live beyond the drop.</h2><span>{product.fullDescription}</span><dl><div><dt>Size & Fit</dt><dd>{product.fitType === 'standard' ? 'Standard Fit' : 'Oversized Fit'}</dd></div><div><dt>Material</dt><dd>{product.material}</dd></div>{product.style && <div><dt>Style</dt><dd>{product.style}</dd></div>}{product.shippingAndReturns && <div><dt>Shipping & Returns</dt><dd>{product.shippingAndReturns}</dd></div>}</dl></div><img src={(product.images[1] ?? product.images[0]).src} alt={(product.images[1] ?? product.images[0]).alt} width={(product.images[1] ?? product.images[0]).width} height={(product.images[1] ?? product.images[0]).height} loading="lazy" /></section>
+    {pageSection(page, 'details') && <section className="pdp-details"><div><p>Details</p><h2>{pageSection(page, 'details')?.heading}</h2><span>{product.fullDescription}</span><dl><div><dt>Size & Fit</dt><dd>{product.fitType === 'standard' ? 'Standard Fit' : 'Oversized Fit'}</dd></div><div><dt>Material</dt><dd>{product.material}</dd></div>{product.style && <div><dt>Style</dt><dd>{product.style}</dd></div>}{product.shippingAndReturns && <div><dt>Shipping & Returns</dt><dd>{product.shippingAndReturns}</dd></div>}</dl></div><img src={(product.images[1] ?? product.images[0]).src} alt={(product.images[1] ?? product.images[0]).alt} width={(product.images[1] ?? product.images[0]).width} height={(product.images[1] ?? product.images[0]).height} loading="lazy" /></section>}
 
     <ProductReviews productSlug={product.slug} initialReviews={product.reviews} onSummaryChange={setDisplayReviewSummary} />
 
-    <section className="pdp-extra"><p>Extra Product Details</p><h2>Everything worth knowing.</h2><div>{extraDetails.map((item, index) => <DetailAccordion key={item.title} title={item.title} initiallyOpen={index === 0}>{item.content}</DetailAccordion>)}</div></section>
+    {pageSection(page, 'extra_details') && <section className="pdp-extra"><p>Extra Product Details</p><h2>{pageSection(page, 'extra_details')?.heading}</h2><div>{extraDetails.map((item, index) => <DetailAccordion key={item.title} title={item.title} initiallyOpen={index === 0}>{item.content}</DetailAccordion>)}</div></section>}
 
-    <section className="pdp-related"><header className="related-products-header"><div><p>You May Also Like</p><h2 className="related-products-title">Continue exploring.</h2></div><Link className="related-products-view-all" to="/shop">View All</Link></header><div className="shop-product-grid related-products-grid">{data.related.map((relatedProduct) => <ShopProductCard key={relatedProduct.id} product={relatedProduct} wished={wishlist.items.includes(relatedProduct.id)} onWishlist={() => wishlist.toggle(relatedProduct.id)} />)}</div></section>
-    {sizeGuideOpen && <SizeGuideModal fit={product.fitType} onClose={() => setSizeGuideOpen(false)} />}
+    {pageSection(page, 'related') && <section className="pdp-related"><header className="related-products-header"><div><p>You May Also Like</p><h2 className="related-products-title">{pageSection(page, 'related')?.heading}</h2></div><Link className="related-products-view-all" to="/shop">View All</Link></header><div className="shop-product-grid related-products-grid">{data.related.map((relatedProduct) => <ShopProductCard key={relatedProduct.id} product={relatedProduct} wished={wishlist.items.includes(relatedProduct.id)} onWishlist={() => wishlist.toggle(relatedProduct.id)} />)}</div></section>}
+    {sizeGuideOpen && <SizeGuideModal fit={product.fitType} eyebrow={pageSection(page, 'size_guide')?.heading ?? 'Percent sizing'} copy={pageSection(page, 'size_guide')?.body ?? ''} onClose={() => setSizeGuideOpen(false)} />}
   </main>
 }

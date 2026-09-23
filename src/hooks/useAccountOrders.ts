@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../backend/client'
 import { timelineFor, type AccountAddress, type AccountOrder } from '../data/account'
+import { formatInrFromPaise } from '../data/money'
 import { usePercentSession } from './usePercentSession'
 const title=(value:string)=>value.split('_').map(v=>(v[0]??'').toUpperCase()+v.slice(1)).join(' ')
 export function useAccountOrders(){
@@ -16,10 +17,10 @@ export function useAccountOrders(){
    const a=row.order_addresses[0]??{}
    const address:AccountAddress={id:String(a.id??''),label:'Order address',isDefault:false,fullName:String(a.full_name??''),phone:String(a.phone??''),addressLine1:String(a.address_line1??''),addressLine2:String(a.address_line2??''),city:String(a.city??''),state:String(a.state??''),pinCode:String(a.pin_code??''),country:String(a.country??'IN')}
    const status=title(row.status)
-   return {id:row.order_reference,placedAt:row.created_at,status,items:row.order_items.map((i:Record<string,unknown>)=>({productId:String(i.product_id??''),variantId:String(i.variant_id??i.id),productSlug:String(i.product_slug??''),productName:String(i.product_name??''),colour:String(i.colour??''),size:String(i.size??''),quantity:Number(i.quantity),unitPrice:Number(i.unit_price_paise)})),address,subtotal:Number(row.subtotal_paise),shippingLabel:Number(row.shipping_paise)===0?'Free':'₹'+Number(row.shipping_paise)/100,discount:Number(row.discount_paise),total:Number(row.total_paise),paymentMethod:row.payment_provider??'Payment not started',paymentStatus:title(row.payment_status),trackingNumber:row.tracking_number??undefined,estimatedDelivery:row.estimated_delivery??undefined,deliveredAt:row.delivered_at??undefined,timeline:timelineFor(status),isDemo:false} satisfies AccountOrder
+   return {id:row.order_reference,placedAt:row.created_at,status,items:row.order_items.map((i:Record<string,unknown>)=>({productId:String(i.product_id??''),variantId:String(i.variant_id??i.id),productSlug:String(i.product_slug??''),productName:String(i.product_name??''),colour:String(i.colour??''),size:String(i.size??''),quantity:Number(i.quantity),unitPricePaise:Number(i.unit_price_paise)})),address,subtotalPaise:Number(row.subtotal_paise),shippingLabel:Number(row.shipping_paise)===0?'Free':formatInrFromPaise(Number(row.shipping_paise)),discountPaise:Number(row.discount_paise),totalPaise:Number(row.total_paise),paymentMethod:row.payment_provider??'Payment not started',paymentStatus:title(row.payment_status),trackingNumber:row.tracking_number??undefined,estimatedDelivery:row.estimated_delivery??undefined,deliveredAt:row.delivered_at??undefined,timeline:timelineFor(status),isDemo:false} satisfies AccountOrder
   }))
   setError('');setLoading(false)
  },[user])
- useEffect(()=>{void refresh()},[refresh])
+ useEffect(()=>{void Promise.resolve().then(refresh)},[refresh])
  return {orders,loading,error,refresh}
 }

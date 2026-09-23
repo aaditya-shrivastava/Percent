@@ -28,7 +28,7 @@ export const demoArchivedProducts: ArchivedProduct[] = archiveSeeds.flatMap((see
     ...source,
     id: `archive-${source.id}`,
     slug: `archive-${source.slug}`,
-    description: `${source.description} Archive ${archiveNumber}: one hundred pieces made, one hundred pieces collected.`,
+    description: `${source.description} Archive ${archiveNumber}: the limited production run is complete.`,
     status: 'published',
     isAvailable: false,
     isSoldOut: true,

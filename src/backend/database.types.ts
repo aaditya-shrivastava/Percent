@@ -1257,6 +1257,14 @@ export type Database = {
       }
     }
     Functions: {
+      admin_get_customer: {
+        Args: { customer_id: string }
+        Returns: Json
+      }
+      admin_list_customers: {
+        Args: { search_text?: string; customer_filter?: string; sort_by?: string; page_number?: number; page_size?: number }
+        Returns: Json
+      }
       adjust_variant_inventory: {
         Args: {
           expected_updated_at: string
@@ -1291,6 +1299,10 @@ export type Database = {
         }[]
       }
       get_my_role: { Args: never; Returns: string }
+      set_product_review_visibility: {
+        Args: { review_id: string; visible: boolean; expected_updated_at: string }
+        Returns: Json
+      }
       publish_product: {
         Args: { expected_updated_at: string; product_id: string }
         Returns: Json

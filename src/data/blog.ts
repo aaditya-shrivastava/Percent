@@ -38,17 +38,17 @@ export const blogCategories = ['All', 'Brand', 'Design', 'Style', 'Process', 'Co
 
 export const blogArticles: BlogArticle[] = [
   {
-    slug: 'the-story-behind-100-pieces', title: 'The Story Behind 100 Pieces', category: 'Brand', date: '2026-08-12', author: 'Percent Journal', featured: true,
-    excerpt: 'Why limitation creates freedom — and why every Percent design disappears after the hundredth piece.',
-    introduction: 'A clear ending gives every design meaning. One hundred pieces is enough to create a community without making the experience ordinary.',
+    slug: 'the-story-behind-100-pieces', title: 'The Story Behind Limited Pieces', category: 'Brand', date: '2026-08-12', author: 'Percent Journal', featured: true,
+    excerpt: 'Why limitation creates freedom — and why each Percent design ends at its own production limit.',
+    introduction: 'A clear ending gives every design meaning. Each run is deliberately limited without making the experience ordinary.',
     image: image('photo-1515886657613-9f3515b0c78f', 'Limited Percent streetwear photographed in the city', 1600, 1100),
     secondaryImage: image('photo-1551488831-00ddcb6c6bd3', 'Close view of premium apparel texture and construction', 1200, 800),
     sections: [
-      { heading: 'Why 100?', paragraphs: ['A fixed edition asks us to make clearer decisions. Every line, proportion and print has to earn its place before production begins.', 'The number is intentionally human: small enough to remain rare, yet large enough for one design to become part of many individual stories.'] },
+      { heading: 'Why Limit a Run?', paragraphs: ['A fixed edition asks us to make clearer decisions. Every line, proportion and print has to earn its place before production begins.', 'The limit is set for each design: small enough to remain rare, yet large enough for one idea to become part of many individual stories.'] },
       { heading: 'Why Not Restock?', paragraphs: ['Restocking would turn a promise into a marketing phrase. When the final piece leaves, the design is retired and the next idea gets room to exist.'] },
       { heading: 'Designing With an Ending', paragraphs: ['Knowing a design has an ending changes how we make it and how it is worn. The piece becomes a timestamp rather than an endlessly repeated product.'] },
     ],
-    pullQuote: 'Once the hundredth piece is gone, that design becomes part of Percent history.',
+    pullQuote: 'Once its final piece is gone, that design becomes part of Percent history.',
   },
   {
     slug: 'the-power-of-limited', title: 'The Power of Limited', category: 'Brand', date: '2026-08-05', author: 'Percent Journal', featured: false,

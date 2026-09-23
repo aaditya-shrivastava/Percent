@@ -8,7 +8,7 @@ export function AdminEmptyState({icon:Icon,title,description}:{icon:LucideIcon;t
   return <div className="admin-empty"><span className="admin-empty-icon"><Icon aria-hidden="true"/></span><h3>{title}</h3>{description&&<p>{description}</p>}</div>
 }
 export function AdminStatusBadge({status}:{status:string}) {
-  const tone=['active','paid','completed','delivered'].includes(status)?'success':['pending','processing','Run Near Limit','Low Stock'].includes(status)?'warning':['cancelled','Sold Out','failed'].includes(status)?'danger':'neutral'
+  const tone=['active','approved','paid','completed','delivered'].includes(status)?'success':['pending','processing','Run Near Limit','Low Stock'].includes(status)?'warning':['rejected','cancelled','Sold Out','failed'].includes(status)?'danger':'neutral'
   return <span className={`admin-badge is-${tone}`}>{status.replaceAll('_',' ')}</span>
 }
 export function AdminStatCard({label,value,note,icon:Icon}:{label:string;value:string;note:string;icon:LucideIcon}) {

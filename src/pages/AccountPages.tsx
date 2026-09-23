@@ -4,8 +4,8 @@ import { Link, useParams } from 'react-router-dom'
 import { AccountShell } from '../components/account/AccountShell'
 import { ShopProductCard } from '../components/product/ShopProductCard'
 import { accountStatusFilters, demoMemberSince, type AccountAddress, type AccountOrder } from '../data/account'
+import { formatInrFromPaise } from '../data/money'
 import { getProductDetailsById } from '../data/productDetails'
-import { formatInr } from '../data/shop'
 import { useAccountAddresses } from '../hooks/useAccountAddresses'
 import { usePercentSession, updatePercentProfile } from '../hooks/usePercentSession'
 import { useAccountOrders } from '../hooks/useAccountOrders'
@@ -68,7 +68,7 @@ export function ProfileOrdersPage() {
     {loading ? <section className="account-empty" aria-busy="true"><Package /><h2>Loading Orders…</h2></section> : error ? <section className="account-empty" role="alert"><Package /><h2>{error}</h2></section> : visibleOrders.length ? <div className="account-order-list">{visibleOrders.map((order) => <article className="account-order-row" key={order.id}>
       {order.items[0]?.image && <Link className="account-order-image" to={`/orders/${order.id}`}><img src={order.items[0].image.src} alt={order.items[0].image.alt} width={order.items[0].image.width} height={order.items[0].image.height} /></Link>}
       <div className="account-order-copy"><span>#{order.id}</span><strong>{formatAccountDate(order.placedAt)}</strong><small>{order.items.reduce((total, item) => total + item.quantity, 0)} {order.items.length === 1 && order.items[0].quantity === 1 ? 'Item' : 'Items'}</small></div>
-      <strong className="account-order-total">{formatInr(order.total)}</strong><span className={`account-order-status is-${order.status.toLowerCase()}`}>{order.status}</span><Link className="account-order-view" to={`/orders/${order.id}`}>View Order <ArrowRight /></Link>
+      <strong className="account-order-total">{formatInrFromPaise(order.totalPaise)}</strong><span className={`account-order-status is-${order.status.toLowerCase()}`}>{order.status}</span><Link className="account-order-view" to={`/orders/${order.id}`}>View Order <ArrowRight /></Link>
     </article>)}</div> : <section className="account-empty"><Package /><h2>No Orders Yet</h2><p>Your first Percent piece is waiting.</p><Link to="/shop">Discover Products <ArrowRight /></Link></section>}
   </AccountShell>
 }
@@ -125,7 +125,7 @@ function OrderOverview({ order }: { order: AccountOrder }) {
       <div><dt>Order Date</dt><dd>{formatAccountDate(order.placedAt)}</dd></div>
       <div><dt>Current Status</dt><dd><span className={`account-order-status is-${order.status.toLowerCase()}`}>{order.status}</span></dd></div>
       <div><dt>Item Count</dt><dd>{itemCount} {itemCount === 1 ? 'Item' : 'Items'}</dd></div>
-      <div><dt>Order Total</dt><dd>{formatInr(order.total)}</dd></div>
+      <div><dt>Order Total</dt><dd>{formatInrFromPaise(order.totalPaise)}</dd></div>
     </dl>
   </section>
 }
@@ -140,7 +140,7 @@ function OrderTimeline({ order }: { order: AccountOrder }) {
         <div><strong>{step.label}</strong><small>{step.detail}</small></div>
       </li>)}
     </ol>
-    <p className="order-detail-preview-note">Status information is shown from this frontend order snapshot.</p>
+    <p className="order-detail-preview-note">Status information comes from your authoritative order record.</p>
   </section>
 }
 
@@ -152,7 +152,7 @@ function OrderItems({ order }: { order: AccountOrder }) {
       return <article key={item.variantId}>
         {item.image && <Link className="order-detail-item-image" to={productHref} aria-label={`View ${item.productName}`}><img src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} /></Link>}
         <div className="order-detail-item-copy"><Link to={productHref}>{item.productName}</Link><span>{item.colour}</span><span>Size {item.size}</span><span>Qty: {item.quantity}</span></div>
-        <dl><div><dt>Unit Price</dt><dd>{formatInr(item.unitPrice)}</dd></div><div><dt>Line Total</dt><dd>{formatInr(item.unitPrice * item.quantity)}</dd></div></dl>
+        <dl><div><dt>Unit Price</dt><dd>{formatInrFromPaise(item.unitPricePaise)}</dd></div><div><dt>Line Total</dt><dd>{formatInrFromPaise(item.unitPricePaise * item.quantity)}</dd></div></dl>
       </article>
     })}</div>
   </section>
@@ -190,12 +190,12 @@ export function OrderDetailsPage() {
 
         <section className="account-order-detail-card order-detail-payment" aria-labelledby="order-payment-heading">
           <div className="account-section-title"><ShieldCheck /><h2 id="order-payment-heading">Payment Details</h2></div>
-          <dl><div><dt>Payment Method</dt><dd>{order.paymentMethod}</dd></div><div><dt>Payment Status</dt><dd>{order.paymentStatus}</dd></div><div><dt>Amount Paid</dt><dd>{order.paymentStatus === 'Paid' ? formatInr(order.total) : formatInr(0)}</dd></div></dl>
+          <dl><div><dt>Payment Method</dt><dd>{order.paymentMethod}</dd></div><div><dt>Payment Status</dt><dd>{order.paymentStatus}</dd></div><div><dt>Amount Paid</dt><dd>{order.paymentStatus === 'Paid' ? formatInrFromPaise(order.totalPaise) : formatInrFromPaise(0)}</dd></div></dl>
         </section>
 
         <section className="account-order-detail-summary" aria-labelledby="order-summary-heading">
-          <p>Order Summary</p><h2 id="order-summary-heading">{formatInr(order.total)}</h2>
-          <dl><div><dt>Subtotal</dt><dd>{formatInr(order.subtotal)}</dd></div><div><dt>Shipping</dt><dd>{order.shippingLabel}</dd></div><div><dt>Discount</dt><dd>{formatInr(order.discount)}</dd></div><div><dt>Total</dt><dd>{formatInr(order.total)}</dd></div></dl>
+          <p>Order Summary</p><h2 id="order-summary-heading">{formatInrFromPaise(order.totalPaise)}</h2>
+          <dl><div><dt>Subtotal</dt><dd>{formatInrFromPaise(order.subtotalPaise)}</dd></div><div><dt>Shipping</dt><dd>{order.shippingLabel}</dd></div><div><dt>Discount</dt><dd>{formatInrFromPaise(order.discountPaise)}</dd></div><div><dt>Total</dt><dd>{formatInrFromPaise(order.totalPaise)}</dd></div></dl>
           <small>Including all taxes</small>
         </section>
 

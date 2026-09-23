@@ -1,9 +1,10 @@
 import { ArrowRight, Heart, House, LogOut, Package, UserRound } from 'lucide-react'
 import { type ReactNode } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { demoMemberSince, getAccountOrders } from '../../data/account'
+import { demoMemberSince } from '../../data/account'
 import { authRouteWithReturnTo, getSafeAuthReturnTo } from '../../data/auth'
 import { usePercentSession } from '../../hooks/usePercentSession'
+import { useAccountOrders } from '../../hooks/useAccountOrders'
 
 const accountNavigation = [
   { label: 'Profile', href: '/profile', icon: UserRound },
@@ -16,6 +17,7 @@ const activeAccountPath = (pathname: string) => pathname.startsWith('/orders/') 
 
 export function AccountShell({ children }: { children: ReactNode }) {
   const { user, isAuthenticated, logout, loading } = usePercentSession()
+  const { orders } = useAccountOrders()
   const location = useLocation()
   const navigate = useNavigate()
   const displayName = user?.displayName ?? 'Demo Member'
@@ -30,7 +32,7 @@ export function AccountShell({ children }: { children: ReactNode }) {
   return <main className="account-page">
     <div className="account-layout">
       <aside className="account-sidebar" aria-label="Account navigation">
-        <div className="account-member"><span aria-hidden="true">{displayName.charAt(0).toUpperCase()}</span><div><strong>{displayName}</strong><small>Percent Member</small></div><dl><div><dt>Orders</dt><dd>{getAccountOrders().length}</dd></div><div><dt>Member since</dt><dd>{user?.memberSince ?? demoMemberSince}</dd></div></dl></div>
+        <div className="account-member"><span aria-hidden="true">{displayName.charAt(0).toUpperCase()}</span><div><strong>{displayName}</strong><small>Percent Member</small></div><dl><div><dt>Orders</dt><dd>{orders.length}</dd></div><div><dt>Member since</dt><dd>{user?.memberSince ?? demoMemberSince}</dd></div></dl></div>
         <nav>{accountNavigation.map(({ label, href, icon: Icon }) => <NavLink key={href} to={href} end={href === '/profile'} className={({ isActive }) => isActive || (href === '/profile/orders' && location.pathname.startsWith('/orders/')) ? 'is-active' : ''}><Icon /><span>{label}</span></NavLink>)}<button type="button" onClick={signOut}><LogOut /><span>Logout</span></button></nav>
       </aside>
 

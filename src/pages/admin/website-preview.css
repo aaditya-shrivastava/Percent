@@ -1,0 +1,4 @@
+.website-preview-document,.website-preview-body,.website-preview-body #root{min-height:100%;background:var(--bg)}
+.website-preview-body{margin:0;overflow-x:hidden;overflow-y:auto}
+.website-storefront-preview{min-height:100vh}
+.website-storefront-preview a{cursor:default}

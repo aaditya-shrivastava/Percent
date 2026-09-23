@@ -28,7 +28,7 @@ export const faqItems: FaqItem[] = [
   { id: 'exchange-size', category: 'Returns', question: 'Can I exchange a size?', answer: 'Size exchange details will be finalized before launch and will remain subject to availability. Limited pieces may not always have replacement stock.' },
   { id: 'find-size', category: 'Sizing', question: 'How do I know my size?', answer: 'Open a product page and use its Size Guide before selecting a variant. Product measurements and fit guidance will help compare Standard Fit and Oversized Fit.' },
   { id: 'payment-methods', category: 'Payments', question: 'Which payment methods are accepted?', answer: 'Razorpay is the planned payment provider. Supported payment methods will be confirmed when the real checkout integration is enabled.' },
-  { id: 'sold-out', category: 'Policies', question: 'What happens when a design sells out?', answer: 'Every limited Percent design is made in only 100 pieces. Once the 100th piece is sold, that design is permanently retired with no restocks or repeats.' },
+  { id: 'sold-out', category: 'Policies', question: 'What happens when a design sells out?', answer: 'Each limited Percent design has its own production limit. When the configured limit is reached, that design is permanently retired with no restocks or repeats.' },
 ]
 
 export const policyCards = [

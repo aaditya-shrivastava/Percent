@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+
+const model=await readFile(new URL('../src/backend/website.ts',import.meta.url),'utf8')
+const editor=await readFile(new URL('../src/pages/admin/AdminWebsiteEditor.tsx',import.meta.url),'utf8')
+const edge=await readFile(new URL('./functions/percent-website-media/index.ts',import.meta.url),'utf8')
+
+assert.match(model,/image_path:''/)
+assert.match(model,/bootstrap_preview_url:image/)
+assert.doesNotMatch(model,/sort_order:index\+1,image_url:image/)
+assert.match(model,/managedBannerPath/)
+assert.match(model,/validateWebsiteDocument/)
+assert.match(model,/Number\.isInteger\(banner\.width\)/)
+assert.match(model,/mobile_image_path&&/)
+assert.match(editor,/validateWebsiteDocument\(document\)/)
+assert.match(editor,/showErrors\s*&&\s*errors\.length/)
+assert.doesNotMatch(editor,/BOOTSTRAP IMAGE — UPLOAD TO MANAGE/)
+assert.doesNotMatch(editor,/MANAGED STORAGE IMAGE/)
+assert.match(editor,/Media details/)
+assert.match(editor,/Uses desktop image when empty/)
+assert.match(editor,/bootstrap_preview_url: undefined/)
+assert.match(editor,/image_path: result\.path/)
+assert.match(editor,/width: result\.width, height: result\.height/)
+assert.match(editor,/await saveWebsite\(document\)/)
+assert.match(editor,/const refreshed = await loadWebsiteEditor\(\)/)
+assert.match(edge,/Invalid image dimensions/)
+assert.match(edge,/preview_url:signed\.signedUrl,width,height/)
+console.log('PASS Website image state: bootstrap and managed previews are separate, canonical paths and dimensions drive readiness, validation derives from the live draft, and upload responses include dimensions')

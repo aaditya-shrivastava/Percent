@@ -1,7 +1,8 @@
 import { ArrowLeft, ArrowRight, Check, Clock3, MapPin, Package, Truck, X } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { AccountShell } from '../components/account/AccountShell'
-import { getAccountOrder, type AccountOrder } from '../data/account'
+import { type AccountOrder } from '../data/account'
+import { useAccountOrders } from '../hooks/useAccountOrders'
 
 const formatTrackingDate = (value: string) => new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
 const statusClass = (status: AccountOrder['status']) => `is-${status.toLowerCase().replaceAll(' ', '-')}`
@@ -61,8 +62,11 @@ function OrderPreview({ order }: { order: AccountOrder }) {
 
 export function TrackOrderPage() {
   const { orderId } = useParams<{ orderId: string }>()
-  const order = getAccountOrder(orderId)
+  const { orders, loading, error } = useAccountOrders()
+  const order = orders.find((item) => item.id === orderId)
 
+  if (loading) return <AccountShell><section className="account-empty" aria-busy="true"><Package /><h2>Loading Tracking…</h2></section></AccountShell>
+  if (error) return <AccountShell><section className="account-empty" role="alert"><Package /><h2>{error}</h2></section></AccountShell>
   if (!order) return <AccountShell><section className="account-empty"><Package /><h2>Order Not Found</h2><p>We couldn't find tracking information for this order.</p><Link to="/profile/orders">Back to My Orders <ArrowRight /></Link></section></AccountShell>
 
   const firstItem = order.items[0]

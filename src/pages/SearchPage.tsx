@@ -7,7 +7,7 @@ import { searchBlogArticles, searchProducts } from '../data/search'
 import { useWishlist } from '../hooks/useCommerce'
 
 type SearchScope = 'all' | 'products' | 'journal'
-const popularSearches = ['Oversized', 'Standard Fit', 'Black', 'Limited', '100 Pieces']
+const popularSearches = ['Oversized', 'Standard Fit', 'Black', 'Limited', 'Limited Runs']
 
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams()

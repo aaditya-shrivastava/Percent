@@ -1,5 +1,4 @@
-import { getPublicShopProducts } from './shop'
-import { readOrderConfirmation, type OrderConfirmationAddress, type OrderConfirmationItem } from './orderConfirmation'
+import { type OrderConfirmationAddress } from './orderConfirmation'
 import type { ProductImage } from '../types'
 
 export type AccountOrderStatus = string
@@ -10,7 +9,15 @@ export interface AccountAddress extends Omit<OrderConfirmationAddress, 'email'> 
   isDefault: boolean
 }
 
-export interface AccountOrderItem extends OrderConfirmationItem {
+export interface AccountOrderItem {
+  productId: string
+  variantId: string
+  productSlug: string
+  productName: string
+  colour: string
+  size: string
+  quantity: number
+  unitPricePaise: number
   image?: ProductImage
 }
 
@@ -20,10 +27,10 @@ export interface AccountOrder {
   status: AccountOrderStatus
   items: AccountOrderItem[]
   address: AccountAddress
-  subtotal: number
+  subtotalPaise: number
   shippingLabel: string
-  discount: number
-  total: number
+  discountPaise: number
+  totalPaise: number
   paymentMethod: string
   paymentStatus: string
   trackingNumber?: string
@@ -61,43 +68,4 @@ export const timelineFor = (status: AccountOrderStatus) => {
     { label: 'Confirmed', detail: 'Admin confirmed the order lifecycle.', complete: stage >= 2 },
     { label: 'Completed', detail: 'Requires trusted payment and delivery evidence.', complete: stage >= 3 },
   ]
-}
-
-const products = getPublicShopProducts()
-
-const orderItem = (productIndex: number, quantity: number, size: string): AccountOrderItem | null => {
-  const product = products[productIndex]
-  if (!product) return null
-  return { productId: product.id, variantId: `${product.id}-demo-${size.toLowerCase()}`, productSlug: product.slug, productName: product.name, colour: product.colors[0]?.label ?? 'Stone', size, quantity, unitPrice: product.price, image: product.images[0] }
-}
-
-const buildDemoOrder = (id: string, placedAt: string, status: AccountOrderStatus, selections: Array<[number, number, string]>): AccountOrder | null => {
-  const items = selections.map(([productIndex, quantity, size]) => orderItem(productIndex, quantity, size)).filter((item): item is AccountOrderItem => Boolean(item))
-  if (!items.length) return null
-  const subtotal = items.reduce((total, item) => total + item.unitPrice * item.quantity, 0)
-  return { id, placedAt, status, items, address: demoAccountAddress, subtotal, shippingLabel: 'Calculated at checkout', discount: 0, total: subtotal, paymentMethod: 'Razorpay', paymentStatus: 'Paid / Confirmed', timeline: timelineFor(status), isDemo: true }
-}
-
-const demoOrders = [
-  buildDemoOrder('PCT-DEMO-1042', '2026-08-24T10:30:00.000Z', 'Delivered', [[0, 1, 'M'], [1, 1, 'L']]),
-  buildDemoOrder('PCT-DEMO-0987', '2026-08-15T13:15:00.000Z', 'Shipped', [[2, 1, 'S']]),
-  buildDemoOrder('PCT-DEMO-0831', '2026-08-03T08:45:00.000Z', 'Cancelled', [[3, 1, 'M']]),
-].filter((order): order is AccountOrder => Boolean(order))
-
-const fromRecentConfirmation = (): AccountOrder | null => {
-  const snapshot = readOrderConfirmation()
-  if (!snapshot) return null
-  const address: AccountAddress = { id: 'recent-checkout-address', label: 'Checkout', isDefault: true, fullName: snapshot.address.fullName, addressLine1: snapshot.address.addressLine1, addressLine2: snapshot.address.addressLine2, city: snapshot.address.city, state: snapshot.address.state, pinCode: snapshot.address.pinCode, country: snapshot.address.country, phone: snapshot.address.phone }
-  return { id: snapshot.orderReference, placedAt: snapshot.placedAt, status: 'Processing', items: snapshot.items, address, subtotal: snapshot.subtotal, shippingLabel: snapshot.shippingLabel, discount: snapshot.discount, total: snapshot.total, paymentMethod: 'Razorpay', paymentStatus: 'Paid / Confirmed', timeline: timelineFor('Processing'), isDemo: true }
-}
-
-export function getDemoAccountOrders() {
-  const recent = fromRecentConfirmation()
-  return recent ? [recent, ...demoOrders.filter((order) => order.id !== recent.id)] : demoOrders
-}
-
-export function getAccountOrders(): AccountOrder[] { return [] }
-
-export function getAccountOrder(orderId: string | undefined) {
-  return getAccountOrders().find((order) => order.id === orderId)
 }

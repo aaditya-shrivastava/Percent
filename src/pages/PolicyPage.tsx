@@ -2,10 +2,13 @@ import { ArrowLeft, ArrowRight, Headphones } from 'lucide-react'
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { policies, policyById, type PolicyId } from '../data/policies'
+import { useWebsitePage, WebsitePageError } from '../components/layout/WebsitePageContext'
 
 export function PolicyPage({ policyId }: { policyId: PolicyId }) {
+  const { page, error } = useWebsitePage(`policy_${policyId}`)
   const navigate = useNavigate()
-  const policy = policyById[policyId]
+  const source = policyById[policyId]
+  const policy = { ...source, title: page.heading ?? source.title, introduction: page.subheading ?? source.introduction, sections: page.policy_sections.slice().sort((a, b) => a.sort_order - b.sort_order).map(item => ({ id: item.section_key, title: item.heading, paragraphs: item.paragraphs })) }
   const policyIndex = policies.findIndex((item) => item.id === policyId)
   const previousPolicy = policies[(policyIndex - 1 + policies.length) % policies.length]
   const nextPolicy = policies[(policyIndex + 1) % policies.length]
@@ -16,9 +19,10 @@ export function PolicyPage({ policyId }: { policyId: PolicyId }) {
     return () => { document.title = previousTitle }
   }, [policy.title])
 
+  if (error) return <WebsitePageError />
   return <main className="policy-page">
     <section className="policy-hero" aria-labelledby="policy-title">
-      <p>Percent Policies</p>
+      <p>{page.eyebrow}</p>
       <h1 id="policy-title">{policy.title}</h1>
       <span>{policy.introduction}</span>
       <small>Frontend policy preview — final commercial and legal review required before launch.</small>

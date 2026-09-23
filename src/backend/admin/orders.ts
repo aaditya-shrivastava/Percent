@@ -1,8 +1,8 @@
 import { supabase } from '../client'
 import { getAdminAccess } from './role'
-import { cleanOrderSearch, lifecycleErrorMessage, orderPageSize, validOrderId, type AdminOrder, type LifecycleDimension, type OrderFilters, type OrderHistoryRow } from './order-model'
+import { cleanOrderSearch, lifecycleErrorMessage, normalizeAdminOrder, normalizeAdminOrders, orderPageSize, validOrderId, type AdminOrder, type LifecycleDimension, type OrderFilters, type OrderHistoryRow } from './order-model'
 
-const detailSelect='*,order_items(*),order_addresses(*)'
+const detailSelect='*,items:order_items(*),addresses:order_addresses(*)'
 const fail=()=>new Error('Orders unavailable')
 
 async function assertAdmin(userId:string){if((await getAdminAccess(userId)).status!=='allowed')throw fail()}
@@ -44,7 +44,9 @@ export async function listAdminOrders(userId:string,filters:OrderFilters,page:nu
   const from=(Math.max(1,page)-1)*orderPageSize
   const {data,error,count}=await query.order(sort[0] as 'created_at',{ascending:sort[1] as boolean}).order('id').range(from,from+orderPageSize-1).abortSignal(signal)
   if(error||!data||count===null)throw fail()
-  return {orders:data as unknown as AdminOrder[],count}
+  const orders=normalizeAdminOrders(data)
+  if(orders.length!==data.length)throw fail()
+  return {orders,count}
 }
 
 export async function loadAdminOrder(userId:string,id:string,signal:AbortSignal){
@@ -52,7 +54,10 @@ export async function loadAdminOrder(userId:string,id:string,signal:AbortSignal)
   await assertAdmin(userId)
   const {data,error}=await supabase.from('orders').select(detailSelect).eq('id',id).abortSignal(signal).maybeSingle()
   if(error)throw fail()
-  return data as unknown as AdminOrder|null
+  if(!data)return null
+  const order=normalizeAdminOrder(data)
+  if(!order)throw fail()
+  return order
 }
 
 export async function loadOrderHistory(userId:string,id:string,signal:AbortSignal):Promise<OrderHistoryRow[]>{

@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+
+const backend=await readFile(new URL('../src/backend/website.ts',import.meta.url),'utf8')
+const bootstrap=await readFile(new URL('../src/components/layout/StorefrontBootstrap.tsx',import.meta.url),'utf8')
+const homepage=await readFile(new URL('../src/pages/HomePage.tsx',import.meta.url),'utf8')
+const sections=await readFile(new URL('../src/components/sections/HomeSections.tsx',import.meta.url),'utf8')
+const footer=await readFile(new URL('../src/components/layout/Footer.tsx',import.meta.url),'utf8')
+
+assert.match(backend,/section_key:section\.section_key\?\?section\.key/)
+assert.match(backend,/enabled:section\.enabled\?\?true/)
+assert.doesNotMatch(bootstrap,/loadStorefrontWebsite\(\)\.catch/)
+assert.match(bootstrap,/Promise\.all\(\[loadCatalog\(\),loadStorefrontWebsite\(\)\]\)/)
+for(const key of ['limited_editions','best_sellers','trending','new_arrivals','oversized_fit','shop_by_design'])assert.match(homepage,new RegExp(`section_key==='${key}'`))
+assert.match(homepage,/categories\[0\]/)
+assert.match(homepage,/trendingProducts/)
+assert.match(homepage,/newArrivals/)
+assert.match(homepage,/document\.sections\.filter\(section=>section\.enabled\)/)
+assert.match(sections,/managedBanners\?\.filter\(b=>b\.enabled\)/)
+assert.match(sections,/<picture/)
+assert.match(sections,/mobile_image_url/)
+assert.match(sections,/max-width: 600px/)
+assert.match(footer,/document\.settings\.footer_tagline/)
+assert.match(footer,/document\.settings\.footer_description/)
+console.log('PASS Managed storefront: public key normalization, authoritative error behavior, real catalog sections, managed desktop/mobile hero media, and managed Footer verified')

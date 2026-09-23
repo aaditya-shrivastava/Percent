@@ -170,7 +170,7 @@ export const policies: PolicyDocument[] = [
         id: 'limited-designs',
         title: 'Sold Out & Limited Designs',
         paragraphs: [
-          'Every limited Percent design is produced in a maximum run of 100 pieces. Once sold out, the design is permanently retired with no restock, repeat, or reproduction.',
+          'Every limited Percent design has its own production limit. Once sold out, the design is permanently retired with no restock, repeat, or reproduction.',
           'A returned unit does not cause another unit to be manufactured. Exchange or replacement availability depends only on remaining eligible stock.',
         ],
       },
@@ -326,7 +326,7 @@ export const policies: PolicyDocument[] = [
         id: 'limited-availability',
         title: 'Limited Availability',
         paragraphs: [
-          'Each limited design is produced in a maximum run of 100 pieces. Once a design reaches 100 sold units, it is permanently retired with no restock, repeat, or reproduction.',
+          'Each limited design has its own production limit. Once a design reaches that configured limit, it is permanently retired with no restock, repeat, or reproduction.',
           'Availability is not guaranteed until checkout and order confirmation are successfully completed.',
         ],
       },

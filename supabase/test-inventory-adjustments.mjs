@@ -16,7 +16,8 @@ try {
     create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
     grant usage on schema auth to anon,authenticated,service_role;
     create schema storage; create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
-    create table storage.objects(id uuid primary key,bucket_id text,name text); alter table storage.objects enable row level security;`)
+    create table storage.objects(id uuid primary key,bucket_id text,name text); alter table storage.objects enable row level security;
+    create function storage.allow_any_operation(text[]) returns boolean language sql stable as $$ select true $$;`)
   for (const name of fs.readdirSync(new URL('migrations/',root)).filter(f=>f.endsWith('.sql')).sort()) await db.exec(fs.readFileSync(new URL('migrations/'+name,root),'utf8'))
   const uid='10000000-0000-4000-a000-000000000001',colour='20000000-0000-4000-a000-000000000001'
   await db.exec(`insert into auth.users(id) values('${uid}'); insert into public.colours(id,slug,label,swatch_value) values('${colour}','black','Black','#000000')`)

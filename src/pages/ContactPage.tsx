@@ -2,6 +2,7 @@ import { ArrowRight, CircleCheck, ClipboardList, HelpCircle, PackageSearch, Rule
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { inquiryTypes, supportHeroImage, supportTopics, type InquiryType } from '../data/support'
+import { pageSection, useWebsitePage, WebsitePageError } from '../components/layout/WebsitePageContext'
 
 interface InquiryForm {
   fullName: string
@@ -17,6 +18,7 @@ interface InquiryForm {
 const emptyInquiry: InquiryForm = { fullName: '', email: '', phone: '', inquiryType: '', orderNumber: '', subject: '', message: '', agreement: false }
 
 export function ContactPage() {
+  const { page, error: pageError } = useWebsitePage('contact')
   const [searchParams] = useSearchParams()
   const requestedType = searchParams.get('type')
   const initialType = inquiryTypes.find((type) => type === requestedType) ?? ''
@@ -52,8 +54,9 @@ export function ContactPage() {
     submitTimer.current = window.setTimeout(() => { setStatus('success'); submitTimer.current = null }, 650)
   }
 
+  if (pageError) return <WebsitePageError />
   return <main className="support-page">
-    <section className="support-hero" aria-labelledby="support-title"><div><p>Percent Support</p><h1 id="support-title">Contact / Support</h1><span>We’re here to help. Reach out to us for order assistance, product inquiries, sizing questions, or any other support.</span><strong>Real People. Genuine Support.</strong></div><img src={supportHeroImage.src} alt={supportHeroImage.alt} width={supportHeroImage.width} height={supportHeroImage.height} /></section>
+    <section className="support-hero" aria-labelledby="support-title"><div><p>{page.eyebrow}</p><h1 id="support-title">{page.heading}</h1><span>{page.subheading}</span><strong>{page.body}</strong></div><img src={page.media_url ?? supportHeroImage.src} alt={page.media_alt ?? supportHeroImage.alt} width={page.media_width ?? supportHeroImage.width} height={page.media_height ?? supportHeroImage.height} /></section>
 
     <section className="support-main" aria-label="Percent support inquiry">
       <div className="support-form-panel">
@@ -72,10 +75,10 @@ export function ContactPage() {
           </form>
         </>}
       </div>
-      <aside className="support-information"><header><p>Support Topics</p><h2>We’re Here for You</h2></header><div>{supportTopics.map((topic, index) => <article key={topic.title}><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{topic.title}</h3><p>{topic.copy}</p></div></article>)}</div><footer><strong>Support response</strong><p>We aim to respond as soon as possible.</p></footer></aside>
+      <aside className="support-information"><header><p>Support Topics</p><h2>{pageSection(page, 'support')?.heading}</h2></header><div>{supportTopics.map((topic, index) => <article key={topic.title}><span>{String(index + 1).padStart(2, '0')}</span><div><h3>{topic.title}</h3><p>{topic.copy}</p></div></article>)}</div><footer><strong>Support response</strong><p>{pageSection(page, 'support')?.body}</p></footer></aside>
     </section>
 
-    <section className="support-quick" aria-labelledby="quick-help-title"><header><p>Start Here</p><h2 id="quick-help-title">Quick Help</h2></header><div><Link to="/profile/orders"><PackageSearch /><span><strong>Track My Order</strong><small>Open your current order history.</small></span><ArrowRight /></Link><Link to="/contact?type=Returns%20%26%20Exchanges"><RotateCcw /><span><strong>Start a Return</strong><small>Send a return or exchange inquiry.</small></span><ArrowRight /></Link><Link to="/faq?topic=Sizing"><Ruler /><span><strong>Size Guide</strong><small>Find sizing help and product guidance.</small></span><ArrowRight /></Link><Link to="/faq"><ClipboardList /><span><strong>FAQ &amp; Policies</strong><small>Browse quick answers and policies.</small></span><ArrowRight /></Link></div></section>
+    <section className="support-quick" aria-labelledby="quick-help-title"><header><p>Start Here</p><h2 id="quick-help-title">{pageSection(page, 'quick_help')?.heading}</h2></header><div><Link to="/profile/orders"><PackageSearch /><span><strong>Track My Order</strong><small>Open your current order history.</small></span><ArrowRight /></Link><Link to="/contact?type=Returns%20%26%20Exchanges"><RotateCcw /><span><strong>Start a Return</strong><small>Send a return or exchange inquiry.</small></span><ArrowRight /></Link><Link to="/faq?topic=Sizing"><Ruler /><span><strong>Size Guide</strong><small>Find sizing help and product guidance.</small></span><ArrowRight /></Link><Link to="/faq"><ClipboardList /><span><strong>FAQ &amp; Policies</strong><small>Browse quick answers and policies.</small></span><ArrowRight /></Link></div></section>
 
     <section className="support-faq-cta"><HelpCircle /><div><p>Prefer to browse answers first?</p><h2>Find the Help You Need.</h2></div><Link to="/faq">Visit FAQ &amp; Policies <ArrowRight /></Link></section>
   </main>

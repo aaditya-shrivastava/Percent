@@ -1,4 +1,5 @@
-export const formatINR = (paise: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(paise / 100)
+import { formatInrFromPaise } from '../../data/money'
+export const formatINR = formatInrFromPaise
 export interface AdminProduct {
   id: string; name: string; slug: string; design_code: string; status: string; category_id: string | null; category: string
   fit_type: string; price_paise: number; production_limit: number; is_visible: boolean; is_shop_available: boolean

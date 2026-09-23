@@ -31,6 +31,21 @@ Deno.serve(async(req)=>{
  const {data:{user},error:authError}=await admin.auth.getUser(token)
  if(authError||!user)return reply({error:'Authentication required'},401)
  const caller=createClient(url,Deno.env.get('SUPABASE_ANON_KEY')!,{global:{headers:{Authorization:`Bearer ${token}`}}})
+ if(action?.action==='admin_read') {
+  const {data:role,error:roleError}=await caller.rpc('get_my_role')
+  if(roleError||!['admin','super_admin'].includes(role??''))return reply({error:'Admin access required'},403)
+  const reviewId=action.review_id??''
+  const {data:review,error:reviewError}=await caller.from('product_reviews').select('id').eq('id',reviewId).single()
+  if(reviewError||!review)return reply({error:'Review unavailable'},404)
+  const {data:images,error:imageError}=await caller.from('review_images').select('id,slot,object_path,alt').eq('review_id',review.id).order('slot')
+  if(imageError)return reply({error:'Images unavailable'},404)
+  const files=[]
+  for(const image of images??[]) {
+   const {data,error}=await admin.storage.from('percent-review-images').createSignedUrl(image.object_path,300)
+   if(!error)files.push({id:image.id,slot:image.slot,src:data.signedUrl,alt:image.alt})
+  }
+  return reply({images:files})
+ }
  if(action?.action==='delete') {
   const {data:review}=await caller.from('product_reviews').select('id,user_id,status').eq('id',action.review_id??'').single()
   if(!review||review.user_id!==user.id||review.status==='approved')return reply({error:'Review unavailable'},403)

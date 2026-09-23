@@ -5,6 +5,7 @@ import { formatInr, shopColourSlugs, shopTagSlugs, type ShopFacets, type ShopFil
 import { useShopProducts } from '../hooks/useShopProducts'
 import { useWishlist } from '../hooks/useCommerce'
 import { ShopProductCard } from '../components/product/ShopProductCard'
+import { useWebsitePage, WebsitePageError } from '../components/layout/WebsitePageContext'
 
 const sortOptions: Array<{ value: ShopSort; label: string }> = [{ value: 'featured', label: 'Featured' }, { value: 'newest', label: 'Newest' }, { value: 'price-asc', label: 'Price: Low to High' }, { value: 'price-desc', label: 'Price: High to Low' }, { value: 'best-selling', label: 'Best Selling' }, { value: 'trending', label: 'Trending' }]
 const tabs: Array<{ value: ShopTab; label: string }> = [{ value: 'all', label: 'All' }, { value: 'standard', label: 'Standard' }, { value: 'oversized', label: 'Oversized' }, { value: 'limited', label: 'Limited' }]
@@ -85,6 +86,7 @@ function Pagination({ page, totalPages, onChange }: { page: number; totalPages: 
 function ShopSkeletons() { return <div className="shop-product-grid" aria-label="Loading products">{Array.from({ length: 6 }, (_, index) => <div className="shop-skeleton" key={index}><i /><span /><span /></div>)}</div> }
 
 export function ShopPage() {
+  const { page, error: pageError } = useWebsitePage('shop')
   const [searchParams, setSearchParams] = useSearchParams()
   const searchKey = searchParams.toString()
   const query = useMemo(() => queryFromParams(new URLSearchParams(searchKey)), [searchKey])
@@ -143,9 +145,10 @@ export function ShopPage() {
   }, [data])
 
   const facets = data?.facets
+  if (pageError) return <WebsitePageError />
   return <main className="shop-page">
     <header className="shop-hero">
-      <div><nav aria-label="Breadcrumb"><Link to="/">Home</Link><span>/</span><span>Shop</span></nav><h1>Shop <em>Exclusive</em></h1><p>Standard and oversized fits. Made to stand apart.</p></div>
+      <div><nav aria-label="Breadcrumb"><Link to="/">Home</Link><span>/</span><span>Shop</span></nav><h1>{page.heading}</h1><p>{page.subheading}</p></div>
       <div className="shop-available" aria-live="polite"><strong>{data?.availableDesignsCount ?? '—'}</strong><span>Available Designs</span></div>
     </header>
 

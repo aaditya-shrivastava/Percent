@@ -5,7 +5,7 @@ import { AdminEmptyState, AdminPageHeader, AdminStatCard, AdminStatusBadge } fro
 import type { AdminIdentity } from '../../components/admin/AdminRouteGuard'
 import { loadDashboard, startOfRange, type DashboardData, type DateRange } from '../../backend/admin/dashboard'
 
-const money=(paise:number)=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(paise/100)
+import { formatInrFromPaise as money } from '../../data/money'
 const number=(value:number)=>new Intl.NumberFormat('en-IN').format(value)
 const shortDate=(value:string)=>new Intl.DateTimeFormat('en-IN',{day:'numeric',month:'short',year:'numeric'}).format(new Date(value))
 const rangeLabels:Record<DateRange,string>={'7':'Last 7 days','30':'Last 30 days','90':'Last 90 days',all:'All time'}
