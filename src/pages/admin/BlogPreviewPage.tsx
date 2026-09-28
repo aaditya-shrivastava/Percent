@@ -4,17 +4,20 @@ import { Footer } from '../../components/layout/Footer'
 import { BlogDetailContent } from '../BlogDetailPage'
 import { blogArticles } from '../../data/blog'
 import { signBlogImages, toBlogArticle, type BlogDocument } from '../../backend/admin/blog'
-import { supabase } from '../../backend/client'
 import { getAdminAccess } from '../../backend/admin/role'
+import { usePercentSession } from '../../hooks/usePercentSession'
 import './website-preview.css'
 
 export default function BlogPreviewPage() {
-  const [authorized, setAuthorized] = useState(false), [document, setDocument] = useState<BlogDocument>(), [signed, setSigned] = useState<BlogDocument['images']>([])
+  const { user, loading } = usePercentSession()
+  const [authorizedUserId, setAuthorizedUserId] = useState<string>(), [document, setDocument] = useState<BlogDocument>(), [signed, setSigned] = useState<BlogDocument['images']>([])
+  const authorized = Boolean(user && authorizedUserId === user.id)
   useEffect(() => {
+    if (loading || !user) return
     let active = true
-    supabase.auth.getUser().then(async ({ data }) => { if (data.user && (await getAdminAccess(data.user.id)).status === 'allowed' && active) setAuthorized(true) })
+    getAdminAccess(user.id).then(access => { if (active && access.status === 'allowed') setAuthorizedUserId(user.id) })
     return () => { active = false }
-  }, [])
+  }, [loading, user])
   useEffect(() => {
     if (!authorized) return
     const receive = (event: MessageEvent) => {

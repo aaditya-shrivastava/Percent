@@ -1,0 +1,35 @@
+
+> percent-storefront@0.1.0 dev
+> vite --force --host 127.0.0.1 --port 8081
+
+2:37:40 PM [vite] (client) Forced re-optimization of dependencies
+
+  VITE v8.2.2  ready in 1947 ms
+
+  ➜  Local:   http://127.0.0.1:8081/
+  ➜  press h + enter to show help
+2:37:41 PM [vite] (client) [optimizer] scanning dependencies...
+2:37:42 PM [vite] (client) [optimizer] bundling dependencies...
+9:29:18 PM [vite] (client) hmr update /src/pages/AuthPages.tsx, /src/index.css
+9:29:19 PM [vite] (client) hmr update /src/index.css
+9:33:08 PM [vite] (client) hmr update /src/pages/AuthPages.tsx, /src/index.css
+10:09:34 PM [vite] (client) hmr update /src/App.tsx, /src/index.css
+10:09:35 PM [vite] (client) hmr update /src/pages/AuthPages.tsx, /src/index.css
+10:10:03 PM [vite] (client) hmr update /src/index.css
+10:28:45 PM [vite] .env.local changed, restarting server...
+10:28:45 PM [vite] (client) Forced re-optimization of dependencies
+10:28:46 PM [vite] server restarted.
+10:28:48 PM [vite] (client) [optimizer] bundling dependencies...
+10:29:39 PM [vite] .env.local changed, restarting server...
+10:29:40 PM [vite] (client) Forced re-optimization of dependencies
+10:29:40 PM [vite] server restarted.
+10:29:42 PM [vite] (client) [optimizer] bundling dependencies...
+10:30:12 PM [vite] .env.local changed, restarting server...
+10:30:13 PM [vite] (client) Forced re-optimization of dependencies
+10:30:13 PM [vite] server restarted.
+10:30:14 PM [vite] (client) [optimizer] bundling dependencies...
+10:31:36 PM [vite] .env.local changed, restarting server...
+10:31:36 PM [vite] (client) Forced re-optimization of dependencies
+10:31:36 PM [vite] server restarted.
+10:31:38 PM [vite] (client) [optimizer] bundling dependencies...
+11:02:29 PM [vite] (client) hmr update /src/index.css, /src/pages/CheckoutPage.tsx, /src/pages/AuthPages.tsx, /src/pages/AccountPages.tsx, /src/components/layout/Header.tsx, /src/pages/ProductDetailsPage.tsx, /src/pages/CartPage.tsx, /src/pages/SearchPage.tsx, /src/pages/ShopPage.tsx, /src/pages/TrackOrderPage.tsx, /src/components/account/AccountShell.tsx, /src/components/product/ProductReviews.tsx, /src/components/admin/AdminShell.tsx, /src/components/admin/AdminRouteGuard.tsx, /src/components/layout/StorefrontBootstrap.tsx and 13 more

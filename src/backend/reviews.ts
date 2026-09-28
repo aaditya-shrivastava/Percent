@@ -1,12 +1,13 @@
 import { supabase, checkError } from './client'
+import { getPercentSessionSnapshot } from './percentSession'
 import type { ProductReview } from '../types'
 
 export async function submitReview(slug: string, rating: number, title: string, body: string, files: File[]): Promise<ProductReview> {
- const {data:{user},error:authError}=await supabase.auth.getUser();checkError(authError)
- if(!user)throw new Error('Please sign in.')
+ const userId=getPercentSessionSnapshot().percentUserId
+ if(!userId)throw new Error('Please sign in.')
  const {data:product,error:productError}=await supabase.from('products').select('id').eq('slug',slug).single();checkError(productError)
- const {data:profile,error:profileError}=await supabase.from('profiles').select('display_name').eq('id',user.id).single();checkError(profileError)
- const {data:review,error}=await supabase.from('product_reviews').insert({user_id:user.id,product_id:product!.id,rating,title:title.trim()||null,body:body.trim(),customer_name:profile!.display_name}).select('*').single();checkError(error)
+ const {data:profile,error:profileError}=await supabase.from('profiles').select('display_name').eq('id',userId).single();checkError(profileError)
+ const {data:review,error}=await supabase.from('product_reviews').insert({user_id:userId,product_id:product!.id,rating,title:title.trim()||null,body:body.trim(),customer_name:profile!.display_name}).select('*').single();checkError(error)
  if(files.length){
   const form=new FormData();form.set('review_id',review!.id);files.forEach(file=>form.append('files',file))
   const {error:uploadError}=await supabase.functions.invoke('percent-review-media',{body:form})

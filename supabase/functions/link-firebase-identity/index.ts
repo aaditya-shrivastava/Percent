@@ -97,7 +97,7 @@ Deno.serve(async request => {
     const [{ data: role, error: roleError }, { data: profile, error: profileError }] =
       await Promise.all([
         caller.rpc('get_my_role'),
-        caller.from('profiles').select('id').maybeSingle(),
+        caller.from('profiles').select('id').eq('id', supabaseIdentity.user.id).maybeSingle(),
       ])
     if (roleError || profileError || !profile) {
       return respond({ error: 'Unable to resolve Supabase identity' }, 401)
