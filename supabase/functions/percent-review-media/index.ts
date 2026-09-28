@@ -26,14 +26,14 @@ Deno.serve(async(req)=>{
    return reply({images:files})
   }
  }
- const token=req.headers.get('Authorization')?.replace(/^Bearer /i,'')
+ const authorization=req.headers.get('Authorization')??''
+ const token=/^Bearer[ ]+([^ ]+)$/i.exec(authorization)?.[1]
  if(!token)return reply({error:'Authentication required'},401)
- const {data:{user},error:authError}=await admin.auth.getUser(token)
- if(authError||!user)return reply({error:'Authentication required'},401)
- const caller=createClient(url,Deno.env.get('SUPABASE_ANON_KEY')!,{global:{headers:{Authorization:`Bearer ${token}`}}})
+ const caller=createClient(url,Deno.env.get('SUPABASE_ANON_KEY')!,{global:{headers:{Authorization:`Bearer ${token}`}},auth:{persistSession:false}})
  if(action?.action==='admin_read') {
   const {data:role,error:roleError}=await caller.rpc('get_my_role')
-  if(roleError||!['admin','super_admin'].includes(role??''))return reply({error:'Admin access required'},403)
+  if(roleError)return reply({error:'Authentication required'},401)
+  if(!['admin','super_admin'].includes(role??''))return reply({error:'Admin access required'},403)
   const reviewId=action.review_id??''
   const {data:review,error:reviewError}=await caller.from('product_reviews').select('id').eq('id',reviewId).single()
   if(reviewError||!review)return reply({error:'Review unavailable'},404)
@@ -46,9 +46,12 @@ Deno.serve(async(req)=>{
   }
   return reply({images:files})
  }
+ const {data:profile,error:profileError}=await caller.from('profiles').select('id').maybeSingle()
+ if(profileError||!profile)return reply({error:'Authentication required'},401)
+ const percentUserId=profile.id
  if(action?.action==='delete') {
   const {data:review}=await caller.from('product_reviews').select('id,user_id,status').eq('id',action.review_id??'').single()
-  if(!review||review.user_id!==user.id||review.status==='approved')return reply({error:'Review unavailable'},403)
+  if(!review||review.user_id!==percentUserId||review.status==='approved')return reply({error:'Review unavailable'},403)
   // Close uploads before listing paths; in-flight uploads recheck this state.
   await admin.from('product_reviews').update({status:'rejected'}).eq('id',review.id)
   const {data:images,error}=await admin.from('review_images').select('object_path').eq('review_id',review.id)
@@ -64,7 +67,7 @@ Deno.serve(async(req)=>{
   const form=await req.formData()
   const reviewId=String(form.get('review_id')??'')
   const {data:review,error}=await caller.from('product_reviews').select('id,user_id,status').eq('id',reviewId).single()
-  if(error||!review||review.user_id!==user.id||review.status!=='pending')return reply({error:'Pending review required'},403)
+  if(error||!review||review.user_id!==percentUserId||review.status!=='pending')return reply({error:'Pending review required'},403)
   const files=form.getAll('files').filter((f):f is File=>f instanceof File)
   if(!files.length||files.length>3)return reply({error:'Choose 1 to 3 images'},400)
   // Validate bytes before reserving metadata or storing objects; never trust MIME alone.
@@ -84,7 +87,7 @@ Deno.serve(async(req)=>{
   const free=[1,2,3].filter(slot=>!existing?.some(i=>i.slot===slot))
   if(validated.length>free.length)return reply({error:'Maximum 3 images per review'},409)
   for(const [i,file] of validated.entries()){
-   const path=`${user.id}/${review.id}/${crypto.randomUUID()}`
+   const path=`${percentUserId}/${review.id}/${crypto.randomUUID()}`
    const {data:row,error:rowError}=await admin.from('review_images').insert({review_id:review.id,slot:free[i],object_path:path,alt:'Customer review photo'}).select('id').single()
    if(rowError)throw rowError
    rows.push(row.id);paths.push(path)

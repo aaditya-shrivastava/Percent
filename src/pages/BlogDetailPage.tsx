@@ -2,7 +2,8 @@ import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { BlogCard } from '../components/blog/BlogCard'
-import { blogArticles, formatBlogDate, getBlogArticle, getRelatedBlogArticles } from '../data/blog'
+import { blogArticles, formatBlogDate, getBlogArticle } from '../data/blog'
+import type { BlogArticle } from '../data/blog'
 
 export function BlogDetailPage() {
   const { slug } = useParams()
@@ -15,10 +16,13 @@ export function BlogDetailPage() {
   }, [article])
 
   if (!article) return <main className="journal-not-found"><section><p>Percent Journal</p><h1>Story Not Found.</h1><span>This article may have moved or does not exist.</span><Link to="/blog">Back to Journal <ArrowRight /></Link></section></main>
+  return <BlogDetailContent article={article} articles={blogArticles}/>
+}
 
-  const relatedArticles = getRelatedBlogArticles(article)
-  const articleIndex = blogArticles.findIndex((candidate) => candidate.slug === article.slug)
-  const nextArticle = blogArticles[(articleIndex + 1) % blogArticles.length]
+export function BlogDetailContent({ article, articles }: { article: BlogArticle; articles: BlogArticle[] }) {
+  const relatedArticles = [...articles.filter(candidate => candidate.slug !== article.slug)].sort((first, second) => Number(second.category === article.category) - Number(first.category === article.category)).slice(0, 3)
+  const articleIndex = articles.findIndex(candidate => candidate.slug === article.slug)
+  const nextArticle = articles[(articleIndex + 1) % articles.length] ?? article
 
   return <main className="article-page">
     <article>

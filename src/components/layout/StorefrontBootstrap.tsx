@@ -1,7 +1,7 @@
 import { useEffect, useSyncExternalStore, type ReactNode } from 'react'
 import { loadCatalog, hostedProducts, hostedBlogs } from '../../backend/catalog'
 import { hydrateHomepage } from '../../data/homepage'
-import { hydrateBlogs } from '../../data/blog'
+import { applyBlogAuthority } from '../../data/blog'
 import { loadStorefrontWebsite, fallbackWebsiteDocument } from '../../backend/website'
 import { WebsiteContentProvider } from './WebsiteContentContext'
 
@@ -15,7 +15,7 @@ async function start(force=false) {
   if(status==='loading'||(status==='ready'&&!force))return
   if(refreshTimer)clearTimeout(refreshTimer)
   status='loading';notify()
-  try { const [,content]=await Promise.all([loadCatalog(),loadStorefrontWebsite()]);hydrateHomepage(hostedProducts.filter(p=>p.active));hydrateBlogs(hostedBlogs);website=content;status='ready';refreshTimer=setTimeout(()=>void start(true),50*60*1000) }
+  try { const [,content]=await Promise.all([loadCatalog(),loadStorefrontWebsite()]);hydrateHomepage(hostedProducts.filter(p=>p.active));applyBlogAuthority(hostedBlogs);website=content;status='ready';refreshTimer=setTimeout(()=>void start(true),50*60*1000) }
   catch { status='error' }
   notify()
 }

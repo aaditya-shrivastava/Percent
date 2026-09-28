@@ -43,13 +43,13 @@ Deno.serve(async(req)=>{
   if(signError)return reply({error:'Media unavailable'},503)
   return reply({media:Object.fromEntries((data??[]).filter(item=>item.signedUrl).map(item=>[item.path,item.signedUrl]))})
  }
- const token=req.headers.get('Authorization')?.replace(/^Bearer /i,'')
+ const authorization=req.headers.get('Authorization')??''
+ const token=/^Bearer[ ]+([^ ]+)$/i.exec(authorization)?.[1]
  if(!token)return reply({error:'Authentication required'},401)
- const {data:{user},error:authError}=await service.auth.getUser(token)
- if(authError||!user)return reply({error:'Authentication required'},401)
  const caller=createClient(url,Deno.env.get('SUPABASE_ANON_KEY')!,{global:{headers:{Authorization:`Bearer ${token}`}}})
  const {data:role,error:roleError}=await caller.rpc('get_my_role')
- if(roleError||!['admin','super_admin'].includes(role??''))return reply({error:'Admin access required'},403)
+ if(roleError)return reply({error:'Authentication required'},401)
+ if(!['admin','super_admin'].includes(role??''))return reply({error:'Admin access required'},403)
  if(action==='admin_read'){
   const {data:content,error}=await caller.rpc('get_website_editor')
   if(error)return reply({error:'Content unavailable'},503)
@@ -109,7 +109,7 @@ Deno.serve(async(req)=>{
  if(kind==='page'&&!mediaPages.has(id))return reply({error:'Invalid page media target'},400)
  if(!['banner','section','page'].includes(kind))return reply({error:'Invalid media target'},400)
  const requestId=String(form.get('request_id')??crypto.randomUUID()).slice(0,128)
- const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`${user.id}:${kind}:${id}:${requestId}:${await crypto.subtle.digest('SHA-256',bytes).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''))}`))
+ const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`${kind}:${id}:${requestId}:${await crypto.subtle.digest('SHA-256',bytes).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''))}`))
  const hash=[...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('')
  const ext=mime==='image/jpeg'?'jpg':mime.split('/')[1]
  const path=kind==='banner'?`banners/${id}/${hash}.${ext}`:kind==='section'?`sections/${id}/${hash}.${ext}`:`pages/${id}/${hash}.${ext}`

@@ -1,7 +1,8 @@
 import { supabase, checkError } from './client'
 import type { ProductDetails, ProductImage, ProductTag } from '../types'
-import type { BlogArticle } from '../data/blog'
+import { blogAuthority, type BlogArticle } from '../data/blog'
 import { deliveredProductImage, signedProductImages } from './public-product-media'
+import { signBlogImages, type BlogImage as ManagedBlogImage } from './admin/blog'
 
 export let hostedProducts: (ProductDetails & { archiveNumber: string; archivedAt: string })[] = []
 export let hostedBlogs: BlogArticle[] = []
@@ -12,8 +13,8 @@ export async function loadCatalog() {
     supabase.from('product_variants').select('*'), supabase.from('product_images').select('*').order('sort_order'),
     supabase.from('colours').select('*'), supabase.from('tags').select('*'), supabase.from('product_tags').select('*'),
     supabase.rpc('catalog_stock'), supabase.from('product_reviews').select('*').eq('status', 'approved'),
-    supabase.from('blog_posts').select('*').eq('status', 'published').lte('published_at', new Date().toISOString()).order('published_at', { ascending: false }),
-    supabase.from('blog_sections').select('*').order('sort_order'), supabase.from('blog_images').select('*'),
+    blogAuthority === 'managed' ? supabase.from('blog_posts').select('*').eq('status', 'published').lte('published_at', new Date().toISOString()).order('published_at', { ascending: false }) : Promise.resolve({ data: [], error: null }),
+    blogAuthority === 'managed' ? supabase.from('blog_sections').select('*').order('sort_order') : Promise.resolve({ data: [], error: null }), blogAuthority === 'managed' ? supabase.from('blog_images').select('*') : Promise.resolve({ data: [], error: null }),
     supabase.from('variant_images').select('*').order('sort_order'),
   ])
   for (const result of [products, variants, images, colours, tags, links, stock, reviews, posts, sections, blogImages, variantImages]) checkError(result.error)
@@ -38,5 +39,10 @@ export async function loadCatalog() {
     const {data,error}=await supabase.functions.invoke('percent-review-media',{body:{action:'read',review_id:review.id}})
     if(!error)review.images=data.images
   })))
-  hostedBlogs = (posts.data ?? []).map(p => ({ slug: p.slug, title: p.title, excerpt: p.excerpt, introduction: p.introduction, category: p.category, date: p.published_at.slice(0,10), author: p.author, featured: p.featured, pullQuote: p.pull_quote ?? '', image: image(blogImages.data!.find(i => i.post_id === p.id && i.role === 'primary') ?? { url: '', alt: '', width: 1200, height: 900 }), secondaryImage: blogImages.data!.some(i => i.post_id === p.id && i.role === 'secondary') ? image(blogImages.data!.find(i => i.post_id === p.id && i.role === 'secondary')!) : undefined, sections: (sections.data ?? []).filter(s => s.post_id === p.id).map(s => ({ heading: s.heading, paragraphs: s.paragraphs })) }))
+  hostedBlogs = await Promise.all((posts.data ?? []).map(async p => {
+    const raw = (blogImages.data ?? []).filter(i => i.post_id === p.id).map(i => ({ role: i.role as ManagedBlogImage['role'], url: i.url, alt: i.alt, width: i.width, height: i.height }))
+    const signed = await signBlogImages(p.id, raw)
+    const displayImage = (role: ManagedBlogImage['role']) => { const found = signed.find(i => i.role === role); return image(found ? { ...found, url: found.preview ?? found.url } : { url: '', alt: '', width: 1200, height: 900 }) }
+    return { slug: p.slug, title: p.title, excerpt: p.excerpt, introduction: p.introduction, category: p.category, date: (p.published_at ?? '').slice(0,10), author: p.author, featured: p.featured, pullQuote: p.pull_quote ?? '', image: displayImage('primary'), secondaryImage: signed.some(i => i.role === 'secondary') ? displayImage('secondary') : undefined, sections: (sections.data ?? []).filter(s => s.post_id === p.id).map(s => ({ heading: s.heading, paragraphs: s.paragraphs })) }
+  }))
 }

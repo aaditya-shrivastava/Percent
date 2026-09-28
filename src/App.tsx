@@ -40,9 +40,11 @@ function StorefrontApp() { return <><ScrollToTop /><Header /><Routes><Route path
 
 const AdminRoutes=lazy(()=>import('./pages/admin/AdminRoutes'))
 const WebsitePreviewPage=lazy(()=>import('./pages/admin/WebsitePreviewPage'))
+const BlogPreviewPage=lazy(()=>import('./pages/admin/BlogPreviewPage'))
 export default function App() {
  const {pathname}=useLocation()
  if(pathname==='/admin/website/preview')return <Suspense fallback={<main role="status" style={{padding:48}}>Loading preview…</main>}><WebsitePreviewPage/></Suspense>
+ if(pathname==='/admin/blog/preview')return <Suspense fallback={<main role="status" style={{padding:48}}>Loading article preview…</main>}><BlogPreviewPage/></Suspense>
  if(pathname==='/admin'||pathname.startsWith('/admin/'))return <Suspense fallback={<main className="percent-admin admin-gate" role="status">Loading admin…</main>}><AdminRoutes/></Suspense>
  return <StorefrontBootstrap><StorefrontApp/></StorefrontBootstrap>
 }

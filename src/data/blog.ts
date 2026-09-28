@@ -161,3 +161,10 @@ export function hydrateBlogs(articles: BlogArticle[]) {
  featuredBlogArticle=articles.find(a=>a.featured) ?? articles[0]
  aboutBlogArticles=articles.slice(0,3)
 }
+
+// Flip only after all real articles and their media pass content acceptance.
+// A successful empty managed result is distinct from a failed request.
+export const blogAuthority = 'source' as 'source' | 'managed'
+export function applyBlogAuthority(articles: BlogArticle[]) {
+  if (blogAuthority === 'managed') hydrateBlogs(articles)
+}

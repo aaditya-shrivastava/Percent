@@ -23,14 +23,14 @@ Deno.serve(async(req:Request)=>{
  if(req.method!=='POST')return reply({error:'Method not allowed'},405)
  const url=Deno.env.get('SUPABASE_URL')!
  if(new URL(url).hostname!=='gijyjdeohvdrnvqfqdha.supabase.co')return reply({error:'Project mismatch'},503)
- const token=req.headers.get('Authorization')?.replace(/^Bearer /i,'')
+ const authorization=req.headers.get('Authorization')??''
+ const token=/^Bearer[ ]+([^ ]+)$/i.exec(authorization)?.[1]
  if(!token)return reply({error:'Authentication required'},401)
  const privileged=createClient<Database>(url,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false}})
- const {data:{user},error:authError}=await privileged.auth.getUser(token)
- if(authError||!user)return reply({error:'Authentication required'},401)
  const caller=createClient<Database>(url,Deno.env.get('SUPABASE_ANON_KEY')!,{global:{headers:{Authorization:`Bearer ${token}`}},auth:{persistSession:false}})
  const {data:role,error:roleError}=await caller.rpc('get_my_role')
- if(roleError||!['admin','super_admin'].includes(role))return reply({error:'Admin access required'},403)
+ if(roleError)return reply({error:'Authentication required'},401)
+ if(!['admin','super_admin'].includes(role))return reply({error:'Admin access required'},403)
  try{
   let input:Record<string,unknown>,file:File|undefined
   if(req.headers.get('content-type')?.includes('multipart/form-data')){
@@ -103,7 +103,7 @@ Deno.serve(async(req:Request)=>{
   const width=Number(input.width),height=Number(input.height)
   if(!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||width<=0||height<=0||width>2147483647||height>2147483647)return reply({error:'Invalid image dimensions'},400)
   const contentHash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))).map(b=>b.toString(16).padStart(2,'0')).join('')
-  const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`${user.id}:${productId}:${input.request_id}:${contentHash}`)))).map(b=>b.toString(16).padStart(2,'0')).join('')
+  const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`${productId}:${input.request_id}:${contentHash}`)))).map(b=>b.toString(16).padStart(2,'0')).join('')
   const ext=mime==='image/jpeg'?'jpg':mime==='image/png'?'png':'webp'
   const path=`products/${productId}/${hash}.${ext}`,storedUrl=`storage://${bucket}/${path}`
   const already=images.find(i=>i.url===storedUrl)

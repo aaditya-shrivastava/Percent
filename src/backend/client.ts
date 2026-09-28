@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
+import { projectRef, supabasePublishableKey, supabaseUrl } from './supabaseConfig'
 
-export const projectRef = 'gijyjdeohvdrnvqfqdha'
-export const supabase = createClient(`https://${projectRef}.supabase.co`, 'sb_publishable_QxLwW-LIAjzV-s8YbKMP2Q_-FqY_DXc', {
+export { projectRef }
+export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
 })
 
