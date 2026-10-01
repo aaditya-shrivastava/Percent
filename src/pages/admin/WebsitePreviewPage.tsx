@@ -1,6 +1,6 @@
 import { useEffect, useState, type MouseEvent } from 'react'
 import { StorefrontBootstrap } from '../../components/layout/StorefrontBootstrap'
-import { WebsiteContentProvider, useWebsiteContent } from '../../components/layout/WebsiteContentContext'
+import { StorefrontTheme, WebsiteContentProvider, useWebsiteContent } from '../../components/layout/WebsiteContentContext'
 import { Header } from '../../components/layout/Header'
 import { Footer } from '../../components/layout/Footer'
 import { HomePage } from '../HomePage'
@@ -55,5 +55,5 @@ function PreviewBridge() {
     if ((event.target as HTMLElement).closest('a')) event.preventDefault()
   }
   const selected = page === 'home' ? <HomePage /> : page === 'shop' ? <ShopPage /> : page === 'product_details' ? <ProductDetailsPage previewSlug={previewSlug} /> : page === 'sold_out' ? <SoldOutDesignsPage /> : page === 'about' ? <AboutPage /> : page === 'contact' ? <ContactPage /> : page === 'faq' ? <FaqPage /> : <PolicyPage policyId={page.replace('policy_', '') as 'shipping' | 'returns' | 'privacy' | 'terms'} />
-  return <WebsiteContentProvider value={value}><WebsitePageDraftProvider document={draftPage}><div className="website-storefront-preview" onClickCapture={containNavigation}><Header />{selected}<Footer /></div></WebsitePageDraftProvider></WebsiteContentProvider>
+  return <WebsiteContentProvider value={value}><StorefrontTheme/><WebsitePageDraftProvider document={draftPage}><div className="website-storefront-preview" onClickCapture={containNavigation}><Header />{selected}<Footer /></div></WebsitePageDraftProvider></WebsiteContentProvider>
 }

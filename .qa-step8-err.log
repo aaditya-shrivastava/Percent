@@ -1,0 +1,181 @@
+12:44:24 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogMediaBatchMigration.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+12:44:24 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogMediaBatchMigration.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+12:44:24 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogMediaBatchMigration.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+12:44:24 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogMediaBatchMigration.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+12:44:25 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogMediaBatchMigration.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:05:32 AM [vite] (client) [console.error] The final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: []
+Incoming: [true]
+1:05:32 AM [vite] (client) [console.error] The final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: []
+Incoming: [true]
+1:05:32 AM [vite] (client) [console.error] The final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: []
+Incoming: [true]
+1:05:32 AM [vite] (client) [console.error] The final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: []
+Incoming: [true]
+1:08:24 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogFinalCutover.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:08:24 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogFinalCutover.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:08:24 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogFinalCutover.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:08:24 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogFinalCutover.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:08:24 AM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/BlogFinalCutover.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:20:56 PM [vite] (client) Pre-transform error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+1:20:56 PM [vite] (client) Pre-transform error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+1:20:56 PM [vite] Internal server error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+      at TransformPluginContext._formatLog (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31147:39)
+      at TransformPluginContext.error (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31144:14)
+      at normalizeUrl (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28083:18)
+      at async file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28153:30
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28119:4)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:30932:14)
+      at async loadAndTransform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:20671:26)
+      at async viteTransformMiddleware (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:25205:20)
+1:20:56 PM [vite] Internal server error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+      at TransformPluginContext._formatLog (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31147:39)
+      at TransformPluginContext.error (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31144:14)
+      at normalizeUrl (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28083:18)
+      at async file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28153:30
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28119:4)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:30932:14)
+      at async loadAndTransform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:20671:26)
+1:20:56 PM [vite] (client) Pre-transform error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+1:20:56 PM [vite] (client) Pre-transform error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+1:20:56 PM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/AdminRoutes.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:20:56 PM [vite] Internal server error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+      at TransformPluginContext._formatLog (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31147:39)
+      at TransformPluginContext.error (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31144:14)
+      at normalizeUrl (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28083:18)
+      at async file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28153:30
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28119:4)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:30932:14)
+      at async loadAndTransform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:20671:26)
+      at async viteTransformMiddleware (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:25205:20)
+1:20:56 PM [vite] Internal server error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+      at TransformPluginContext._formatLog (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31147:39)
+      at TransformPluginContext.error (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31144:14)
+      at normalizeUrl (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28083:18)
+      at async file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28153:30
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28119:4)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:30932:14)
+      at async loadAndTransform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:20671:26)
+1:20:56 PM [vite] (client) Pre-transform error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+1:20:56 PM [vite] Internal server error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+      at TransformPluginContext._formatLog (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31147:39)
+      at TransformPluginContext.error (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:31144:14)
+      at normalizeUrl (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28083:18)
+      at async file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28153:30
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:28119:4)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:30932:14)
+      at async loadAndTransform (file:///C:/Users/mihir/Desktop/Percent/node_modules/vite/dist/node/chunks/node.js:20671:26)
+1:20:56 PM [vite] (client) Pre-transform error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+1:20:56 PM [vite] (client) Pre-transform error: Failed to resolve import "./global-website-editor.css" from "src/pages/admin/AdminGlobalWebsiteEditor.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx:7:7
+  5  |  import { cleanupWebsiteImage, defaultGlobalSettings, listWebsiteMedia, loadWebsiteEditor, saveWebsiteGlobals, uploadW...
+  6  |  import "./website-editor.css";
+  7  |  import "./global-website-editor.css";
+     |          ^
+  8  |  var _jsxFileName = "C:/Users/mihir/Desktop/Percent/src/pages/admin/AdminGlobalWebsiteEditor.tsx";
+  9  |  import { jsxDEV as _jsxDEV, Fragment as _Fragment } from "react/jsx-dev-runtime";
+1:20:57 PM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/AdminRoutes.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:20:57 PM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/AdminRoutes.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:20:57 PM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/AdminRoutes.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)
+1:20:57 PM [vite] (client) [console.error] [vite] Failed to reload /src/pages/admin/AdminRoutes.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above)

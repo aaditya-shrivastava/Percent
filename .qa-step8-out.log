@@ -33,3 +33,77 @@
 10:31:36 PM [vite] server restarted.
 10:31:38 PM [vite] (client) [optimizer] bundling dependencies...
 11:02:29 PM [vite] (client) hmr update /src/index.css, /src/pages/CheckoutPage.tsx, /src/pages/AuthPages.tsx, /src/pages/AccountPages.tsx, /src/components/layout/Header.tsx, /src/pages/ProductDetailsPage.tsx, /src/pages/CartPage.tsx, /src/pages/SearchPage.tsx, /src/pages/ShopPage.tsx, /src/pages/TrackOrderPage.tsx, /src/components/account/AccountShell.tsx, /src/components/product/ProductReviews.tsx, /src/components/admin/AdminShell.tsx, /src/components/admin/AdminRouteGuard.tsx, /src/components/layout/StorefrontBootstrap.tsx and 13 more
+11:20:06 PM [vite] (client) hmr update /src/index.css, /src/pages/CheckoutPage.tsx, /src/pages/AuthPages.tsx, /src/pages/AccountPages.tsx, /src/components/layout/Header.tsx, /src/pages/ProductDetailsPage.tsx, /src/pages/CartPage.tsx, /src/pages/SearchPage.tsx, /src/pages/ShopPage.tsx, /src/pages/TrackOrderPage.tsx, /src/components/account/AccountShell.tsx, /src/components/product/ProductReviews.tsx, /src/components/admin/AdminShell.tsx, /src/components/admin/AdminRouteGuard.tsx, /src/components/layout/StorefrontBootstrap.tsx and 14 more
+11:20:07 PM [vite] (client) hmr update /src/index.css, /src/pages/CheckoutPage.tsx, /src/pages/AuthPages.tsx, /src/pages/AccountPages.tsx, /src/components/layout/Header.tsx, /src/pages/ProductDetailsPage.tsx, /src/pages/CartPage.tsx, /src/pages/SearchPage.tsx, /src/pages/ShopPage.tsx, /src/pages/TrackOrderPage.tsx, /src/components/account/AccountShell.tsx, /src/components/product/ProductReviews.tsx, /src/components/admin/AdminShell.tsx, /src/components/admin/AdminRouteGuard.tsx, /src/components/layout/StorefrontBootstrap.tsx and 14 more
+11:20:09 PM [vite] (client) hmr update /src/index.css, /src/components/account/AccountShell.tsx
+11:20:14 PM [vite] (client) hmr update /src/index.css, /src/pages/CheckoutPage.tsx, /src/pages/AccountPages.tsx
+11:20:16 PM [vite] (client) hmr update /src/index.css, /src/components/product/ProductReviews.tsx
+11:20:19 PM [vite] (client) hmr update /src/pages/AccountPages.tsx, /src/index.css
+11:21:13 PM [vite] (client) hmr update /src/index.css, /src/components/account/AccountShell.tsx
+11:21:15 PM [vite] (client) hmr update /src/index.css, /src/pages/CheckoutPage.tsx, /src/pages/ProductDetailsPage.tsx, /src/pages/CartPage.tsx, /src/pages/SearchPage.tsx, /src/pages/AccountPages.tsx, /src/pages/ShopPage.tsx, /src/components/layout/Header.tsx
+11:21:18 PM [vite] (client) hmr update /src/index.css, /src/components/product/ProductReviews.tsx
+11:21:21 PM [vite] (client) hmr update /src/pages/AccountPages.tsx, /src/index.css
+2:35:56 AM [vite] (client) hmr update /src/index.css, /src/components/account/AccountShell.tsx
+2:35:56 AM [vite] (client) hmr update /src/index.css, /src/components/account/AccountShell.tsx
+3:06:09 AM [vite] (client) hmr update /src/index.css, /src/components/account/AccountShell.tsx
+3:06:09 AM [vite] (client) hmr update /src/index.css, /src/components/account/AccountShell.tsx
+3:26:51 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminBlogEditor.tsx
+3:30:34 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminBlogEditor.tsx
+6:58:40 PM [vite] (client) hmr update /src/index.css
+11:55:54 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminBlogEditor.tsx
+12:29:04 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminBlogEditor.tsx
+12:29:04 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminBlogEditor.tsx
+12:44:22 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminBlogEditor.tsx
+12:44:24 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/BlogMediaBatchMigration.tsx
+12:54:46 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminBlogEditor.tsx
+1:04:24 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/BlogFinalCutover.tsx
+1:04:24 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/BlogFinalCutover.tsx
+1:05:32 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/BlogFinalCutover.tsx
+1:08:19 AM [vite] (client) hmr update /src/index.css, /src/pages/BlogDetailPage.tsx, /src/pages/AboutPage.tsx, /src/components/layout/StorefrontBootstrap.tsx, /src/pages/BlogPage.tsx, /src/pages/CheckoutPage.tsx, /src/pages/ProductDetailsPage.tsx, /src/pages/CartPage.tsx, /src/pages/ShopPage.tsx, /src/pages/SearchPage.tsx, /src/pages/AccountPages.tsx, /src/components/product/ShopProductCard.tsx, /src/pages/SoldOutDesignsPage.tsx, /src/pages/admin/WebsitePreviewPage.tsx, /src/components/blog/BlogCard.tsx and 3 more
+1:08:22 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminBlogEditor.tsx
+1:08:24 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/BlogFinalCutover.tsx
+1:54:25 AM [vite] (client) hmr update /src/pages/admin/AdminRoutes.tsx, /src/index.css
+1:56:01 AM [vite] (client) hmr update /src/index.css, /src/pages/CheckoutPage.tsx
+1:56:04 AM [vite] (client) hmr update /src/pages/CheckoutPage.tsx, /src/index.css
+1:56:36 AM [vite] (client) hmr update /src/index.css
+1:57:10 AM [vite] (client) hmr update /src/index.css
+1:57:45 AM [vite] (client) hmr update /src/index.css
+2:03:03 AM [vite] (client) hmr update /src/pages/CheckoutPage.tsx, /src/index.css
+2:03:07 AM [vite] (client) hmr update /src/index.css, /src/components/admin/AdminComponents.tsx
+2:03:10 AM [vite] (client) hmr update /src/index.css, /src/pages/CheckoutPage.tsx
+4:47:59 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminCoupons.tsx
+4:48:11 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminCoupons.tsx
+1:10:48 PM [vite] (client) hmr update /src/index.css, /src/components/layout/StorefrontBootstrap.tsx, /src/components/layout/WebsiteContentContext.tsx, /src/pages/admin/AdminWebsiteEditor.tsx, /src/pages/admin/AdminWebsitePageEditor.tsx
+1:10:48 PM [vite] (client) hmr update /src/index.css, /src/components/layout/StorefrontBootstrap.tsx, /src/components/layout/WebsiteContentContext.tsx, /src/pages/admin/AdminWebsiteEditor.tsx, /src/pages/admin/AdminWebsitePageEditor.tsx
+1:10:50 PM [vite] (client) hmr invalidate /src/components/layout/WebsiteContentContext.tsx Could not Fast Refresh ("useWebsiteContent" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+1:10:50 PM [vite] (client) hmr update /src/pages/HomePage.tsx, /src/components/layout/Footer.tsx, /src/components/layout/StorefrontBootstrap.tsx, /src/pages/admin/WebsitePreviewPage.tsx
+1:11:12 PM [vite] (client) hmr update /src/index.css, /src/components/layout/StorefrontBootstrap.tsx, /src/components/layout/WebsiteContentContext.tsx, /src/pages/admin/AdminWebsiteEditor.tsx, /src/pages/admin/AdminWebsitePageEditor.tsx
+1:11:13 PM [vite] (client) hmr invalidate /src/components/layout/WebsiteContentContext.tsx Could not Fast Refresh ("useWebsiteContent" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+1:11:13 PM [vite] (client) hmr update /src/pages/HomePage.tsx, /src/components/layout/Footer.tsx, /src/components/layout/StorefrontBootstrap.tsx, /src/pages/admin/WebsitePreviewPage.tsx
+1:13:01 PM [vite] (client) hmr update /src/index.css, /src/components/layout/WebsiteContentContext.tsx
+1:13:01 PM [vite] (client) hmr update /src/index.css, /src/components/layout/WebsiteContentContext.tsx
+1:13:04 PM [vite] (client) hmr update /src/App.tsx, /src/index.css
+1:13:04 PM [vite] (client) hmr invalidate /src/components/layout/WebsiteContentContext.tsx Could not Fast Refresh (new export)
+1:13:04 PM [vite] (client) hmr update /src/pages/HomePage.tsx, /src/components/layout/Footer.tsx, /src/components/layout/StorefrontBootstrap.tsx, /src/pages/admin/WebsitePreviewPage.tsx
+1:13:52 PM [vite] (client) hmr update /src/index.css, /src/components/layout/WebsiteContentContext.tsx
+1:13:52 PM [vite] (client) hmr invalidate /src/components/layout/WebsiteContentContext.tsx Could not Fast Refresh ("useWebsiteContent" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+1:13:52 PM [vite] (client) hmr update /src/pages/HomePage.tsx, /src/components/layout/Footer.tsx, /src/components/layout/StorefrontBootstrap.tsx, /src/pages/admin/WebsitePreviewPage.tsx, /src/App.tsx
+1:14:47 PM [vite] (client) hmr update /src/components/layout/Header.tsx, /src/index.css
+1:14:48 PM [vite] (client) hmr update /src/components/layout/Footer.tsx, /src/index.css
+1:15:22 PM [vite] (client) hmr update /src/index.css
+1:20:55 PM [vite] (client) hmr update /src/pages/admin/AdminRoutes.tsx, /src/index.css
+1:20:57 PM [vite] (client) hmr update /src/index.css, /src/components/admin/AdminShell.tsx
+1:21:35 PM [vite] (client) hmr update /src/index.css, /src/components/admin/AdminShell.tsx
+1:21:36 PM [vite] (client) hmr update /src/index.css, /src/components/admin/AdminShell.tsx
+1:22:04 PM [vite] (client) hmr update /src/pages/admin/WebsitePreviewPage.tsx, /src/index.css
+1:23:03 PM [vite] (client) hmr update /src/pages/admin/AdminRoutes.tsx
+1:24:28 PM [vite] (client) hmr update /src/index.css
+1:26:54 PM [vite] (client) hmr update /src/index.css, /src/components/layout/StorefrontBootstrap.tsx, /src/components/layout/WebsiteContentContext.tsx, /src/pages/admin/AdminWebsiteEditor.tsx, /src/pages/admin/AdminWebsitePageEditor.tsx, /src/pages/admin/AdminGlobalWebsiteEditor.tsx
+1:26:56 PM [vite] (client) hmr invalidate /src/components/layout/WebsiteContentContext.tsx Could not Fast Refresh ("useWebsiteContent" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+1:26:56 PM [vite] (client) hmr update /src/pages/HomePage.tsx, /src/components/layout/Footer.tsx, /src/components/layout/StorefrontBootstrap.tsx, /src/pages/admin/WebsitePreviewPage.tsx, /src/App.tsx, /src/components/layout/Header.tsx
+1:27:45 PM [vite] (client) hmr update /src/pages/admin/AdminRoutes.tsx, /src/index.css
+1:28:17 PM [vite] (client) hmr update /src/index.css, /src/components/admin/AdminShell.tsx
+1:31:44 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminGlobalWebsiteEditor.tsx
+1:31:45 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminGlobalWebsiteEditor.tsx
+1:41:44 PM [vite] (client) hmr update /src/components/layout/Header.tsx, /src/index.css
+1:41:44 PM [vite] (client) hmr update /src/components/layout/Header.tsx, /src/index.css

@@ -1,0 +1,14 @@
+{
+  "migration_compiled": true,
+  "colors_after_migration": 5,
+  "sizes_after_migration": 4,
+  "existing_variants_preserved": 221,
+  "authorization": "logged-out/customer denied; admin/super_admin allowed",
+  "guards": "passed",
+  "concurrency": "passed",
+  "direct_write_grants": "revoked",
+  "colour_touch_trigger": "existing historical now() trigger reused; save and reorder advance timestamp",
+  "assertions": 118,
+  "rejection_checks": 45,
+  "scope": "Disposable PGlite; relevant historical colours/touch DDL and hosted-shaped variant prerequisites; no hosted writes"
+}

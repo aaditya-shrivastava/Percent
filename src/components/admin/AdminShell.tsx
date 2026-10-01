@@ -22,20 +22,19 @@ const globalItems: { section: string; label: string; icon: LucideIcon }[] = [
 function Brand() { return <span className="admin-brand"><span className="admin-brand-symbol" aria-hidden="true"><i/><i/></span><strong>Percent</strong></span> }
 
 function AdminSidebar({ identity, onNavigate, onToggle, collapsed, mobile = false }: {identity: AdminIdentity; onNavigate?: () => void; onToggle?: () => void; collapsed?: boolean; mobile?: boolean}) {
-  const { search, pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const { logout } = usePercentSession()
   const [logoutError, setLogoutError] = useState(false)
-  const section = new URLSearchParams(search).get('section')
   const name = identity.user.displayName
   const initials = name.split(/\s+/).slice(0,2).map(n=>n[0]).join('')
   return <>
     <div className="admin-sidebar-brand"><Link to="/admin" onClick={onNavigate} aria-label="Percent admin dashboard"><Brand/></Link>{mobile && <button className="admin-icon-button" onClick={onNavigate} aria-label="Close navigation"><X/></button>}</div>
     <nav className="admin-navigation" aria-label="Admin navigation">
-      {primary.map(({path,label,icon:Icon})=><NavLink key={path} to={path} end={path==='/admin'} title={label} onClick={onNavigate} className={({isActive})=>`admin-nav-link ${isActive && !(path==='/admin/website'&&section)?'is-active':''}`}><Icon/><span>{label}</span></NavLink>)}
+      {primary.map(({path,label,icon:Icon})=><NavLink key={path} to={path} end={path==='/admin'||path==='/admin/website'} title={label} onClick={onNavigate} className={({isActive})=>`admin-nav-link ${isActive?'is-active':''}`}><Icon/><span>{label}</span></NavLink>)}
       <div className="admin-nav-divider"/>
       <p className="admin-nav-group"><Globe/><span>Global</span></p>
-      {globalItems.map(({section:item,label,icon:Icon})=><Link key={item} to={`/admin/website?section=${item}`} title={label} onClick={onNavigate} aria-current={pathname==='/admin/website'&&section===item?'page':undefined} className={`admin-nav-link admin-nav-sub ${pathname==='/admin/website'&&section===item?'is-active':''}`}><Icon/><span>{label}</span></Link>)}
-      <NavLink to="/admin/media" title="Media Library" onClick={onNavigate} className={({isActive})=>`admin-nav-link ${isActive?'is-active':''}`}><Image/><span>Media Library</span></NavLink>
+      {globalItems.map(({section:item,label,icon:Icon})=><Link key={item} to={`/admin/website/${item}`} title={label} onClick={onNavigate} aria-current={(item==='footer'?pathname==='/admin/website'&&search.includes('section=footer'):pathname===`/admin/website/${item}`)?'page':undefined} className={`admin-nav-link admin-nav-sub ${(item==='footer'?pathname==='/admin/website'&&search.includes('section=footer'):pathname===`/admin/website/${item}`)?'is-active':''}`}><Icon/><span>{label}</span></Link>)}
+      <NavLink to="/admin/website/media" title="Media Library" onClick={onNavigate} className={({isActive})=>`admin-nav-link ${isActive?'is-active':''}`}><Image/><span>Media Library</span></NavLink>
     </nav>
     <div className="admin-sidebar-bottom">
       <div className="admin-user"><span className="admin-avatar" aria-hidden="true">{initials}</span><div><strong>{name}</strong><span>{identity.role==='super_admin'?'Super Admin':'Admin'}</span></div><button className="admin-icon-button" aria-label="Sign out" title="Sign out" onClick={()=>{void logout().catch(()=>setLogoutError(true))}}><LogOut/></button></div>

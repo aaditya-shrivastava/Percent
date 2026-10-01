@@ -13,18 +13,20 @@ export function useWishlist() {
  const {user}=usePercentSession()
  const [state,setState]=useState<{owner?:string;items:string[]}>({items:[]})
  const [error,setError]=useState('')
+ const [loading,setLoading]=useState(true)
  const refresh=useCallback(async()=>{
-  if(!user)return
+  if(!user){setState({items:[]});setError('');setLoading(false);return}
+  setLoading(true)
   const {data,error}=await supabase.from('wishlist_items').select('product_id').eq('user_id',user.id)
-  checkError(error);setState({owner:user.id,items:(data??[]).map(i=>i.product_id)})
+  checkError(error);setState({owner:user.id,items:(data??[]).map(i=>i.product_id)});setError('');setLoading(false)
  },[user])
- useEffect(()=>{void Promise.resolve().then(refresh).catch(e=>setError(e.message));const sync=()=>void refresh().catch(e=>setError(e.message));window.addEventListener('percent:wishlist-changed',sync);return()=>window.removeEventListener('percent:wishlist-changed',sync)},[refresh])
+ useEffect(()=>{const failed=()=>{setError('Unable to load your wishlist.');setLoading(false)};void Promise.resolve().then(refresh).catch(failed);const sync=()=>void refresh().catch(failed);window.addEventListener('percent:wishlist-changed',sync);return()=>window.removeEventListener('percent:wishlist-changed',sync)},[refresh])
  const items=state.owner===user?.id?state.items:[]
  const toggle=async(productId:string)=>{
   if(!user){window.location.assign('/login?returnTo='+encodeURIComponent(window.location.pathname));return}
-  try {const result=items.includes(productId)?await supabase.from('wishlist_items').delete().eq('user_id',user.id).eq('product_id',productId):await supabase.from('wishlist_items').upsert({user_id:user.id,product_id:productId},{onConflict:'user_id,product_id',ignoreDuplicates:true});checkError(result.error);await refresh();window.dispatchEvent(new CustomEvent('percent:wishlist-changed'))}catch(e){setError(e instanceof Error?e.message:'Unable to save wishlist')}
+  try {const result=items.includes(productId)?await supabase.from('wishlist_items').delete().eq('user_id',user.id).eq('product_id',productId):await supabase.from('wishlist_items').upsert({user_id:user.id,product_id:productId},{onConflict:'user_id,product_id',ignoreDuplicates:true});checkError(result.error);await refresh();window.dispatchEvent(new CustomEvent('percent:wishlist-changed'))}catch{setError('Unable to update your wishlist. Please try again.')}
  }
- return {items,toggle,error}
+ return {items,toggle,error,loading}
 }
 
 export function addCartItem(productId: string, variantId: string, maxQuantity = Number.POSITIVE_INFINITY) {

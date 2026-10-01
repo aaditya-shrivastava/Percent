@@ -6,6 +6,13 @@ const pathPattern = /^posts\/([0-9a-f-]{36})\/([0-9a-f]{64})\.(jpg|png|webp)$/
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info', 'Access-Control-Allow-Methods': 'POST, OPTIONS' }
 const respond = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } })
 const validPath = (path: string, postId: string) => pathPattern.test(path) && pathPattern.exec(path)?.[1] === postId
+const sha256 = async (bytes: Uint8Array) => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), part => part.toString(16).padStart(2, '0')).join('')
+const imageKind = (bytes: Uint8Array) => {
+  const png = [137, 80, 78, 71, 13, 10, 26, 10].every((part, index) => bytes[index] === part)
+  const jpeg = bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255 && bytes.at(-2) === 255 && bytes.at(-1) === 217
+  const webp = new TextDecoder().decode(bytes.slice(0, 4)) === 'RIFF' && new TextDecoder().decode(bytes.slice(8, 12)) === 'WEBP'
+  return png ? { mime: 'image/png', extension: 'png' } : jpeg ? { mime: 'image/jpeg', extension: 'jpg' } : webp ? { mime: 'image/webp', extension: 'webp' } : null
+}
 
 Deno.serve(async request => {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: cors })
@@ -78,20 +85,27 @@ Deno.serve(async request => {
   if (action !== 'upload' || !file) return respond({ error: 'Invalid media action' }, 400)
   if (file.size < 16 || file.size > 10 * 1024 * 1024) return respond({ error: 'Image exceeds 10 MB or is invalid' }, 400)
   const bytes = new Uint8Array(await file.arrayBuffer())
-  const png = [137, 80, 78, 71, 13, 10, 26, 10].every((part, index) => bytes[index] === part)
-  const jpeg = bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255 && bytes.at(-2) === 255 && bytes.at(-1) === 217
-  const webp = new TextDecoder().decode(bytes.slice(0, 4)) === 'RIFF' && new TextDecoder().decode(bytes.slice(8, 12)) === 'WEBP'
-  const kind = png ? { mime: 'image/png', extension: 'png' } : jpeg ? { mime: 'image/jpeg', extension: 'jpg' } : webp ? { mime: 'image/webp', extension: 'webp' } : null
+  const kind = imageKind(bytes)
   if (!kind || file.type !== kind.mime) return respond({ error: 'Invalid image content' }, 400)
-  const digest = await crypto.subtle.digest('SHA-256', bytes)
-  const hash = Array.from(new Uint8Array(digest), part => part.toString(16).padStart(2, '0')).join('')
+  const hash = await sha256(bytes)
   const path = `posts/${postId}/${hash}.${kind.extension}`
   const uploaded = await admin.storage.from(bucket).upload(path, bytes, { contentType: kind.mime, upsert: false })
-  if (uploaded.error) return respond({ error: 'Image already exists or upload failed' }, 409)
+  let reused = false
+  if (uploaded.error) {
+    const existing = await admin.storage.from(bucket).download(path)
+    if (existing.error || !existing.data) return respond({ error: 'Image upload failed' }, 503)
+    const existingBytes = new Uint8Array(await existing.data.arrayBuffer())
+    const existingKind = imageKind(existingBytes)
+    const existingHash = await sha256(existingBytes)
+    if (existingBytes.byteLength !== bytes.byteLength || existingHash !== hash || existingKind?.mime !== kind.mime) {
+      return respond({ error: 'Existing image does not match this upload' }, 409)
+    }
+    reused = true
+  }
   const signed = await admin.storage.from(bucket).createSignedUrl(path, 300)
   if (signed.error) {
-    await admin.storage.from(bucket).remove([path])
+    if (!reused) await admin.storage.from(bucket).remove([path])
     return respond({ error: 'Preview unavailable' }, 503)
   }
-  return respond({ path, url: `storage://${bucket}/${path}`, preview_url: signed.data.signedUrl })
+  return respond({ path, url: `storage://${bucket}/${path}`, preview_url: signed.data.signedUrl, reused })
 })

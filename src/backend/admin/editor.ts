@@ -2,14 +2,16 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { supabase } from '../client'
 import type { Database } from '../database.types'
 import { blankEditor, editorPayload, type EditorForm, type Row } from './editor-model'
+import { listProductOptions } from './productOptions'
 const db:SupabaseClient<Database>=supabase
 export async function allRows<T>(read:(from:number,to:number)=>PromiseLike<{data:T[]|null;error:unknown}>){const rows:T[]=[];for(let a=0;;a+=500){const r=await read(a,a+499);if(r.error||!r.data)throw Error('Unable to load product data.');rows.push(...r.data);if(r.data.length<500)return rows}}
 export async function loadEditor(id?:string){
- const [categories,tags,colours]=await Promise.all([
+ const [categories,tags,options]=await Promise.all([
   allRows((a,b)=>db.from('categories').select('*').order('id').range(a,b)),
   allRows((a,b)=>db.from('tags').select('*').order('id').range(a,b)),
-  allRows((a,b)=>db.from('colours').select('*').order('id').range(a,b)),
+  listProductOptions(),
  ])
+ const colours=options.colors.map(option=>({id:option.id,label:option.name,slug:option.normalized_name.replaceAll(' ','-'),swatch_value:option.hex_code,enabled:option.enabled,sort_order:option.sort_order,updated_at:option.updated_at}))
  let product:Row<'products'>|null=null,form=blankEditor(),allocated=0,sold=0,available=0,eligible=0
  if(id){
   const p=await db.from('products').select('*').eq('id',id).single();if(p.error||!p.data)throw Error('Product unavailable.');product=p.data
@@ -26,7 +28,7 @@ export async function loadEditor(id?:string){
   available=product.status==='active'&&product.is_shop_available?eligible:0
   form={name:product.name,slug:product.slug,design_code:product.design_code,short_description:product.short_description,full_description:product.full_description,price:String(product.price_paise/100),compare:product.compare_at_price_paise===null?'':String(product.compare_at_price_paise/100),category_id:product.category_id??'',fit_type:product.fit_type,production_limit:String(product.production_limit),material:product.material??'',style:product.style??'',care_instructions:product.care_instructions??'',shipping_and_returns:product.shipping_and_returns??'',tags:tagLinks.map(t=>t.tag_id),images,variant_images:links,variants:variants.map(v=>({id:v.id,colour_id:v.colour_id,size:v.size,sku:v.sku,price:String(v.price_paise/100),compare:v.compare_at_price_paise===null?'':String(v.compare_at_price_paise/100),enabled:v.enabled,persisted:true,locked:locked.has(v.id)}))}
  }
- return {product,form,categories,tags,colours,allocated,sold,available,eligible}
+ return {product,form,categories,tags,colours,sizes:options.sizes,allocated,sold,available,eligible}
 }
 export type EditorData=Awaited<ReturnType<typeof loadEditor>>
 export class EditorFailure extends Error {constructor(message:string,public conflict=false){super(message)}}

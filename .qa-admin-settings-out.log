@@ -1,0 +1,28 @@
+
+> percent-storefront@0.1.0 dev
+> vite --force --host 127.0.0.1 --port 8081
+
+3:44:50 PM [vite] (client) Forced re-optimization of dependencies
+
+  VITE v8.3.1  ready in 2579 ms
+
+  ➜  Local:   http://127.0.0.1:8081/
+  ➜  press h + enter to show help
+3:44:52 PM [vite] (client) [optimizer] bundling dependencies...
+6:00:59 PM [vite] (client) hmr update /src/index.css
+6:02:59 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminProductEditor.tsx, /src/pages/admin/AdminInventory.tsx, /src/pages/admin/InventoryAdjustments.tsx, /src/pages/admin/AdminProducts.tsx
+6:04:45 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminProductEditor.tsx
+6:08:31 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminSettings.tsx
+6:10:10 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/admin-users-settings.css
+6:12:40 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/editor.css
+6:15:42 PM [vite] (client) hmr update /src/index.css
+10:53:08 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/ProductOptionsSettings.tsx
+10:53:08 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/ProductOptionsSettings.tsx
+10:54:31 PM [vite] (client) hmr update /src/index.css, /src/pages/admin/ProductOptionsSettings.tsx
+1:27:58 AM [vite] (client) hmr update /src/index.css
+1:27:58 AM [vite] (client) hmr update /src/index.css
+1:29:19 AM [vite] (client) hmr update /src/pages/admin/AdminRoutes.tsx, /src/index.css
+1:38:13 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminAnalytics.tsx
+1:38:13 AM [vite] (client) hmr update /src/index.css, /src/pages/admin/AdminAnalytics.tsx
+1:38:15 AM [vite] (client) hmr update /src/index.css
+1:39:44 AM [vite] (client) hmr update /src/index.css

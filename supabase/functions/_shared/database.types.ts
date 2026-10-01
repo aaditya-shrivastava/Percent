@@ -254,12 +254,16 @@ export type Database = {
           amount_paise: number | null
           code: string
           created_at: string
+          description: string
           ends_at: string | null
           id: string
           kind: string
+          maximum_discount_paise: number | null
           minimum_subtotal_paise: number
+          per_customer_usage_limit: number | null
           percent_bps: number | null
           starts_at: string | null
+          total_usage_limit: number | null
           updated_at: string
         }
         Insert: {
@@ -267,12 +271,16 @@ export type Database = {
           amount_paise?: number | null
           code: string
           created_at?: string
+          description?: string
           ends_at?: string | null
           id?: string
           kind: string
+          maximum_discount_paise?: number | null
           minimum_subtotal_paise?: number
+          per_customer_usage_limit?: number | null
           percent_bps?: number | null
           starts_at?: string | null
+          total_usage_limit?: number | null
           updated_at?: string
         }
         Update: {
@@ -280,14 +288,24 @@ export type Database = {
           amount_paise?: number | null
           code?: string
           created_at?: string
+          description?: string
           ends_at?: string | null
           id?: string
           kind?: string
+          maximum_discount_paise?: number | null
           minimum_subtotal_paise?: number
+          per_customer_usage_limit?: number | null
           percent_bps?: number | null
           starts_at?: string | null
+          total_usage_limit?: number | null
           updated_at?: string
         }
+        Relationships: []
+      }
+      coupon_redemptions: {
+        Row: { id:string;coupon_id:string;user_id:string;order_id:string;coupon_code_snapshot:string;discount_paise:number;created_at:string }
+        Insert: { id?:string;coupon_id:string;user_id:string;order_id:string;coupon_code_snapshot:string;discount_paise:number;created_at?:string }
+        Update: { id?:string;coupon_id?:string;user_id?:string;order_id?:string;coupon_code_snapshot?:string;discount_paise?:number;created_at?:string }
         Relationships: []
       }
       inventory_adjustments: {

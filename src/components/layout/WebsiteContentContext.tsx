@@ -1,8 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, type ReactNode } from 'react'
 import { fallbackWebsiteDocument, type WebsiteDocument } from '../../backend/website'
 type Value={managed:boolean;document:WebsiteDocument}
 const WebsiteContext=createContext<Value>({managed:false,document:fallbackWebsiteDocument()})
 export function WebsiteContentProvider({value,children}:{value:Value;children:ReactNode}){return <WebsiteContext.Provider value={value}>{children}</WebsiteContext.Provider>}
 export const useWebsiteContent=()=>useContext(WebsiteContext)
+export function StorefrontTheme(){const {document}=useWebsiteContent();useEffect(()=>{const root=window.document.documentElement,c=document.settings.colors,t=document.settings.typography;const values:Record<string,string>={'--bg':c.background,'--surface':c.surface,'--ink':c.text,'--muted':c.muted,'--accent':c.accent,'--accent-hover':c.accent_hover,'--border':c.border,'--highlight':c.highlight,'--font-display':t.display_family,'--font-heading':t.heading_family,'--font-body':t.body_family,'--font-ui':t.ui_family,'--heading-weight':String(t.heading_weight),'--body-weight':String(t.body_weight),'--global-letter-spacing':`${t.letter_spacing}em`};const previous=Object.fromEntries(Object.keys(values).map(key=>[key,root.style.getPropertyValue(key)]));Object.entries(values).forEach(([key,value])=>root.style.setProperty(key,value));let icon=window.document.querySelector<HTMLLinkElement>('link[rel="icon"]');const original=icon?.href;if(document.settings.branding.favicon_url){if(!icon){icon=window.document.createElement('link');icon.rel='icon';window.document.head.append(icon)}icon.href=document.settings.branding.favicon_url}return()=>{Object.entries(previous).forEach(([key,value])=>value?root.style.setProperty(key,value):root.style.removeProperty(key));if(icon&&original)icon.href=original;else if(icon&&!original&&document.settings.branding.favicon_url)icon.remove()}},[document.settings]);return null}
 

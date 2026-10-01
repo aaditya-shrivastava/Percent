@@ -230,25 +230,34 @@ export type Database = {
       colours: {
         Row: {
           created_at: string
+          enabled: boolean
           id: string
           label: string
+          normalized_name: string
           slug: string
+          sort_order: number
           swatch_value: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          enabled?: boolean
           id?: string
           label: string
+          normalized_name?: string
           slug: string
+          sort_order?: number
           swatch_value: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          enabled?: boolean
           id?: string
           label?: string
+          normalized_name?: string
           slug?: string
+          sort_order?: number
           swatch_value?: string
           updated_at?: string
         }
@@ -260,12 +269,16 @@ export type Database = {
           amount_paise: number | null
           code: string
           created_at: string
+          description: string
           ends_at: string | null
           id: string
           kind: string
+          maximum_discount_paise: number | null
           minimum_subtotal_paise: number
+          per_customer_usage_limit: number | null
           percent_bps: number | null
           starts_at: string | null
+          total_usage_limit: number | null
           updated_at: string
         }
         Insert: {
@@ -273,12 +286,16 @@ export type Database = {
           amount_paise?: number | null
           code: string
           created_at?: string
+          description?: string
           ends_at?: string | null
           id?: string
           kind: string
+          maximum_discount_paise?: number | null
           minimum_subtotal_paise?: number
+          per_customer_usage_limit?: number | null
           percent_bps?: number | null
           starts_at?: string | null
+          total_usage_limit?: number | null
           updated_at?: string
         }
         Update: {
@@ -286,14 +303,24 @@ export type Database = {
           amount_paise?: number | null
           code?: string
           created_at?: string
+          description?: string
           ends_at?: string | null
           id?: string
           kind?: string
+          maximum_discount_paise?: number | null
           minimum_subtotal_paise?: number
+          per_customer_usage_limit?: number | null
           percent_bps?: number | null
           starts_at?: string | null
+          total_usage_limit?: number | null
           updated_at?: string
         }
+        Relationships: []
+      }
+      coupon_redemptions: {
+        Row: { id:string;coupon_id:string;user_id:string;order_id:string;coupon_code_snapshot:string;discount_paise:number;created_at:string }
+        Insert: { id?:string;coupon_id:string;user_id:string;order_id:string;coupon_code_snapshot:string;discount_paise:number;created_at?:string }
+        Update: { id?:string;coupon_id?:string;user_id?:string;order_id?:string;coupon_code_snapshot?:string;discount_paise?:number;created_at?:string }
         Relationships: []
       }
       inventory_adjustment_operations: {
@@ -916,6 +943,36 @@ export type Database = {
           },
         ]
       }
+      product_size_options: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          label: string
+          normalized_label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          label: string
+          normalized_label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          label?: string
+          normalized_label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           archive_number: string | null
@@ -1257,6 +1314,23 @@ export type Database = {
       }
     }
     Functions: {
+      admin_get_analytics: {
+        Args: { start_at?: string | null; end_at?: string | null }
+        Returns: Json
+      }
+      admin_list_product_options: { Args: never; Returns: Json }
+      admin_reorder_product_options: {
+        Args: { option_type: string; ordered_ids: string[]; expected_updated_at: string[] }
+        Returns: Json
+      }
+      save_product_color_option: {
+        Args: { option_id: string | null; option_name: string; hex_code: string; option_enabled: boolean; option_sort_order: number; expected_updated_at: string | null }
+        Returns: Json
+      }
+      save_product_size_option: {
+        Args: { option_id: string | null; option_label: string; option_enabled: boolean; option_sort_order: number; expected_updated_at: string | null }
+        Returns: Json
+      }
       admin_get_customer: {
         Args: { customer_id: string }
         Returns: Json
@@ -1286,8 +1360,15 @@ export type Database = {
         Returns: Json
       }
       create_checkout_order: {
-        Args: { cart_lines: Json; shipping_address_id: string; idempotency_key: string }
+        Args: { cart_lines: Json; shipping_address_id: string; idempotency_key: string; coupon_code: string | null }
         Returns: Json
+      }
+      validate_coupon: { Args: { code:string;cart_lines:Json };Returns:Json }
+      admin_list_coupons: { Args: { search_query?:string;status_filter?:string;page_number?:number;page_size?:number };Returns:Json }
+      admin_get_coupon: { Args: { coupon_id:string };Returns:Json }
+      save_coupon: {
+        Args: { coupon_id:string|null;code:string;description:string;discount_type:string;fixed_amount_paise:number|null;percentage_bps:number|null;minimum_order_paise:number;maximum_discount_paise:number|null;valid_from:string|null;valid_until:string|null;total_usage_limit:number|null;per_customer_usage_limit:number|null;enabled:boolean;expected_updated_at?:string|null }
+        Returns:Json
       }
       catalog_stock: {
         Args: never

@@ -16,6 +16,11 @@ const subscribers=new Set<()=>void>()
 const publish=(next:PercentSessionSnapshot)=>{snapshot=next;for(const subscriber of subscribers)subscriber()}
 const normalizeRole=(value:unknown):PercentRole|null=>value==='customer'||value==='admin'||value==='super_admin'?value:null
 const memberSince=(value:string|null|undefined)=>value?new Intl.DateTimeFormat('en-IN',{month:'short',year:'numeric'}).format(new Date(value)):undefined
+const contactEmail=(firebaseUser:FirebaseUser)=>{
+ const email=firebaseUser.email?.trim()
+ if(!email||/^u_[0-9a-f]{32}@login[.]percent[.]invalid$/i.test(email))return undefined
+ return email
+}
 
 async function resolveFirebaseUser(firebaseUser:FirebaseUser,request:number){
  const {data:percentUserId,error:provisionError}=await firebaseSupabase.rpc('provision_my_percent_identity')
@@ -29,7 +34,8 @@ async function resolveFirebaseUser(firebaseUser:FirebaseUser,request:number){
  const role=normalizeRole(roleValue)
  if(!role)throw new Error('The Percent account has no valid role.')
  if(request!==revision||firebaseAuth.currentUser?.uid!==firebaseUser.uid)return
- const user:PercentSessionUser={id:percentUserId,displayName:profile.display_name||firebaseUser.displayName||firebaseUser.email||'Percent Member',firstName:profile.first_name??undefined,lastName:profile.last_name??undefined,phone:profile.phone??undefined,email:firebaseUser.email??undefined,memberSince:memberSince(profile.created_at)}
+ const safeEmail=contactEmail(firebaseUser)
+ const user:PercentSessionUser={id:percentUserId,displayName:profile.display_name||firebaseUser.displayName||safeEmail||'Percent Member',firstName:profile.first_name??undefined,lastName:profile.last_name??undefined,phone:profile.phone??undefined,email:safeEmail,memberSince:memberSince(profile.created_at)}
  publish({loading:false,authenticated:true,firebaseUser,percentUserId,role,isAdmin:role==='admin'||role==='super_admin',isSuperAdmin:role==='super_admin',user,error:null})
 }
 
@@ -78,6 +84,6 @@ export async function updateCurrentPercentProfile(profile:{firstName:string;last
  const percentUserId=snapshot.percentUserId
  if(!snapshot.authenticated||!percentUserId)throw new Error('Please sign in.')
  const {error}=await firebaseSupabase.from('profiles').update({first_name:profile.firstName,last_name:profile.lastName,display_name:`${profile.firstName} ${profile.lastName}`.trim(),phone:profile.phone}).eq('id',percentUserId)
- if(error)throw new Error(error.message)
+ if(error)throw new Error('Unable to update your profile. Please try again.')
  await refreshPercentSession()
 }

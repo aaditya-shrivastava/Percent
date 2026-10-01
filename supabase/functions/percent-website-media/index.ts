@@ -9,8 +9,8 @@ const pageKeys=new Set(['shop','product_details','sold_out','about','contact','f
 const mediaPages=new Set(['about','contact'])
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info','Access-Control-Allow-Methods':'POST, OPTIONS'}
 const reply=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,'Content-Type':'application/json','Cache-Control':'no-store'}})
-const validPath=(path:string)=>/^banners\/[0-9a-f-]{36}\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)||/^sections\/(limited_editions|best_sellers|trending|new_arrivals|oversized_fit|shop_by_design|brand_story)\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)||/^pages\/(about|contact)\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)
-const pathsFrom=(content:any)=>[...(content?.banners??[]).flatMap((b:any)=>[b.image_path,b.mobile_image_path]),...(content?.sections??[]).map((s:any)=>s.media_path)].filter((p:unknown):p is string=>typeof p==='string'&&validPath(p))
+const validPath=(path:string)=>/^banners\/[0-9a-f-]{36}\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)||/^sections\/(limited_editions|best_sellers|trending|new_arrivals|oversized_fit|shop_by_design|brand_story)\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)||/^pages\/(about|contact)\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)||/^(branding|library)\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)
+const pathsFrom=(content:any)=>[...(content?.banners??[]).flatMap((b:any)=>[b.image_path,b.mobile_image_path]),...(content?.sections??[]).map((s:any)=>s.media_path),content?.settings?.branding?.logo_path,content?.settings?.branding?.favicon_path].filter((p:unknown):p is string=>typeof p==='string'&&validPath(p))
 const pagePathsFrom=(content:any)=>[content?.media_path,...(content?.sections??[]).map((s:any)=>s.media_path)].filter((p:unknown):p is string=>typeof p==='string'&&validPath(p))
 const pagePath=(path:string,page:string)=>validPath(path)&&path.startsWith(`pages/${page}/`)
 
@@ -70,18 +70,39 @@ Deno.serve(async(req)=>{
   if(signError)return reply({error:'Media unavailable'},503)
   return reply({media:Object.fromEntries((data??[]).filter(item=>item.signedUrl).map(item=>[item.path,item.signedUrl]))})
  }
+ if(action==='library_list'){
+  const [{data:objects,error:listError},{data:content,error:contentError}]=await Promise.all([
+   service.storage.from(BUCKET).list('',{limit:1000,sortBy:{column:'created_at',order:'desc'}}),
+   caller.rpc('get_website_editor'),
+  ])
+  if(listError||contentError)return reply({error:'Unable to load media library'},503)
+  const referenced=new Set(pathsFrom(content))
+  for(const page of pageKeys){const {data}=await caller.rpc('get_website_page_editor',{p_page_key:page});for(const path of pagePathsFrom(data))referenced.add(path)}
+  const files:any[]=[]
+  for(const folder of objects??[]){
+   if(folder.id){files.push(folder);continue}
+   const {data}=await service.storage.from(BUCKET).list(folder.name,{limit:1000,sortBy:{column:'created_at',order:'desc'}})
+   for(const child of data??[]){if(child.id)files.push({...child,name:`${folder.name}/${child.name}`});else{const {data:grand}=await service.storage.from(BUCKET).list(`${folder.name}/${child.name}`,{limit:1000});for(const item of grand??[])if(item.id)files.push({...item,name:`${folder.name}/${child.name}/${item.name}`})}}
+  }
+  const paths=files.map(file=>file.name).filter(validPath)
+  const {data:signed,error:signError}=paths.length?await service.storage.from(BUCKET).createSignedUrls(paths,300):{data:[],error:null}
+  if(signError)return reply({error:'Unable to preview media'},503)
+  const urls=new Map((signed??[]).map(item=>[item.path,item.signedUrl]))
+  return reply({assets:files.filter(file=>validPath(file.name)).map(file=>({path:file.name,size:Number(file.metadata?.size??0),mime_type:String(file.metadata?.mimetype??''),created_at:String(file.created_at??''),preview_url:urls.get(file.name),referenced:referenced.has(file.name)}))})
+ }
  if(action==='cleanup'){
   const path=String(json?.path??'')
   if(!validPath(path))return reply({error:'Invalid media path'},400)
-  const [primaryReference,mobileReference,sectionReference,pageReference,pageSectionReference]=await Promise.all([
+  const [primaryReference,mobileReference,sectionReference,pageReference,pageSectionReference,settingsReference]=await Promise.all([
    service.from('website_banners').select('id',{count:'exact',head:true}).eq('image_path',path),
    service.from('website_banners').select('id',{count:'exact',head:true}).eq('mobile_image_path',path),
    service.from('website_sections').select('section_key',{count:'exact',head:true}).eq('media_path',path),
    service.from('website_pages').select('page_key',{count:'exact',head:true}).eq('media_path',path),
    service.from('website_page_sections').select('section_key',{count:'exact',head:true}).eq('media_path',path),
+   service.from('website_settings').select('id',{count:'exact',head:true}).or(`branding->>logo_path.eq.${path},branding->>favicon_path.eq.${path}`),
   ])
-  if(primaryReference.error||mobileReference.error||sectionReference.error||pageReference.error||pageSectionReference.error)return reply({error:'Unable to verify media references'},503)
-  if((primaryReference.count??0)+(mobileReference.count??0)+(sectionReference.count??0)+(pageReference.count??0)+(pageSectionReference.count??0)>0)return reply({error:'Referenced media cannot be removed'},409)
+  if(primaryReference.error||mobileReference.error||sectionReference.error||pageReference.error||pageSectionReference.error||settingsReference.error)return reply({error:'Unable to verify media references'},503)
+  if((primaryReference.count??0)+(mobileReference.count??0)+(sectionReference.count??0)+(pageReference.count??0)+(pageSectionReference.count??0)+(settingsReference.count??0)>0)return reply({error:'Referenced media cannot be removed'},409)
   const {error}=await service.storage.from(BUCKET).remove([path])
   return error?reply({error:'Cleanup failed'},409):reply({removed:true})
  }
@@ -107,12 +128,12 @@ Deno.serve(async(req)=>{
  if(kind==='banner'&&!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))return reply({error:'Invalid banner id'},400)
  if(kind==='section'&&!sections.has(id))return reply({error:'Invalid section key'},400)
  if(kind==='page'&&!mediaPages.has(id))return reply({error:'Invalid page media target'},400)
- if(!['banner','section','page'].includes(kind))return reply({error:'Invalid media target'},400)
+ if(!['banner','section','page','branding','library'].includes(kind))return reply({error:'Invalid media target'},400)
  const requestId=String(form.get('request_id')??crypto.randomUUID()).slice(0,128)
  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`${kind}:${id}:${requestId}:${await crypto.subtle.digest('SHA-256',bytes).then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''))}`))
  const hash=[...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('')
  const ext=mime==='image/jpeg'?'jpg':mime.split('/')[1]
- const path=kind==='banner'?`banners/${id}/${hash}.${ext}`:kind==='section'?`sections/${id}/${hash}.${ext}`:`pages/${id}/${hash}.${ext}`
+ const path=kind==='banner'?`banners/${id}/${hash}.${ext}`:kind==='section'?`sections/${id}/${hash}.${ext}`:kind==='page'?`pages/${id}/${hash}.${ext}`:`${kind}/${hash}.${ext}`
  const {error}=await service.storage.from(BUCKET).upload(path,bytes,{contentType:mime,upsert:false})
  if(error)return reply({error:'Upload failed'},409)
  const {data:signed,error:signError}=await service.storage.from(BUCKET).createSignedUrl(path,300)
