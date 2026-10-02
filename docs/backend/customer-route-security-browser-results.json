@@ -1,0 +1,28 @@
+{
+  "results": [
+    "Direct URL and restoration /cart",
+    "Direct URL and restoration /wishlist",
+    "Direct URL and restoration /profile",
+    "Direct URL and restoration /profile/orders",
+    "Direct URL and restoration /profile/address",
+    "Direct URL and restoration /profile/wishlist",
+    "Direct URL and restoration /checkout",
+    "Direct URL and restoration /order-confirmation",
+    "Direct URL and restoration /orders/order-a",
+    "Direct URL and restoration /orders/order-a/track",
+    "Safe and malicious returnTo matrix",
+    "Login returns to /cart",
+    "Login returns to /wishlist",
+    "Login returns to /checkout",
+    "Login returns to /orders/order-a",
+    "Refresh logout back forward and valid deep links",
+    "Public browsing and auth pages remain accessible",
+    "Protected product actions create no anonymous state",
+    "Cart account isolation and session-loading denial",
+    "Admin customer and staff eligibility boundaries",
+    "Responsive loading and Sign In at all required widths",
+    "Google returnTo and Super Admin regression",
+    "Authenticated reservation is guarded after logout"
+  ],
+  "errors": []
+}

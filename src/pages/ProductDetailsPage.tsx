@@ -8,6 +8,7 @@ import type { ProductDetailsResponse } from '../data/productDetails'
 import { formatInr, safeSwatch } from '../data/shop'
 import { addCartItem, useWishlist } from '../hooks/useCommerce'
 import { useProductDetails } from '../hooks/useProductDetails'
+import { requireCustomerAction } from '../backend/customerAccess'
 import type { FitType, ProductDetails, ProductImage } from '../types'
 
 const sizeGuides: Record<FitType, Array<{ size: string; chest: string; length: string }>> = {
@@ -91,10 +92,12 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
   const wished = wishlist.items.includes(product.id)
   const uniqueSizes = product.sizes.filter((size, index, sizes) => sizes.indexOf(size) === index)
   const addToCart = () => {
+    if(!requireCustomerAction())return
     if (!selectedColourId) { setSelectionError('Choose a colour before adding this piece.'); return }
     if (!selectedSize) { setSelectionError('Select an available size before adding this piece.'); sizeGroup.current?.focus(); return }
     if (!selectedVariant?.isAvailable || product.isSoldOut) { setSelectionError('This variant is currently unavailable.'); return }
-    addCartItem(product.id, selectedVariant.id, selectedVariant.stock); setSelectionError(''); setFeedback(`${product.name}, ${selectedVariant.colour.label}, size ${selectedVariant.size} added to your bag.`)
+    if(!addCartItem(product.id, selectedVariant.id, selectedVariant.stock))return
+    setSelectionError(''); setFeedback(`${product.name}, ${selectedVariant.colour.label}, size ${selectedVariant.size} added to your bag.`)
   }
   const extraDetails = [{ title: 'Product Details', content: product.fullDescription }, { title: 'Material and Care', content: [product.material, product.careInstructions].filter(Boolean).join(' · ') }, { title: 'Fit and Size', content: `${product.fitType === 'standard' ? 'Standard Fit' : 'Oversized Fit'}. Available sizes: ${uniqueSizes.join(', ')}.` }, { title: 'Shipping and Returns', content: product.shippingAndReturns }, ...(product.collaborator ? [{ title: 'Collaboration Information', content: [product.collaborator.title, product.collaborator.description].filter(Boolean).join(' — ') }] : [])].filter((item) => item.content)
 
@@ -114,7 +117,7 @@ function ProductDetailsContent({ data }: { data: ProductDetailsResponse }) {
           <fieldset className="pdp-option-group"><legend>Colour <span>{product.colors.find((colour) => colour.id === selectedColourId)?.label}</span></legend><div className="pdp-colours">{product.colors.map((colour) => <button key={colour.id} type="button" className={selectedColourId === colour.id ? 'is-selected' : ''} aria-label={`Select ${colour.label}`} aria-pressed={selectedColourId === colour.id} onClick={() => { setSelectedColourId(colour.id); setSelectedSize(''); setSelectionError(''); const nextImages = product.variants.find((variant) => variant.colour.id === colour.id)?.images; if (nextImages?.[0]) setActiveImage(nextImages[0]) }}><i style={{ background: safeSwatch(colour) }} />{selectedColourId === colour.id && <Check />}</button>)}</div></fieldset>
           <fieldset ref={sizeGroup} className="pdp-option-group product-size-section" tabIndex={-1} aria-labelledby="product-size-label"><div className="product-size-header"><span id="product-size-label">Size</span><button className="pdp-size-guide-trigger product-size-guide" type="button" onClick={() => setSizeGuideOpen(true)}>Size Guide <ChevronDown /></button></div><div className="pdp-sizes product-size-options">{uniqueSizes.map((size) => { const variant = colourVariants.find((item) => item.size === size); const available = Boolean(variant?.isAvailable) && !product.isSoldOut; return <button key={size} type="button" disabled={!available} className={`product-size-option ${selectedSize === size ? 'is-selected' : ''}`} aria-pressed={selectedSize === size} onClick={() => { setSelectedSize(size); setSelectionError('') }}>{size}</button> })}</div></fieldset>
           {selectionError && <p className="pdp-validation" role="alert">{selectionError}</p>}
-          <div className="pdp-purchase product-purchase-actions"><button type="button" className="pdp-primary-action" disabled={product.isSoldOut} onClick={addToCart}>{product.isSoldOut ? 'Sold Out' : 'Add to Cart'}</button><button type="button" className={`pdp-wishlist ${wished ? 'is-active' : ''}`} aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`} aria-pressed={wished} onClick={() => { wishlist.toggle(product.id); setFeedback(wished ? 'Removed from your wishlist.' : 'Saved to your wishlist.') }}><Heart fill={wished ? 'currentColor' : 'none'} /></button></div>
+          <div className="pdp-purchase product-purchase-actions"><button type="button" className="pdp-primary-action" disabled={product.isSoldOut} onClick={addToCart}>{product.isSoldOut ? 'Sold Out' : 'Add to Cart'}</button><button type="button" className={`pdp-wishlist ${wished ? 'is-active' : ''}`} aria-label={wished ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`} aria-pressed={wished} onClick={() => { if (!requireCustomerAction()) return; wishlist.toggle(product.id); setFeedback(wished ? 'Removed from your wishlist.' : 'Saved to your wishlist.') }}><Heart fill={wished ? 'currentColor' : 'none'} /></button></div>
           <p className="pdp-feedback" aria-live="polite">{feedback}</p>
         </>}
       </div>

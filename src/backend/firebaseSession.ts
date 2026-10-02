@@ -77,6 +77,7 @@ onIdTokenChanged(firebaseAuth, user => {
     publish({ status: 'signed-out', user: null, error: null })
     return
   }
+  publish({ status: 'loading', user: null, error: null })
   void identityFrom(user)
     .then(next => { if (request === revision) publish(next) })
     .catch(() => {

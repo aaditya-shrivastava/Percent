@@ -1,0 +1,86 @@
+{
+  "checkedAt": "2026-10-02T03:31:14.382Z",
+  "environment": "disposable in-memory PGlite; Supabase Auth shim; relevant historical migrations through coupon foundation; no hosted writes",
+  "results": [
+    "Migration has exact literal issuer with no escaped colon",
+    "Hosted bodies match historical replay",
+    "Migration compiles and executes locally",
+    "Owner ACL volatility security definer search_path signatures unchanged",
+    "Deployed identity functions exactly match the tested replacements",
+    "Prepared rollback-only SQL test",
+    "Password Google customer admin and super_admin identities unchanged",
+    "Normal provisioning preserves role profile mapping and Google contact email",
+    "Authenticated checkout identity reaches ordinary validation; anonymous RPCs denied",
+    "Customer A/B profile address wishlist order and review RLS ownership",
+    "Fail closed private.current_user_id() missingAnchor",
+    "Fail closed provision_my_percent_identity() missingAnchor",
+    "Fail closed private.current_user_id() duplicateAnchor",
+    "Fail closed provision_my_percent_identity() duplicateAnchor",
+    "Fail closed private.current_user_id() missingJwt",
+    "Fail closed provision_my_percent_identity() missingJwt",
+    "Fail closed private.current_user_id() wrongIssuer",
+    "Fail closed provision_my_percent_identity() wrongIssuer",
+    "Fail closed private.current_user_id() securityInvoker",
+    "Fail closed provision_my_percent_identity() securityInvoker",
+    "Fail closed private.current_user_id() wrongSearchPath",
+    "Fail closed provision_my_percent_identity() wrongSearchPath",
+    "Fail closed private.current_user_id() unexpectedBody",
+    "Fail closed provision_my_percent_identity() unexpectedBody"
+  ],
+  "before": [
+    {
+      "signature": "private.current_user_id()",
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "prosecdef": true,
+      "provolatile": "s",
+      "proconfig": [
+        "search_path=\"\""
+      ],
+      "arguments": "",
+      "result": "uuid",
+      "prosrc": "\ndeclare\n  claims jsonb := auth.jwt();\n  token_issuer text := claims ->> 'iss';\n  token_audience text := claims ->> 'aud';\n  token_subject text := claims ->> 'sub';\n  resolved_id uuid;\nbegin\n  if claims is null or token_subject is null or token_subject = '' then\n    return null;\n  end if;\n\n  if token_issuer = 'https://securetoken.google.com/percent-63d3e'\n     and token_audience = 'percent-63d3e'\n     and claims ->> 'role' = 'authenticated' then\n    select identity.percent_user_id\n    into resolved_id\n    from private.external_identities as identity\n    where identity.provider = 'firebase'\n      and identity.issuer = token_issuer\n      and identity.external_subject = token_subject;\n    return resolved_id;\n  end if;\n\n  if token_issuer = 'https://gijyjdeohvdrnvqfqdha.supabase.co/auth/v1'\n     and token_audience = 'authenticated'\n     and claims ->> 'role' = 'authenticated'\n     and token_subject ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$' then\n    select principal.id\n    into resolved_id\n    from private.percent_principals as principal\n    where principal.id = token_subject::uuid;\n    return resolved_id;\n  end if;\n\n  return null;\nend;\n"
+    },
+    {
+      "signature": "provision_my_percent_identity()",
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "prosecdef": true,
+      "provolatile": "v",
+      "proconfig": [
+        "search_path=\"\""
+      ],
+      "arguments": "",
+      "result": "uuid",
+      "prosrc": "\ndeclare\n  claims jsonb := auth.jwt();\n  firebase_issuer constant text := 'https://securetoken.google.com/percent-63d3e';\n  firebase_audience constant text := 'percent-63d3e';\n  firebase_subject text := claims ->> 'sub';\n  trusted_email text := case\n    when claims #>> '{firebase,sign_in_provider}' = 'google.com'\n     and claims ->> 'email_verified' = 'true'\n    then lower(nullif(btrim(claims ->> 'email'), ''))\n    else null\n  end;\n  existing_id uuid;\n  new_id uuid;\nbegin\n  if claims is null\n     or claims ->> 'iss' is distinct from firebase_issuer\n     or claims ->> 'aud' is distinct from firebase_audience\n     or claims ->> 'role' is distinct from 'authenticated'\n     or firebase_subject is null\n     or firebase_subject = ''\n     or length(firebase_subject) > 128\n     or (trusted_email is not null and char_length(trusted_email) > 320) then\n    raise exception 'Verified Percent Firebase authentication required'\n      using errcode = '42501';\n  end if;\n\n  perform pg_advisory_xact_lock(\n    hashtextextended(firebase_issuer || chr(31) || firebase_subject, 0)\n  );\n\n  select identity.percent_user_id\n  into existing_id\n  from private.external_identities as identity\n  where identity.issuer = firebase_issuer\n    and identity.external_subject = firebase_subject;\n\n  if existing_id is not null then\n    if not exists (\n      select 1 from private.percent_principals as principal\n      where principal.id = existing_id\n    ) or not exists (\n      select 1 from public.profiles as profile\n      where profile.id = existing_id\n    ) or not exists (\n      select 1 from private.user_roles as role_record\n      where role_record.user_id = existing_id\n    ) then\n      raise exception 'Firebase identity mapping is incomplete'\n        using errcode = '23503';\n    end if;\n    if trusted_email is not null then\n      update private.percent_principals\n      set email = trusted_email\n      where id = existing_id and email is null;\n    end if;\n    return existing_id;\n  end if;\n\n  new_id := gen_random_uuid();\n  insert into private.percent_principals(id, email)\n  values (new_id, trusted_email);\n  insert into private.external_identities(\n    provider, issuer, external_subject, percent_user_id\n  ) values (\n    'firebase', firebase_issuer, firebase_subject, new_id\n  );\n  insert into public.profiles(id) values (new_id);\n  insert into private.user_roles(user_id, role) values (new_id, 'customer');\n\n  return new_id;\nexception\n  when unique_violation then\n    raise exception 'Firebase identity provisioning collision'\n      using errcode = '23505';\nend;\n"
+    }
+  ],
+  "after": [
+    {
+      "signature": "private.current_user_id()",
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "prosecdef": true,
+      "provolatile": "s",
+      "proconfig": [
+        "search_path=\"\""
+      ],
+      "arguments": "",
+      "result": "uuid",
+      "prosrc": "\ndeclare\n  claims jsonb := auth.jwt();\n  token_issuer text := claims ->> 'iss';\n  token_audience text := claims ->> 'aud';\n  token_subject text := claims ->> 'sub';\n  resolved_id uuid;\nbegin\n  if claims ->> 'is_anonymous' = 'true'\n     or claims #>> '{firebase,sign_in_provider}' = 'anonymous'\n     or claims is null or token_subject is null or token_subject = '' then\n    return null;\n  end if;\n\n  if token_issuer = 'https://securetoken.google.com/percent-63d3e'\n     and token_audience = 'percent-63d3e'\n     and claims ->> 'role' = 'authenticated' then\n    select identity.percent_user_id\n    into resolved_id\n    from private.external_identities as identity\n    where identity.provider = 'firebase'\n      and identity.issuer = token_issuer\n      and identity.external_subject = token_subject;\n    return resolved_id;\n  end if;\n\n  if token_issuer = 'https://gijyjdeohvdrnvqfqdha.supabase.co/auth/v1'\n     and token_audience = 'authenticated'\n     and claims ->> 'role' = 'authenticated'\n     and token_subject ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$' then\n    select principal.id\n    into resolved_id\n    from private.percent_principals as principal\n    where principal.id = token_subject::uuid;\n    return resolved_id;\n  end if;\n\n  return null;\nend;\n"
+    },
+    {
+      "signature": "provision_my_percent_identity()",
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "prosecdef": true,
+      "provolatile": "v",
+      "proconfig": [
+        "search_path=\"\""
+      ],
+      "arguments": "",
+      "result": "uuid",
+      "prosrc": "\ndeclare\n  claims jsonb := auth.jwt();\n  firebase_issuer constant text := 'https://securetoken.google.com/percent-63d3e';\n  firebase_audience constant text := 'percent-63d3e';\n  firebase_subject text := claims ->> 'sub';\n  trusted_email text := case\n    when claims #>> '{firebase,sign_in_provider}' = 'google.com'\n     and claims ->> 'email_verified' = 'true'\n    then lower(nullif(btrim(claims ->> 'email'), ''))\n    else null\n  end;\n  existing_id uuid;\n  new_id uuid;\nbegin\n  if claims ->> 'is_anonymous' = 'true'\n     or claims #>> '{firebase,sign_in_provider}' = 'anonymous'\n     or claims is null\n     or claims ->> 'iss' is distinct from firebase_issuer\n     or claims ->> 'aud' is distinct from firebase_audience\n     or claims ->> 'role' is distinct from 'authenticated'\n     or firebase_subject is null\n     or firebase_subject = ''\n     or length(firebase_subject) > 128\n     or (trusted_email is not null and char_length(trusted_email) > 320) then\n    raise exception 'Verified Percent Firebase authentication required'\n      using errcode = '42501';\n  end if;\n\n  perform pg_advisory_xact_lock(\n    hashtextextended(firebase_issuer || chr(31) || firebase_subject, 0)\n  );\n\n  select identity.percent_user_id\n  into existing_id\n  from private.external_identities as identity\n  where identity.issuer = firebase_issuer\n    and identity.external_subject = firebase_subject;\n\n  if existing_id is not null then\n    if not exists (\n      select 1 from private.percent_principals as principal\n      where principal.id = existing_id\n    ) or not exists (\n      select 1 from public.profiles as profile\n      where profile.id = existing_id\n    ) or not exists (\n      select 1 from private.user_roles as role_record\n      where role_record.user_id = existing_id\n    ) then\n      raise exception 'Firebase identity mapping is incomplete'\n        using errcode = '23503';\n    end if;\n    if trusted_email is not null then\n      update private.percent_principals\n      set email = trusted_email\n      where id = existing_id and email is null;\n    end if;\n    return existing_id;\n  end if;\n\n  new_id := gen_random_uuid();\n  insert into private.percent_principals(id, email)\n  values (new_id, trusted_email);\n  insert into private.external_identities(\n    provider, issuer, external_subject, percent_user_id\n  ) values (\n    'firebase', firebase_issuer, firebase_subject, new_id\n  );\n  insert into public.profiles(id) values (new_id);\n  insert into private.user_roles(user_id, role) values (new_id, 'customer');\n\n  return new_id;\nexception\n  when unique_violation then\n    raise exception 'Firebase identity provisioning collision'\n      using errcode = '23505';\nend;\n"
+    }
+  ]
+}

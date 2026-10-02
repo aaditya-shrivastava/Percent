@@ -1,9 +1,9 @@
 import { supabase } from './client'
-import { getPercentSessionSnapshot } from './percentSession'
+import { customerSessionId } from './customerAccess'
 import type { ProductReview } from '../types'
 
 export async function submitReview(slug: string, rating: number, title: string, body: string, files: File[]): Promise<ProductReview> {
- const userId=getPercentSessionSnapshot().percentUserId
+ const userId=customerSessionId()
  if(!userId)throw new Error('Please sign in.')
  const {data:product,error:productError}=await supabase.from('products').select('id').eq('slug',slug).single();if(productError||!product)throw new Error('This product is unavailable for review.')
  const {data:profile,error:profileError}=await supabase.from('profiles').select('display_name').eq('id',userId).single();if(profileError||!profile)throw new Error('Unable to verify your customer profile.')

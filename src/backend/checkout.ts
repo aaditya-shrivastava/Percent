@@ -1,4 +1,5 @@
 import { supabase } from './client'
+import { customerSessionId } from './customerAccess'
 import type { CartLine } from '../hooks/useCommerce'
 
 export interface CheckoutOrder {
@@ -30,11 +31,13 @@ export function checkoutMessage(error:{code?:string;message?:string}){
 }
 const rpcLines=(lines:CartLine[])=>lines.map(line=>({variant_id:line.variantId,quantity:line.quantity}))
 export async function validateCoupon(code:string,lines:CartLine[]){
+ if(!customerSessionId())throw new Error('Sign in to continue.')
  const {data,error}=await supabase.rpc('validate_coupon',{code,cart_lines:rpcLines(lines)})
  if(error)throw new Error(checkoutMessage(error))
  return data as unknown as CouponValidation
 }
 export async function createCheckoutOrder(lines:CartLine[],addressId:string,key:string,couponCode?:string){
+ if(!customerSessionId())throw new Error('Sign in to continue.')
  const {data,error}=await supabase.rpc('create_checkout_order',{cart_lines:rpcLines(lines),shipping_address_id:addressId,idempotency_key:key,coupon_code:couponCode??null})
  if(error)throw new Error(checkoutMessage(error))
  return data as unknown as CheckoutOrder

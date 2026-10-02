@@ -1,4 +1,4 @@
-import { Menu, Search, ShoppingBag, Sparkle, UserRound, X } from 'lucide-react'
+import { Menu, Search, ShoppingCart, Sparkle, UserRound, X } from 'lucide-react'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { navigation, shopNavigationItems } from '../../data/homepage'
@@ -6,8 +6,8 @@ import { useCartCount } from '../../hooks/useCommerce'
 import { usePercentSession } from '../../hooks/usePercentSession'
 import { useWebsiteContent } from './WebsiteContentContext'
 
-function RunningTrolleyIcon() {
-  return <svg className="running-trolley" viewBox="0 0 28 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 7h4l2.1 9.2h11.7l2.4-7.1H8" /><path d="M15.5 7h6M17.5 4.5h4" /><circle cx="10" cy="20" r="1.45" /><circle cx="18.5" cy="20" r="1.45" /></svg>
+function ClothingRackIcon() {
+  return <svg className="running-trolley" viewBox="0 0 28 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 22V3h22v19M1 22h4m18 0h4M9 3v4m10-4v4" /><path d="m7 7-2 2 1 3 1-1v7h4v-7l1 1 1-3-2-2a2 2 0 0 1-4 0Zm10 0-2 2 1 3 1-1v7h4v-7l1 1 1-3-2-2a2 2 0 0 1-4 0Z" /></svg>
 }
 
 function CollectionDropdown({label}:{label:string}) {
@@ -16,7 +16,7 @@ function CollectionDropdown({label}:{label:string}) {
   const moveFocus = (index: number) => links.current[(index + shopNavigationItems.length) % shopNavigationItems.length]?.focus()
 
   return <div className="collection-dropdown" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-    <button className="collection-trigger icon-button" aria-label={label} title={label} aria-expanded={open} aria-haspopup="menu" onClick={() => setOpen((value) => !value)} onKeyDown={(event) => { if (event.key === 'Escape') setOpen(false); if (event.key === 'ArrowDown') { event.preventDefault(); setOpen(true); requestAnimationFrame(() => moveFocus(0)) } }}><RunningTrolleyIcon /></button>
+    <button className="collection-trigger icon-button" aria-label={label} title={label} aria-expanded={open} aria-haspopup="menu" onClick={() => setOpen((value) => !value)} onKeyDown={(event) => { if (event.key === 'Escape') setOpen(false); if (event.key === 'ArrowDown') { event.preventDefault(); setOpen(true); requestAnimationFrame(() => moveFocus(0)) } }}><ClothingRackIcon /></button>
     <div className={`collection-menu ${open ? 'is-open' : ''}`} role="menu" aria-label={`${label} categories`}>{shopNavigationItems.map((item, index) => <Link key={item.id} ref={(element) => { links.current[index] = element }} role="menuitem" to={item.href} onClick={() => setOpen(false)} onKeyDown={(event) => { if (event.key === 'Escape') { setOpen(false); event.currentTarget.closest('.collection-dropdown')?.querySelector<HTMLButtonElement>('button')?.focus() } if (event.key === 'ArrowDown') { event.preventDefault(); moveFocus(index + 1) } if (event.key === 'ArrowUp') { event.preventDefault(); moveFocus(index - 1) } }}>{item.label}</Link>)}</div>
   </div>
 }
@@ -63,7 +63,7 @@ export function Header() {
       <nav className="desktop-links" aria-label="Primary navigation">{items.some(item=>item.id==='collection')&&<CollectionDropdown label={collectionLabel}/>} {items.filter((item) => item.id !== 'collection').map((item) => <Link className="icon-button nav-icon" key={item.id} to={item.href} aria-label={item.label} title={item.label} data-tooltip={item.label}><Sparkle size={22} strokeWidth={1.8} aria-hidden="true" /></Link>)}</nav>
       <button ref={menuTrigger} className={`mobile-menu-trigger icon-button ${menuOpen ? 'is-open' : ''}`} aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={menuOpen} aria-controls="mobile-navigation-menu" onClick={toggleMenu}><span className="mobile-menu-glyph" aria-hidden="true"><Menu className="mobile-menu-open-icon" /><X className="mobile-menu-close-icon" /></span></button>
       <Link className="wordmark" to="/" aria-label="Percent home">{brand.logo_url?<img src={brand.logo_url} alt={brand.logo_alt??brand.display_name} width={brand.logo_width??undefined} height={brand.logo_height??undefined}/>:<strong>{brand.display_name}</strong>}<small>{brand.tagline}</small></Link>
-      <nav className="header-actions" aria-label="Customer actions"><button className="icon-button" type="button" aria-label="Search Percent" aria-expanded={searchOpen} aria-controls="header-search-panel" onClick={openSearch}><Search /></button><Link className="icon-button" to={isAuthenticated ? '/profile' : '/login'} aria-label="Profile"><UserRound /></Link><Link className="icon-button cart-action" to="/cart" aria-label="Cart" title="Cart"><ShoppingBag />{cartCount > 0 && <span aria-hidden="true">{Math.min(cartCount, 99)}</span>}</Link></nav>
+      <nav className="header-actions" aria-label="Customer actions"><button className="icon-button" type="button" aria-label="Search Percent" aria-expanded={searchOpen} aria-controls="header-search-panel" onClick={openSearch}><Search /></button><Link className="icon-button" to={isAuthenticated ? '/profile' : '/login'} aria-label="Profile"><UserRound /></Link><Link className="icon-button cart-action" to="/cart" aria-label="Cart" title="Cart"><ShoppingCart strokeWidth={1.8} aria-hidden="true" />{cartCount > 0 && <span aria-hidden="true">{Math.min(cartCount, 99)}</span>}</Link></nav>
     </div>
     <div id="header-search-panel" className={`header-search-panel ${searchOpen ? 'is-open' : ''}`} aria-hidden={!searchOpen} onKeyDown={(event) => { if (event.key === 'Escape') closeSearch() }}>{searchOpen && <form onSubmit={submitSearch}><label className="sr-only" htmlFor="header-search-input">Search Percent</label><Search aria-hidden="true" /><input ref={searchInput} id="header-search-input" type="search" autoComplete="off" placeholder="Search products and stories..." value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} autoFocus /><button type="submit">Search <ArrowRightIcon /></button><button className="header-search-close" type="button" aria-label="Close search" onClick={closeSearch}><X /></button></form>}</div>
     <button className={`mobile-menu-backdrop ${menuOpen ? 'is-open' : ''}`} aria-label="Dismiss navigation menu" tabIndex={-1} onClick={closeMenu} />

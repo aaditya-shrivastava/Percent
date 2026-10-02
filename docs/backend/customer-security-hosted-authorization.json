@@ -1,0 +1,212 @@
+{
+  "policies": [
+    {
+      "cmd": "SELECT",
+      "qual": "( SELECT private.is_admin() AS is_admin)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "addresses",
+      "policyname": "admin_read",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(user_id = ( SELECT private.current_user_id() AS current_user_id))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "addresses",
+      "policyname": "own_addresses",
+      "with_check": "(user_id = ( SELECT private.current_user_id() AS current_user_id))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "( SELECT private.is_admin() AS is_admin)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "order_addresses",
+      "policyname": "admin_read",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM orders owned_order\n  WHERE ((owned_order.id = order_addresses.order_id) AND (owned_order.user_id = ( SELECT private.current_user_id() AS current_user_id)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "order_addresses",
+      "policyname": "own_order_addresses",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "( SELECT private.is_admin() AS is_admin)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "order_items",
+      "policyname": "admin_read",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM orders owned_order\n  WHERE ((owned_order.id = order_items.order_id) AND (owned_order.user_id = ( SELECT private.current_user_id() AS current_user_id)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "order_items",
+      "policyname": "own_order_items",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "( SELECT private.is_admin() AS is_admin)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "orders",
+      "policyname": "admin_read",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(user_id = ( SELECT private.current_user_id() AS current_user_id))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "orders",
+      "policyname": "own_orders",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "( SELECT private.is_admin() AS is_admin)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "product_reviews",
+      "policyname": "admin_read",
+      "with_check": null
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "((user_id = ( SELECT private.current_user_id() AS current_user_id)) AND (status = 'pending'::text))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "product_reviews",
+      "policyname": "delete_pending_review",
+      "with_check": null
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "((user_id = ( SELECT private.current_user_id() AS current_user_id)) AND (status = 'pending'::text))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "product_reviews",
+      "policyname": "edit_pending_review",
+      "with_check": "((user_id = ( SELECT private.current_user_id() AS current_user_id)) AND (status = 'pending'::text))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(user_id = ( SELECT private.current_user_id() AS current_user_id))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "product_reviews",
+      "policyname": "own_reviews",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "((status = 'approved'::text) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.id = product_reviews.product_id) AND p.is_visible AND (p.status = ANY (ARRAY['active'::text, 'archived'::text]))))))",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "tablename": "product_reviews",
+      "policyname": "public_reviews",
+      "with_check": null
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "product_reviews",
+      "policyname": "submit_review",
+      "with_check": "((user_id = ( SELECT private.current_user_id() AS current_user_id)) AND (status = 'pending'::text) AND (EXISTS ( SELECT 1\n   FROM products review_product\n  WHERE ((review_product.id = product_reviews.product_id) AND review_product.is_visible AND (review_product.status = ANY (ARRAY['active'::text, 'archived'::text]))))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "( SELECT private.is_admin() AS is_admin)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "profiles",
+      "policyname": "admin_read",
+      "with_check": null
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "(id = ( SELECT private.current_user_id() AS current_user_id))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "profiles",
+      "policyname": "edit_profile",
+      "with_check": "(id = ( SELECT private.current_user_id() AS current_user_id))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(id = ( SELECT private.current_user_id() AS current_user_id))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "profiles",
+      "policyname": "own_profile",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(user_id = ( SELECT private.current_user_id() AS current_user_id))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "wishlist_items",
+      "policyname": "own_wishlist",
+      "with_check": "(user_id = ( SELECT private.current_user_id() AS current_user_id))"
+    }
+  ],
+  "functions": [
+    {
+      "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "signature": "save_address(jsonb)",
+      "definition": "CREATE OR REPLACE FUNCTION public.save_address(address jsonb)\n RETURNS addresses\n LANGUAGE plpgsql\n SET search_path TO ''\nAS $function$\ndeclare uid uuid := private.current_user_id(); result public.addresses; aid uuid;\nbegin\n if uid is null then raise exception 'Authentication required'; end if;\n perform 1 from public.profiles where id=uid for update;\n aid := coalesce(nullif(address->>'id','')::uuid,gen_random_uuid());\n if exists(select 1 from public.addresses where id=aid) and not exists(select 1 from public.addresses where id=aid and user_id=uid) then raise exception 'Address unavailable'; end if;\n if coalesce((address->>'is_default')::boolean,false) then update public.addresses set is_default=false where user_id=uid and is_default; end if;\n insert into public.addresses(id,user_id,label,is_default,full_name,phone,address_line1,address_line2,city,state,pin_code,country)\n values(aid,uid,coalesce(address->>'label','Home'),coalesce((address->>'is_default')::boolean,false),address->>'full_name',address->>'phone',address->>'address_line1',coalesce(address->>'address_line2',''),address->>'city',address->>'state',address->>'pin_code','IN')\n on conflict(id) do update set label=excluded.label,is_default=excluded.is_default,full_name=excluded.full_name,phone=excluded.phone,address_line1=excluded.address_line1,address_line2=excluded.address_line2,city=excluded.city,state=excluded.state,pin_code=excluded.pin_code\n returning * into result;\n return result;\nend $function$\n"
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "signature": "create_checkout_order(jsonb,uuid,uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION public.create_checkout_order(cart_lines jsonb, shipping_address_id uuid, idempotency_key uuid)\n RETURNS jsonb\n LANGUAGE sql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\n  select public.create_checkout_order(\r\n    cart_lines,shipping_address_id,idempotency_key,null::text)\r\n$function$\n"
+    },
+    {
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}",
+      "signature": "admin_get_customer(uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_get_customer(customer_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\ndeclare\r\n  actor uuid := private.current_user_id();\r\n  result jsonb;\r\nbegin\r\n  if actor is null or not private.is_admin() then\r\n    raise exception 'Admin access required' using errcode = '42501';\r\n  end if;\r\n\r\n  select jsonb_build_object(\r\n    'profile', jsonb_build_object(\r\n      'id', p.id,\r\n      'display_name', p.display_name,\r\n      'first_name', p.first_name,\r\n      'last_name', p.last_name,\r\n      'email', principal.email,\r\n      'account_role', r.role,\r\n      'phone', p.phone,\r\n      'created_at', p.created_at,\r\n      'updated_at', p.updated_at\r\n    ),\r\n    'metrics', jsonb_build_object(\r\n      'order_count', (select count(*) from public.orders o where o.user_id = p.id),\r\n      'lifetime_order_value_paise', (select coalesce(sum(o.total_paise), 0) from public.orders o where o.user_id = p.id and o.status <> 'cancelled'),\r\n      'average_order_value_paise', (select coalesce(round(avg(o.total_paise)), 0) from public.orders o where o.user_id = p.id and o.status <> 'cancelled'),\r\n      'latest_order_at', (select max(o.created_at) from public.orders o where o.user_id = p.id),\r\n      'address_count', (select count(*) from public.addresses a where a.user_id = p.id),\r\n      'review_count', (select count(*) from public.product_reviews pr where pr.user_id = p.id),\r\n      'wishlist_count', (select count(*) from public.wishlist_items wi where wi.user_id = p.id)\r\n    ),\r\n    'addresses', coalesce((\r\n      select jsonb_agg(jsonb_build_object(\r\n        'id', a.id, 'label', a.label, 'is_default', a.is_default,\r\n        'full_name', a.full_name, 'phone', a.phone,\r\n        'address_line1', a.address_line1, 'address_line2', a.address_line2,\r\n        'city', a.city, 'state', a.state, 'pin_code', a.pin_code,\r\n        'country', a.country, 'created_at', a.created_at, 'updated_at', a.updated_at\r\n      ) order by a.is_default desc, a.created_at asc, a.id asc)\r\n      from public.addresses a where a.user_id = p.id\r\n    ), '[]'::jsonb),\r\n    'orders', coalesce((\r\n      select jsonb_agg(jsonb_build_object(\r\n        'id', o.id, 'order_reference', o.order_reference,\r\n        'status', o.status, 'payment_status', o.payment_status,\r\n        'fulfillment_status', o.fulfillment_status, 'currency', o.currency,\r\n        'total_paise', o.total_paise, 'created_at', o.created_at,\r\n        'active_reservation_count', (select count(*) from public.checkout_reservations cr where cr.order_id = o.id and cr.status = 'active' and cr.expires_at > now()),\r\n        'reservation_expires_at', (select max(cr.expires_at) from public.checkout_reservations cr where cr.order_id = o.id and cr.status = 'active' and cr.expires_at > now())\r\n      ) order by o.created_at desc, o.id desc)\r\n      from public.orders o where o.user_id = p.id\r\n    ), '[]'::jsonb),\r\n    'reviews', coalesce((\r\n      select jsonb_agg(jsonb_build_object(\r\n        'id', pr.id, 'product_id', pr.product_id, 'product_name', product.name,\r\n        'rating', pr.rating, 'title', pr.title, 'status', pr.status,\r\n        'created_at', pr.created_at\r\n      ) order by pr.created_at desc, pr.id desc)\r\n      from public.product_reviews pr\r\n      left join public.products product on product.id = pr.product_id\r\n      where pr.user_id = p.id\r\n    ), '[]'::jsonb),\r\n    'wishlist', coalesce((\r\n      select jsonb_agg(jsonb_build_object(\r\n        'product_id', wi.product_id, 'product_name', product.name,\r\n        'product_slug', product.slug, 'created_at', wi.created_at\r\n      ) order by wi.created_at desc, wi.product_id desc)\r\n      from public.wishlist_items wi\r\n      left join public.products product on product.id = wi.product_id\r\n      where wi.user_id = p.id\r\n    ), '[]'::jsonb)\r\n  ) into result\r\n  from public.profiles p\r\n  join private.percent_principals principal on principal.id = p.id\r\n  left join private.user_roles r on r.user_id = p.id\r\n  where p.id = customer_id\r\n    and (\r\n      r.role = 'customer'\r\n      or exists (select 1 from public.orders o where o.user_id = p.id)\r\n      or exists (select 1 from public.addresses a where a.user_id = p.id)\r\n      or exists (select 1 from public.product_reviews pr where pr.user_id = p.id)\r\n      or exists (select 1 from public.wishlist_items wi where wi.user_id = p.id)\r\n    );\r\n\r\n  return result;\r\nend;\r\n$function$\n"
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "signature": "validate_coupon(text,jsonb)",
+      "definition": "CREATE OR REPLACE FUNCTION public.validate_coupon(code text, cart_lines jsonb)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\ndeclare\r\n  actor uuid := private.current_user_id();\r\n  subtotal bigint;\r\n  result jsonb;\r\nbegin\r\n  if actor is null then\r\n    raise exception 'Sign in to continue' using errcode = '42501';\r\n  end if;\r\n  subtotal := private.checkout_cart_subtotal(cart_lines);\r\n  result := private.evaluate_coupon(code, actor, subtotal, false);\r\n  return (result - 'coupon_id') || jsonb_build_object('subtotal_paise',subtotal);\r\nend $function$\n"
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "signature": "create_checkout_order(jsonb,uuid,uuid,text)",
+      "definition": "CREATE OR REPLACE FUNCTION public.create_checkout_order(cart_lines jsonb, shipping_address_id uuid, idempotency_key uuid, coupon_code text)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\ndeclare\r\n  actor uuid := private.current_user_id();\r\n  normalized_coupon text := private.normalize_coupon_code(coupon_code);\r\n  request jsonb;\r\n  line record;\r\n  product public.products;\r\n  variant public.product_variants;\r\n  address public.addresses;\r\n  customer_email text;\r\n  colour_name text;\r\n  image_path text;\r\n  existing_order public.orders;\r\n  created_order public.orders;\r\n  created_item uuid;\r\n  unit record;\r\n  wanted integer;\r\n  reserved integer;\r\n  subtotal bigint := 0;\r\n  shipping bigint := 0;\r\n  discount bigint := 0;\r\n  tax bigint := 0;\r\n  total bigint := 0;\r\n  expiry timestamptz := statement_timestamp() + private.checkout_reservation_ttl();\r\n  coupon_result jsonb;\r\n  applied_coupon_id uuid;\r\nbegin\r\n  if actor is null then\r\n    raise exception 'Sign in to continue' using errcode = '42501';\r\n  end if;\r\n  if idempotency_key is null or shipping_address_id is null then\r\n    raise exception 'Review your cart and delivery address' using errcode = '22023';\r\n  end if;\r\n  if coupon_code is not null and normalized_coupon is null then\r\n    raise exception 'Invalid coupon' using errcode = '22023';\r\n  end if;\r\n\r\n  perform private.validate_checkout_lines(cart_lines);\r\n  select jsonb_strip_nulls(jsonb_build_object(\r\n    'address_id',shipping_address_id,\r\n    'coupon_code',normalized_coupon,\r\n    'lines',jsonb_agg(jsonb_build_object(\r\n      'variant_id',(value->>'variant_id')::uuid,\r\n      'quantity',(value->>'quantity')::integer)\r\n      order by (value->>'variant_id')::uuid)\r\n  )) into request from jsonb_array_elements(cart_lines);\r\n\r\n  perform pg_advisory_xact_lock(\r\n    hashtextextended(actor::text || ':' || idempotency_key::text,0));\r\n  select * into existing_order from public.orders\r\n    where user_id = actor and checkout_key = idempotency_key for update;\r\n  if found then\r\n    if existing_order.checkout_request is distinct from request then\r\n      raise exception 'Checkout key was reused for a different cart, address or coupon'\r\n        using errcode = '22023';\r\n    end if;\r\n    return jsonb_build_object(\r\n      'id',existing_order.id,'order_reference',existing_order.order_reference,\r\n      'status',existing_order.status,'payment_status',existing_order.payment_status,\r\n      'fulfillment_status',existing_order.fulfillment_status,\r\n      'subtotal_paise',existing_order.subtotal_paise,\r\n      'shipping_paise',existing_order.shipping_paise,\r\n      'discount_paise',existing_order.discount_paise,\r\n      'tax_paise',existing_order.tax_paise,\r\n      'total_paise',existing_order.total_paise,\r\n      'coupon_code_snapshot',existing_order.coupon_code_snapshot,\r\n      'reservation_expires_at',\r\n        (select min(r.expires_at) from public.checkout_reservations r\r\n         where r.order_id = existing_order.id),\r\n      'reservation_active',\r\n        exists(select 1 from public.checkout_reservations r\r\n               where r.order_id = existing_order.id and r.status = 'active'\r\n                 and r.expires_at > statement_timestamp()));\r\n  end if;\r\n\r\n  subtotal := private.checkout_cart_subtotal(cart_lines);\r\n  if not exists(select 1 from public.profiles where id = actor) then\r\n    raise exception 'Complete your customer profile' using errcode = '22023';\r\n  end if;\r\n  select email into customer_email from private.percent_principals where id = actor;\r\n  if nullif(btrim(customer_email),'') is null then\r\n    raise exception 'Add a verified contact email before checkout' using errcode = '22023';\r\n  end if;\r\n  select * into address from public.addresses\r\n    where id = shipping_address_id and user_id = actor for share;\r\n  if not found or nullif(btrim(address.full_name),'') is null\r\n     or nullif(btrim(address.address_line1),'') is null\r\n     or nullif(btrim(address.phone),'') is null\r\n     or address.pin_code !~ '^[1-9][0-9]{5}$' or address.country <> 'IN' then\r\n    raise exception 'Choose a valid address from your account' using errcode = '22023';\r\n  end if;\r\n\r\n  shipping := private.checkout_shipping_paise(subtotal);\r\n  if normalized_coupon is not null then\r\n    coupon_result := private.evaluate_coupon(normalized_coupon,actor,subtotal,true);\r\n    if not coalesce((coupon_result->>'valid')::boolean,false) then\r\n      raise exception '%',coupon_result->>'message' using errcode = '22023';\r\n    end if;\r\n    applied_coupon_id := (coupon_result->>'coupon_id')::uuid;\r\n    discount := (coupon_result->>'discount_paise')::bigint;\r\n  end if;\r\n  tax := 0;\r\n  total := greatest(0,subtotal - discount + shipping + tax);\r\n\r\n  created_order.id := gen_random_uuid();\r\n  insert into public.orders\r\n    (id,order_reference,user_id,status,payment_status,fulfillment_status,\r\n     subtotal_paise,shipping_paise,discount_paise,tax_paise,total_paise,\r\n     coupon_code_snapshot,checkout_key,checkout_request)\r\n  values\r\n    (created_order.id,'PCT-' || upper(replace(created_order.id::text,'-','')),\r\n     actor,'pending','unpaid','unfulfilled',subtotal,shipping,discount,tax,total,\r\n     normalized_coupon,idempotency_key,request)\r\n  returning * into created_order;\r\n\r\n  insert into public.order_addresses\r\n    (order_id,kind,full_name,email,phone,address_line1,address_line2,\r\n     city,state,pin_code,country)\r\n  values\r\n    (created_order.id,'shipping',address.full_name,customer_email,\r\n     address.phone,address.address_line1,address.address_line2,\r\n     address.city,address.state,address.pin_code,address.country);\r\n\r\n  for line in\r\n    select (value->>'variant_id')::uuid as variant_id,\r\n           (value->>'quantity')::integer as quantity\r\n      from jsonb_array_elements(cart_lines)\r\n      order by (value->>'variant_id')::uuid\r\n  loop\r\n    select * into variant from public.product_variants where id = line.variant_id;\r\n    select * into product from public.products where id = variant.product_id;\r\n    select label into colour_name from public.colours where id = variant.colour_id;\r\n    select url into image_path from public.product_images\r\n      where product_id = product.id and role = 'primary'\r\n      order by sort_order,id limit 1;\r\n    insert into public.order_items\r\n      (order_id,product_id,variant_id,product_name,product_slug,sku,\r\n       size,colour,image_url,quantity,unit_price_paise)\r\n    values\r\n      (created_order.id,product.id,variant.id,product.name,product.slug,\r\n       variant.sku,variant.size,colour_name,image_path,\r\n       line.quantity,variant.price_paise)\r\n    returning id into created_item;\r\n\r\n    wanted := line.quantity;\r\n    reserved := 0;\r\n    for unit in\r\n      select u.id from public.inventory_units u\r\n      where u.product_id = product.id and u.variant_id = variant.id\r\n        and u.sold_at is null and u.withdrawn_at is null\r\n        and not exists(\r\n          select 1 from public.checkout_reservations r\r\n          where r.inventory_unit_id = u.id and r.status = 'active'\r\n            and r.expires_at > statement_timestamp())\r\n      order by u.piece_number,u.id\r\n      for update of u skip locked\r\n      limit wanted\r\n    loop\r\n      update public.checkout_reservations\r\n        set status = 'expired',state_changed_at = statement_timestamp()\r\n        where inventory_unit_id = unit.id and status = 'active'\r\n          and expires_at <= statement_timestamp();\r\n      insert into public.checkout_reservations\r\n        (order_id,order_item_id,inventory_unit_id,expires_at)\r\n      values (created_order.id,created_item,unit.id,expiry);\r\n      reserved := reserved + 1;\r\n    end loop;\r\n    if reserved <> wanted then\r\n      raise exception 'Only % pieces remain for this size',reserved\r\n        using errcode = 'PT409';\r\n    end if;\r\n  end loop;\r\n\r\n  if applied_coupon_id is not null then\r\n    insert into public.coupon_redemptions\r\n      (coupon_id,user_id,order_id,coupon_code_snapshot,discount_paise)\r\n    values\r\n      (applied_coupon_id,actor,created_order.id,normalized_coupon,discount);\r\n  end if;\r\n\r\n  return jsonb_build_object(\r\n    'id',created_order.id,'order_reference',created_order.order_reference,\r\n    'status',created_order.status,'payment_status',created_order.payment_status,\r\n    'fulfillment_status',created_order.fulfillment_status,\r\n    'subtotal_paise',created_order.subtotal_paise,\r\n    'shipping_paise',created_order.shipping_paise,\r\n    'discount_paise',created_order.discount_paise,\r\n    'tax_paise',created_order.tax_paise,\r\n    'total_paise',created_order.total_paise,\r\n    'coupon_code_snapshot',created_order.coupon_code_snapshot,\r\n    'reservation_expires_at',expiry,'reservation_active',true);\r\nend $function$\n"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+[
+  {
+    "signature": "private.is_admin()",
+    "definition": "CREATE OR REPLACE FUNCTION private.is_admin()\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\n  select exists (\r\n    select 1\r\n    from private.user_roles as role_record\r\n    where role_record.user_id = private.current_user_id()\r\n      and role_record.role in ('admin', 'super_admin')\r\n  );\r\n$function$\n",
+    "owner": "postgres",
+    "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+    "prosecdef": true,
+    "provolatile": "s",
+    "proconfig": [
+      "search_path=\"\""
+    ]
+  },
+  {
+    "signature": "private.current_user_id()",
+    "definition": "CREATE OR REPLACE FUNCTION private.current_user_id()\n RETURNS uuid\n LANGUAGE plpgsql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\ndeclare\r\n  claims jsonb := auth.jwt();\r\n  token_issuer text := claims ->> 'iss';\r\n  token_audience text := claims ->> 'aud';\r\n  token_subject text := claims ->> 'sub';\r\n  resolved_id uuid;\r\nbegin\r\n  if claims ->> 'is_anonymous' = 'true'\r\n     or claims #>> '{firebase,sign_in_provider}' = 'anonymous'\r\n     or claims is null or token_subject is null or token_subject = '' then\r\n    return null;\r\n  end if;\r\n\r\n  if token_issuer = 'https://securetoken.google.com/percent-63d3e'\r\n     and token_audience = 'percent-63d3e'\r\n     and claims ->> 'role' = 'authenticated' then\r\n    select identity.percent_user_id\r\n    into resolved_id\r\n    from private.external_identities as identity\r\n    where identity.provider = 'firebase'\r\n      and identity.issuer = token_issuer\r\n      and identity.external_subject = token_subject;\r\n    return resolved_id;\r\n  end if;\r\n\r\n  if token_issuer = 'https://gijyjdeohvdrnvqfqdha.supabase.co/auth/v1'\r\n     and token_audience = 'authenticated'\r\n     and claims ->> 'role' = 'authenticated'\r\n     and token_subject ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$' then\r\n    select principal.id\r\n    into resolved_id\r\n    from private.percent_principals as principal\r\n    where principal.id = token_subject::uuid;\r\n    return resolved_id;\r\n  end if;\r\n\r\n  return null;\r\nend;\r\n$function$\n",
+    "owner": "postgres",
+    "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+    "prosecdef": true,
+    "provolatile": "s",
+    "proconfig": [
+      "search_path=\"\""
+    ]
+  },
+  {
+    "signature": "provision_my_percent_identity()",
+    "definition": "CREATE OR REPLACE FUNCTION public.provision_my_percent_identity()\n RETURNS uuid\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\ndeclare\r\n  claims jsonb := auth.jwt();\r\n  firebase_issuer constant text := 'https://securetoken.google.com/percent-63d3e';\r\n  firebase_audience constant text := 'percent-63d3e';\r\n  firebase_subject text := claims ->> 'sub';\r\n  trusted_email text := case\r\n    when claims #>> '{firebase,sign_in_provider}' = 'google.com'\r\n     and claims ->> 'email_verified' = 'true'\r\n    then lower(nullif(btrim(claims ->> 'email'), ''))\r\n    else null\r\n  end;\r\n  existing_id uuid;\r\n  new_id uuid;\r\nbegin\r\n  if claims ->> 'is_anonymous' = 'true'\r\n     or claims #>> '{firebase,sign_in_provider}' = 'anonymous'\r\n     or claims is null\r\n     or claims ->> 'iss' is distinct from firebase_issuer\r\n     or claims ->> 'aud' is distinct from firebase_audience\r\n     or claims ->> 'role' is distinct from 'authenticated'\r\n     or firebase_subject is null\r\n     or firebase_subject = ''\r\n     or length(firebase_subject) > 128\r\n     or (trusted_email is not null and char_length(trusted_email) > 320) then\r\n    raise exception 'Verified Percent Firebase authentication required'\r\n      using errcode = '42501';\r\n  end if;\r\n\r\n  perform pg_advisory_xact_lock(\r\n    hashtextextended(firebase_issuer || chr(31) || firebase_subject, 0)\r\n  );\r\n\r\n  select identity.percent_user_id\r\n  into existing_id\r\n  from private.external_identities as identity\r\n  where identity.issuer = firebase_issuer\r\n    and identity.external_subject = firebase_subject;\r\n\r\n  if existing_id is not null then\r\n    if not exists (\r\n      select 1 from private.percent_principals as principal\r\n      where principal.id = existing_id\r\n    ) or not exists (\r\n      select 1 from public.profiles as profile\r\n      where profile.id = existing_id\r\n    ) or not exists (\r\n      select 1 from private.user_roles as role_record\r\n      where role_record.user_id = existing_id\r\n    ) then\r\n      raise exception 'Firebase identity mapping is incomplete'\r\n        using errcode = '23503';\r\n    end if;\r\n    if trusted_email is not null then\r\n      update private.percent_principals\r\n      set email = trusted_email\r\n      where id = existing_id and email is null;\r\n    end if;\r\n    return existing_id;\r\n  end if;\r\n\r\n  new_id := gen_random_uuid();\r\n  insert into private.percent_principals(id, email)\r\n  values (new_id, trusted_email);\r\n  insert into private.external_identities(\r\n    provider, issuer, external_subject, percent_user_id\r\n  ) values (\r\n    'firebase', firebase_issuer, firebase_subject, new_id\r\n  );\r\n  insert into public.profiles(id) values (new_id);\r\n  insert into private.user_roles(user_id, role) values (new_id, 'customer');\r\n\r\n  return new_id;\r\nexception\r\n  when unique_violation then\r\n    raise exception 'Firebase identity provisioning collision'\r\n      using errcode = '23505';\r\nend;\r\n$function$\n",
+    "owner": "postgres",
+    "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+    "prosecdef": true,
+    "provolatile": "v",
+    "proconfig": [
+      "search_path=\"\""
+    ]
+  }
+]

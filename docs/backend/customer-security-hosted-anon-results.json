@@ -1,0 +1,49 @@
+{
+  "results": [
+    {
+      "operation": "read profiles",
+      "code": "42501"
+    },
+    {
+      "operation": "read addresses",
+      "code": "42501"
+    },
+    {
+      "operation": "read wishlist_items",
+      "code": "42501"
+    },
+    {
+      "operation": "read orders",
+      "code": "42501"
+    },
+    {
+      "operation": "read order_items",
+      "code": "42501"
+    },
+    {
+      "operation": "read order_addresses",
+      "code": "42501"
+    },
+    {
+      "operation": "read checkout_reservations",
+      "code": "42501"
+    },
+    {
+      "operation": "RPC provision_my_percent_identity",
+      "code": "42501"
+    },
+    {
+      "operation": "RPC save_address",
+      "code": "42501"
+    },
+    {
+      "operation": "RPC create_checkout_order",
+      "code": "42501"
+    },
+    {
+      "operation": "RPC validate_coupon",
+      "code": "42501"
+    }
+  ],
+  "mutations": 0
+}

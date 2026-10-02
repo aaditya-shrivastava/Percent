@@ -1,12 +1,13 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
 import { FirebaseError } from 'firebase/app'
 import { confirmPasswordReset, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth'
 import { Eye, EyeOff } from 'lucide-react'
+import { GoogleIcon } from '../components/common/GoogleIcon'
 import { firebaseAuth, googleAuthProvider } from '../backend/firebase'
 import { ensureFirebaseAuthenticatedClaim } from '../backend/firebaseSession'
 import { checkUsernameAvailability, finalizeUsernameRegistration, recoverUsernameRegistration, releaseUsernameRegistration, requestUsernamePasswordRecovery, reserveUsernameRegistration, resolveUsernameLogin, sendContactEmailVerification, usernameAuthEnabled } from '../backend/usernameAuth'
-import { getSafeAuthReturnTo } from '../data/auth'
+import { authRouteWithReturnTo, getSafeAuthReturnTo } from '../data/auth'
 import { updatePercentProfile, usePercentSession } from '../hooks/usePercentSession'
 
 const authErrorMessage=(error:unknown)=>{
@@ -35,11 +36,13 @@ function AuthPage({mode}:{mode:'login'|'register'|'recover'|'reset'}) {
  const {isAuthenticated,loading,refreshSession}=usePercentSession()
  const location=useLocation()
  const returnTo=getSafeAuthReturnTo(new URLSearchParams(location.search).get('returnTo'))
+ const heading=useRef<HTMLHeadingElement>(null)
+ useEffect(()=>{heading.current?.focus()},[mode])
  const [email,setEmail]=useState(''),[username,setUsername]=useState(''),[password,setPassword]=useState(''),[name,setName]=useState(''),[confirm,setConfirm]=useState('')
  const [availability,setAvailability]=useState<'idle'|'checking'|'available'|'unavailable'>('idle')
  const [agreed,setAgreed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('')
  const title={login:'Sign In',register:'Join Percent',recover:'Forgot Password',reset:'Set New Password'}[mode]
- if(isAuthenticated && (mode==='login'||mode==='register'))return <Navigate to={returnTo} replace />
+ if(!loading&&isAuthenticated && (mode==='login'||mode==='register'))return <Navigate to={returnTo} replace />
  const submit=async(event:FormEvent)=>{
   event.preventDefault();setError('');setMessage('');setBusy(true)
   try {
@@ -99,16 +102,16 @@ function AuthPage({mode}:{mode:'login'|'register'|'recover'|'reset'}) {
   }catch(e){setError(mode==='login'&&usernameAuthEnabled?'Invalid username/email or password.':authErrorMessage(e))}finally{setBusy(false)}
  }
  const googleSignIn=async()=>{setError('');setMessage('');setBusy(true);try{await signInWithPopup(firebaseAuth,googleAuthProvider);await refreshSession()}catch(e){setError(authErrorMessage(e))}finally{setBusy(false)}}
- return <main className="auth-page"><section className="auth-visual"><div className="auth-visual-image" style={{backgroundImage:`url(/images/auth-${mode==='register'?'register':'login'}.png)`}}/><div className="auth-visual-overlay"><p>% Percent</p><h2>Less Ordinary.<br/>More You.</h2></div></section><section className="auth-panel"><div className="auth-panel-inner"><header><p>Percent Account</p><h1>{title}</h1></header><form className="auth-form" onSubmit={submit}>
+ return <main className="auth-page"><section className="auth-visual"><div className="auth-visual-image" style={{backgroundImage:`url(/images/auth-${mode==='register'?'register':'login'}.png)`}}/><div className="auth-visual-overlay"><p>% Percent</p><h2>Less Ordinary.<br/>More You.</h2></div></section><section className="auth-panel"><div className="auth-panel-inner"><header><p>Percent Account</p><h1 ref={heading} tabIndex={-1}>{title}</h1></header><form className="auth-form" onSubmit={submit}>
  {mode==='register'&&!usernameAuthEnabled&&<label className="auth-field">Full Name<div className="auth-input-control"><input required autoComplete="name" value={name} onChange={e=>setName(e.target.value)} aria-invalid={Boolean(error)} aria-describedby="auth-error"/></div></label>}
  {mode==='register'&&usernameAuthEnabled&&<label className="auth-field">Username<div className="auth-input-control"><input required autoComplete="username" value={username} aria-invalid={availability==='unavailable'} aria-describedby="username-status" onChange={e=>{setUsername(e.target.value);setAvailability('idle')}} onBlur={async()=>{const value=username.trim().toLowerCase();if(!value)return;setAvailability('checking');try{setAvailability((await checkUsernameAvailability(value)).available?'available':'unavailable')}catch{setAvailability('unavailable')}}}/></div><small id="username-status">{availability==='checking'?'Checking…':availability==='available'?'Username available.':availability==='unavailable'?'Username unavailable.':'3–24 lowercase letters, numbers, periods, or underscores.'}</small></label>}
  {mode!=='reset'&&<label className="auth-field">{mode==='login'&&usernameAuthEnabled?'Username or Email':'Email'}<div className="auth-input-control"><input required type={mode==='login'&&usernameAuthEnabled?'text':'email'} autoComplete={mode==='login'?'username':'email'} value={email} onChange={e=>setEmail(e.target.value)} aria-invalid={Boolean(error)} aria-describedby="auth-error"/></div></label>}
  {mode!=='recover'&&<PasswordField label="Password" value={password} onChange={setPassword} autoComplete={mode==='login'?'current-password':'new-password'} invalid={Boolean(error)} describedBy="auth-error"/>}
  {(mode==='register'||mode==='reset')&&<PasswordField label="Confirm Password" value={confirm} onChange={setConfirm} autoComplete="new-password" invalid={Boolean(error)} describedBy="auth-error"/>}
- {mode==='register'&&<label className="auth-terms"><input required type="checkbox" checked={agreed} onChange={e=>setAgreed(e.target.checked)}/>I agree to the <Link to="/policies/terms">Terms</Link> and <Link to="/policies/privacy">Privacy Policy</Link>.</label>}
+ {mode==='register'&&<label className="auth-terms"><input required type="checkbox" checked={agreed} onChange={e=>setAgreed(e.target.checked)}/><span>I agree to the <Link to="/policies/terms">Terms and Conditions</Link> and <Link to="/policies/privacy">Privacy Policy</Link>.</span></label>}
  {error&&<p id="auth-error" role="alert">{error}</p>}{message&&<p role="status">{message}</p>}
  <button className="auth-primary-button" disabled={busy||loading}>{busy?'Please wait…':title}</button>
- </form>{(mode==='login'||mode==='register')&&<><div className="auth-divider">Or</div><button className="auth-google-button" type="button" disabled={busy||loading} onClick={googleSignIn}><span className="auth-google-icon" aria-hidden="true">G</span>Continue with Google</button></>}<p className="auth-switch"><Link to="/login">Sign In</Link> · <Link to="/register">Create Account</Link> · <Link to="/forgot-password">Forgot Password?</Link></p>{mode==='reset'&&<Link to="/login">Return to Sign In</Link>}</div></section></main>
+ </form>{(mode==='login'||mode==='register')&&<><div className="auth-divider">Or</div><button className="auth-google-button" type="button" disabled={busy||loading} onClick={googleSignIn}><span className="auth-google-icon" aria-hidden="true"><GoogleIcon /></span><span className="auth-google-label">Continue with Google</span></button></>}<p className="auth-switch"><Link to={authRouteWithReturnTo('/login',returnTo)}>Sign In</Link> · <Link to={authRouteWithReturnTo('/register',returnTo)}>Create Account</Link> · <Link to={authRouteWithReturnTo('/forgot-password',returnTo)}>Forgot Password?</Link></p>{mode==='reset'&&<Link to="/login">Return to Sign In</Link>}</div></section></main>
 }
 export const LoginPage=()=> <AuthPage mode="login"/>
 export const RegisterPage=()=> <AuthPage mode="register"/>
