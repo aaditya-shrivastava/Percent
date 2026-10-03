@@ -1,0 +1,42 @@
+{
+  "original": {
+    "firebaseDisplayName": "Aaditya Shrivastava",
+    "role": "customer",
+    "profile": {
+      "display_name": "Aaditya Shrivastava",
+      "first_name": "Aaditya",
+      "last_name": "Shrivastava"
+    },
+    "error": null,
+    "sessionName": "Aaditya Shrivastava",
+    "sessionFirstName": "Aaditya",
+    "sessionLastName": "Shrivastava"
+  },
+  "editedAndRefreshed": {
+    "firebaseDisplayName": "Aaditya Shrivastava",
+    "role": "customer",
+    "profile": {
+      "display_name": "Aaditya Name Check",
+      "first_name": "Aaditya",
+      "last_name": "Name Check"
+    },
+    "error": null,
+    "sessionName": "Aaditya Name Check",
+    "sessionFirstName": "Aaditya",
+    "sessionLastName": "Name Check"
+  },
+  "restored": {
+    "firebaseDisplayName": "Aaditya Shrivastava",
+    "role": "customer",
+    "profile": {
+      "display_name": "Aaditya Shrivastava",
+      "first_name": "Aaditya",
+      "last_name": "Shrivastava"
+    },
+    "error": null,
+    "sessionName": "Aaditya Shrivastava",
+    "sessionFirstName": "Aaditya",
+    "sessionLastName": "Shrivastava"
+  },
+  "fixturesCreated": 0
+}

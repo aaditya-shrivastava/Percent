@@ -1,0 +1,60 @@
+{
+  "checked_at": "2026-10-02T17:55:55.219Z",
+  "environment": "Microsoft Edge headless; actual browser WOFF2 decoding and canvas rendering",
+  "families": 12,
+  "decoded_woff2_files": 87,
+  "renderings": [
+    {
+      "name": "Inter",
+      "rendering_sha256": "21d6596176bcac410d2dc25f9906854592f5ef09e59e99e87bfdddb082712599"
+    },
+    {
+      "name": "Manrope",
+      "rendering_sha256": "4af9b84ebb57df96bfe90140d3e265455b2f0a5b952bfd122d3537d333f5198d"
+    },
+    {
+      "name": "DM Sans",
+      "rendering_sha256": "5aa5958eabb94e7833405db0efd6e2c69231ad267da99ae4fe71b70b9a3f7316"
+    },
+    {
+      "name": "Montserrat",
+      "rendering_sha256": "b4d9b0f8d6cdaeb809398519d13646ed9fbc6770d8fc6b7549926c101a7ff563"
+    },
+    {
+      "name": "Outfit",
+      "rendering_sha256": "f6320ccc74d4e178e61758571ab9606d96dbd974827c932f5d5d4b69cd39a5ab"
+    },
+    {
+      "name": "Space Grotesk",
+      "rendering_sha256": "0562ed05435792e2851eec1303697062d5ae7e1a75d15d53adc5eb75c4b054fd"
+    },
+    {
+      "name": "Playfair Display",
+      "rendering_sha256": "211e9d9e65388e52ad6e473d4526221953f1d9ded14615caae4ae68e74351d80"
+    },
+    {
+      "name": "Cormorant Garamond",
+      "rendering_sha256": "ba6e85e64ac84baec1e86f43477c208ba8d77064b5c7fb1cbcea9f311589e7c0"
+    },
+    {
+      "name": "Lora",
+      "rendering_sha256": "25412f886198e260e6e1ca85d7f5a345243cb6a4bdb6b6a12fe3c12466c01a64"
+    },
+    {
+      "name": "Libre Baskerville",
+      "rendering_sha256": "0b6b05460a5b415860447fd47e5ea2aaceff032e99e4bf0ad1392e484d868e95"
+    },
+    {
+      "name": "system-ui",
+      "rendering_sha256": "e1d012c966244f4b2aed6368c6326332f04186d8248f98236fdd506cd57b3131"
+    },
+    {
+      "name": "Georgia",
+      "rendering_sha256": "05de1169c03ff479a2ebc085330df9d983b181a4f7873771df8ca8890f2ec28f"
+    }
+  ],
+  "console_errors": [],
+  "global_typography_unchanged": true,
+  "dropdowns_unchanged": true,
+  "rollout": "Assets staged. Activation and font management remain pending SQL approval."
+}

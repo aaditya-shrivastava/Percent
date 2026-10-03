@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from 'npm:@supabase/supabase-js@2.99.1'
+import { fontAction, fontCors, fontDelivery, fontSave } from './font-support.ts'
 
 const PROJECT_HOST='gijyjdeohvdrnvqfqdha.supabase.co'
 const BUCKET='percent-website-media'
@@ -7,7 +8,7 @@ const MAX_BYTES=10*1024*1024
 const sections=new Set(['limited_editions','best_sellers','trending','new_arrivals','oversized_fit','shop_by_design','brand_story'])
 const pageKeys=new Set(['shop','product_details','sold_out','about','contact','faq','policy_shipping','policy_returns','policy_privacy','policy_terms'])
 const mediaPages=new Set(['about','contact'])
-const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info','Access-Control-Allow-Methods':'POST, OPTIONS'}
+const cors=fontCors
 const reply=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,'Content-Type':'application/json','Cache-Control':'no-store'}})
 const validPath=(path:string)=>/^banners\/[0-9a-f-]{36}\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)||/^sections\/(limited_editions|best_sellers|trending|new_arrivals|oversized_fit|shop_by_design|brand_story)\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)||/^pages\/(about|contact)\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)||/^(branding|library)\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(path)
 const pathsFrom=(content:any)=>[...(content?.banners??[]).flatMap((b:any)=>[b.image_path,b.mobile_image_path]),...(content?.sections??[]).map((s:any)=>s.media_path),content?.settings?.branding?.logo_path,content?.settings?.branding?.favicon_path].filter((p:unknown):p is string=>typeof p==='string'&&validPath(p))
@@ -16,10 +17,11 @@ const pagePath=(path:string,page:string)=>validPath(path)&&path.startsWith(`page
 
 Deno.serve(async(req)=>{
  if(req.method==='OPTIONS')return new Response('ok',{headers:cors})
- if(req.method!=='POST')return reply({error:'Method not allowed'},405)
+ if(!['POST','GET','HEAD'].includes(req.method))return reply({error:'Method not allowed'},405)
  const url=Deno.env.get('SUPABASE_URL')!
  if(new URL(url).hostname!==PROJECT_HOST)return reply({error:'Project mismatch'},503)
  const service=createClient(url,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
+ if(req.method==='GET'||req.method==='HEAD')return fontDelivery(req,service)
  let json:any=null
  if(req.headers.get('content-type')?.includes('application/json'))try{json=await req.json()}catch{return reply({error:'Invalid request'},400)}
  const action=String(json?.action??'')
@@ -50,6 +52,7 @@ Deno.serve(async(req)=>{
  const {data:role,error:roleError}=await caller.rpc('get_my_role')
  if(roleError)return reply({error:'Authentication required'},401)
  if(!['admin','super_admin'].includes(role??''))return reply({error:'Admin access required'},403)
+ if(action.startsWith('font_'))return fontAction(json,service,caller)
  if(action==='admin_read'){
   const {data:content,error}=await caller.rpc('get_website_editor')
   if(error)return reply({error:'Content unavailable'},503)
@@ -109,6 +112,7 @@ Deno.serve(async(req)=>{
  if(Number(req.headers.get('content-length')??0)>MAX_BYTES+1024*1024)return reply({error:'Upload too large'},413)
  let form:FormData
  try{form=await req.formData()}catch{return reply({error:'Invalid upload'},400)}
+ if(String(form.get('action')??'')==='font_save')return fontSave(form,service,caller)
  if(String(form.get('action')??'')!=='upload')return reply({error:'Unknown action'},400)
  const files=form.getAll('file').filter((value):value is File=>value instanceof File)
  if(files.length!==1)return reply({error:'Exactly one image is required'},400)

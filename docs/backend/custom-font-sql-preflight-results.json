@@ -1,0 +1,248 @@
+{
+  "checkedAt": "2026-10-02T17:54:25.724Z",
+  "environment": "Disposable PGlite PostgreSQL with Supabase Auth/Storage boundary shims; real historical migrations and internal Percent authorization; no hosted writes",
+  "historicalMigrations": [
+    "20260912112058_percent_foundation.sql",
+    "20260912151513_percent_phase2.sql",
+    "20260912152850_percent_review_cleanup.sql",
+    "20260913055301_percent_get_my_role.sql",
+    "20260913161109_admin_product_draft_save.sql",
+    "20260914000242_admin_product_conflict_signal.sql",
+    "20260914055113_admin_production_allocation.sql",
+    "20260914105526_admin_inventory_adjustments.sql",
+    "20260915025947_admin_product_publication.sql",
+    "20260915130509_admin_order_lifecycle.sql",
+    "20260915134912_percent_active_product_media.sql",
+    "20260915140502_percent_media_gate_correction.sql",
+    "20260916090000_percent_checkout_reservation.sql",
+    "20260921143000_admin_customer_identity_correction.sql",
+    "20260921160000_admin_customer_eligibility_refinement.sql",
+    "20260921170000_admin_review_moderation.sql",
+    "20260921180000_admin_review_visibility.sql",
+    "20260921190000_admin_website_editor.sql",
+    "20260922113000_website_editor_save_delete_fix.sql",
+    "20260923120000_admin_website_pages.sql",
+    "20260923130000_admin_blog_content.sql",
+    "20260923183800_firebase_identity_foundation.sql",
+    "20260923190224_firebase_identity_foundation_finalize.sql",
+    "20260927180136_firebase_compatible_authorization.sql",
+    "20260927195708_link_firebase_identity_transition.sql",
+    "20260929200419_phase_9_coupon_foundation.sql",
+    "20260930055929_global_website_editor_controls.sql"
+  ],
+  "results": [
+    "Historical migrations produce the exact hosted RPC bodies/properties/ACLs",
+    "Failure after MIME update, RPC moves and final DDL rolls back everything",
+    "Unaudited body, owner, SECURITY DEFINER, volatility, search_path, grants and dependencies fail closed",
+    "Public bucket, changed size limit and changed MIME allowlist fail closed",
+    "Full migration compiles and executes locally",
+    "Zero existing content/auth/media changes; only bucket MIME appended; no font seeds",
+    "Moved functions preserve OIDs/body/properties; new public signatures; no unrelated RPC drift",
+    "Existing Website content save RPC still resolves the recreated editor wrapper",
+    "Existing typography and each original built-in save with non-type settings unchanged; unbundled fonts denied",
+    "Admin saves multiple weights and italic; exact repeat is idempotent",
+    "Duplicate normalized names including casing and whitespace are denied",
+    "All nine allowed weights plus italic persist, and unused faces/families can be removed",
+    "Invalid face types/weights/styles/MIME/size/SHA/path/storage/duplicates/license are denied",
+    "Customer/anonymous editor, global save, font save and delete denied; Super Admin allowed",
+    "Active font cannot disable/delete/remove face; stable-ID rename and added face allowed",
+    "Public payload has only IDs/name/weight/style; Admin retains management details",
+    "Missing Storage object blocks typography save; unused families disable/delete safely",
+    "Final grants/RLS prohibit direct browser writes and private helper/legacy execution",
+    "Indexes cover normalized-name, family/face and opaque asset lookup without speculative live-reference index",
+    "Expanded registry compiles; only built-in acceptance changes; saved data, custom checks, OIDs and grants preserved",
+    "Service-only delivery resolver compiles; active opaque IDs resolve; clients, disabled/unused/missing assets denied; data/grants preserved",
+    "Admin/browser font metadata minimized; service-only management catalog retains cleanup metadata; authorization, PT409, data and delivery preserved"
+  ],
+  "hostedRpcProperties": [
+    {
+      "oid": "18542",
+      "signature": "get_storefront_content()",
+      "owner": "postgres",
+      "language": "sql",
+      "security_definer": true,
+      "volatility": "s",
+      "config": [
+        "search_path=\"\""
+      ],
+      "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}",
+      "argument_names": null,
+      "result_type": "jsonb",
+      "definition_md5": "453c2de414efb68bea242db4c5f488e1"
+    },
+    {
+      "oid": "18543",
+      "signature": "get_website_editor()",
+      "owner": "postgres",
+      "language": "plpgsql",
+      "security_definer": true,
+      "volatility": "s",
+      "config": [
+        "search_path=\"\""
+      ],
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "argument_names": null,
+      "result_type": "jsonb",
+      "definition_md5": "29115fdedc8af0fafbfb82198e46bb88"
+    },
+    {
+      "oid": "19083",
+      "signature": "save_website_global_settings(jsonb,timestamp with time zone)",
+      "owner": "postgres",
+      "language": "plpgsql",
+      "security_definer": true,
+      "volatility": "v",
+      "config": [
+        "search_path=\"\""
+      ],
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "argument_names": [
+        "content",
+        "expected_updated_at"
+      ],
+      "result_type": "jsonb",
+      "definition_md5": "259697bcdcfe4c4b087574456a4a87f6"
+    }
+  ],
+  "hostedDependencies": [
+    {
+      "dependent": "function get_storefront_content()",
+      "referenced": "schema public",
+      "dependency_type": "n"
+    },
+    {
+      "dependent": "function get_website_editor()",
+      "referenced": "language plpgsql",
+      "dependency_type": "n"
+    },
+    {
+      "dependent": "function get_website_editor()",
+      "referenced": "schema public",
+      "dependency_type": "n"
+    },
+    {
+      "dependent": "function save_website_global_settings(jsonb,timestamp with time zone)",
+      "referenced": "language plpgsql",
+      "dependency_type": "n"
+    },
+    {
+      "dependent": "function save_website_global_settings(jsonb,timestamp with time zone)",
+      "referenced": "schema public",
+      "dependency_type": "n"
+    }
+  ],
+  "beforeDependencies": [
+    {
+      "classid": 1255,
+      "objid": 17538,
+      "objsubid": 0,
+      "refclassid": 2615,
+      "refobjid": 2200,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function get_storefront_content()",
+      "referenced": "schema public"
+    },
+    {
+      "classid": 1255,
+      "objid": 17539,
+      "objsubid": 0,
+      "refclassid": 2612,
+      "refobjid": 12778,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function get_website_editor()",
+      "referenced": "language plpgsql"
+    },
+    {
+      "classid": 1255,
+      "objid": 17539,
+      "objsubid": 0,
+      "refclassid": 2615,
+      "refobjid": 2200,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function get_website_editor()",
+      "referenced": "schema public"
+    },
+    {
+      "classid": 1255,
+      "objid": 17879,
+      "objsubid": 0,
+      "refclassid": 2612,
+      "refobjid": 12778,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function save_website_global_settings(jsonb,timestamp with time zone)",
+      "referenced": "language plpgsql"
+    },
+    {
+      "classid": 1255,
+      "objid": 17879,
+      "objsubid": 0,
+      "refclassid": 2615,
+      "refobjid": 2200,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function save_website_global_settings(jsonb,timestamp with time zone)",
+      "referenced": "schema public"
+    }
+  ],
+  "afterDependencies": [
+    {
+      "classid": 1255,
+      "objid": 17538,
+      "objsubid": 0,
+      "refclassid": 2615,
+      "refobjid": 16422,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function private.get_storefront_content_before_fonts()",
+      "referenced": "schema private"
+    },
+    {
+      "classid": 1255,
+      "objid": 17539,
+      "objsubid": 0,
+      "refclassid": 2612,
+      "refobjid": 12778,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function private.get_website_editor_before_fonts()",
+      "referenced": "language plpgsql"
+    },
+    {
+      "classid": 1255,
+      "objid": 17539,
+      "objsubid": 0,
+      "refclassid": 2615,
+      "refobjid": 16422,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function private.get_website_editor_before_fonts()",
+      "referenced": "schema private"
+    },
+    {
+      "classid": 1255,
+      "objid": 17879,
+      "objsubid": 0,
+      "refclassid": 2612,
+      "refobjid": 12778,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function private.save_website_global_settings_before_fonts(jsonb,timestamp with time zone)",
+      "referenced": "language plpgsql"
+    },
+    {
+      "classid": 1255,
+      "objid": 17879,
+      "objsubid": 0,
+      "refclassid": 2615,
+      "refobjid": 16422,
+      "refobjsubid": 0,
+      "deptype": "n",
+      "dependent": "function private.save_website_global_settings_before_fonts(jsonb,timestamp with time zone)",
+      "referenced": "schema private"
+    }
+  ]
+}

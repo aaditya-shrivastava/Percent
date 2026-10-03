@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Percent hosted font acceptance</title><style>body{font:16px system-ui;margin:24px;max-width:950px;background:#f7f4ef;color:#1d1b1b}button{padding:12px;margin:6px;border:1px solid #711d32;background:white;border-radius:4px}pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:16px;background:white}label{display:block;margin:16px 0}input{width:360px;max-width:90%;padding:8px}</style></head><body>
+<h1>Hosted font acceptance — real session</h1>
+<p>This local test page uses Percent's normal authenticated client. It does not create accounts, extract tokens, execute SQL, or change authorization.</p>
+<p id="role">Checking current role…</p>
+<label>Temporary family ID <input id="family" value="e1df4f06-28c2-4455-a518-a0d99187f485"></label>
+<button id="preview">Check authenticated preview and browser catalog privacy</button>
+<button id="protect">Check active-family request denial</button>
+<button id="cleanup">Verify restored typography and test cleanup</button>
+<button id="delete-test">Delete inactive temporary test family</button>
+<button id="customer">Check Customer request denial</button>
+<pre id="result" role="status">Ready.</pre>
+<script type="module">
+import {supabase} from '/src/backend/client.ts'
+import {firebaseAuth} from '/src/backend/firebase.ts'
+const original={display_family:'Inter',heading_family:'Inter',body_family:'Inter',ui_family:'Inter',heading_weight:700,body_weight:400,letter_spacing:0}
+const output=document.querySelector('#result'),familyId=()=>document.querySelector('#family').value
+const privateKeys=new Set(['storage_path','sha256','mime_type','byte_size','cleanup_paths','service_role','service_key','access_token'])
+function leaks(value){if(!value||typeof value!=='object')return false;return Object.entries(value).some(([key,v])=>privateKeys.has(key)||leaks(v))}
+function check(value,message){if(!value)throw Error(message)}
+async function role(){await firebaseAuth.authStateReady();const r=await supabase.rpc('get_my_role');const value=r.error?'unavailable':r.data??'anonymous';document.querySelector('#role').textContent='Current authenticated role: '+value;return value}
+async function invoke(body){return supabase.functions.invoke('percent-website-media',{body})}
+async function family(){const r=await invoke({action:'font_catalog'});check(!r.error,'Font catalog failed');check(!leaks(r.data),'Private font metadata detected');return r.data.font_families.find(f=>f.id===familyId()&&f.family_name==='Percent Hosted Font Test')}
+async function rpcDenied(name,args){const r=await supabase.rpc(name,args);check(r.error&&['42501','PGRST202'].includes(r.error.code),'Expected permission denial from '+name);return{name,denied:true,code:r.error.code}}
+async function edgeDenied(body,status){const r=await invoke(body);const response=r.error?.context??r.response;check(r.error&&response?.status===status,'Expected HTTP '+status);const data=await response.clone().json().catch(()=>null);check(!leaks(data),'Private metadata in error');return{action:body instanceof FormData?body.get('action'):body.action,denied:true,status:response.status,error:data?.error,code:data?.code}}
+function form(f,faces){const body=new FormData();Object.entries({action:'font_save',family_id:f.id,family_name:f.family_name,enabled:'true',license_confirmed:'true',expected_updated_at:f.updated_at,faces:JSON.stringify(faces.map(x=>({asset_id:x.asset_id,weight:x.weight,style:x.style})))}).forEach(([k,v])=>body.set(k,v));return body}
+async function run(task){document.querySelectorAll('button').forEach(b=>b.disabled=true);output.textContent='Working with the real hosted session…';try{output.textContent=JSON.stringify(await task(),null,2)}catch(e){output.textContent='FAIL: '+e.message}finally{document.querySelectorAll('button').forEach(b=>b.disabled=false)}}
+document.querySelector('#preview').onclick=()=>run(async()=>{
+ const current=await role();check(['admin','super_admin'].includes(current),'Real staff session required');const f=await family();check(f,'Test family unavailable');const previews=[]
+ for(const face of f.faces){const r=await invoke({action:'font_preview',asset_id:face.asset_id});check(!r.error&&r.data instanceof Blob,'Expected binary Blob preview');check(r.response.headers.get('cache-control')==='private, no-store','Preview must be no-store');const bytes=new Uint8Array(await r.data.arrayBuffer());check(String.fromCharCode(...bytes.slice(0,4))==='wOF2','Preview signature');previews.push({asset_id:face.asset_id,weight:face.weight,style:face.style,status:r.response.status,contentType:r.response.headers.get('content-type'),cache:r.response.headers.get('cache-control'),woff2:true})}
+ const management=await rpcDenied('get_website_font_management_catalog',{}),resolver=await rpcDenied('get_website_font_delivery_asset',{p_asset_id:f.faces[0].asset_id})
+ return{role:current,privateMetadataDetected:false,previews,serviceOnlyBrowserDenials:[management,resolver]}
+})
+document.querySelector('#protect').onclick=()=>run(async()=>{
+ const current=await role();check(['admin','super_admin'].includes(current),'Real staff session required');const f=await family();check(f?.in_use&&f.faces.length>1,'Active multi-face test family required');const requests=[]
+ requests.push(await edgeDenied({action:'font_delete',family_id:f.id,expected_updated_at:f.updated_at},409))
+ requests.push(await edgeDenied({action:'font_toggle',family_id:f.id,expected_updated_at:f.updated_at,enabled:false},409))
+ requests.push(await edgeDenied(form(f,f.faces.slice(1)),409))
+ const intact=await family();check(intact?.in_use&&intact.faces.length===f.faces.length,'Active family changed unexpectedly')
+ return{role:current,requests,familyIntact:true,faces:intact.faces.length}
+})
+document.querySelector('#cleanup').onclick=()=>run(async()=>{
+ const current=await role();check(['admin','super_admin'].includes(current),'Real staff session required');const editor=await supabase.rpc('get_website_editor');check(!editor.error,'Editor unavailable');check(JSON.stringify(editor.data.settings.typography)===JSON.stringify(original)||Object.keys(original).every(k=>editor.data.settings.typography[k]===original[k]),'Original typography not restored');check(!editor.data.font_families.some(f=>f.id===familyId()),'Temporary family still present')
+ const cleanup=await invoke({action:'font_cleanup',family_id:familyId()});check(!cleanup.error,'Storage cleanup failed');check(cleanup.data.removed===0,'Found leftover Storage objects; cleanup removed them, run this check again')
+ return{role:current,typography:editor.data.settings.typography,testFamilies:0,testFaces:0,testCanonicalStorageObjects:0,allFamilies:editor.data.font_families.length,allFaces:editor.data.font_families.reduce((n,f)=>n+f.faces.length,0),cleanupRemoved:cleanup.data.removed,privateMetadataDetected:leaks(editor.data.font_families)}
+})
+document.querySelector('#delete-test').onclick=()=>run(async()=>{
+ const current=await role();check(['admin','super_admin'].includes(current),'Real staff session required');const editor=await supabase.rpc('get_website_editor');check(!editor.error&&Object.keys(original).every(k=>editor.data.settings.typography[k]===original[k]),'Restore original typography first');const f=await family();if(!f)return{role:current,alreadyRemoved:true};check(!f.in_use,'Active family cannot be deleted');const r=await invoke({action:'font_delete',family_id:f.id,expected_updated_at:f.updated_at});check(!r.error&&r.data.removed===true,'Delete failed');check(!r.data.warning,'Storage cleanup requires retry');check(!leaks(r.data),'Private metadata in cleanup response');return{role:current,removed:true,storageCleanup:'completed',privateMetadataDetected:false}
+})
+document.querySelector('#customer').onclick=()=>run(async()=>{
+ const current=await role();check(current==='customer','A real Customer session is required; no requests were attempted');const f={id:familyId(),family_name:'Percent Hosted Font Test',updated_at:'2026-01-01T00:00:00Z',faces:[]},requests=[]
+ for(const body of [{action:'font_catalog'},{action:'font_toggle',family_id:f.id,enabled:false,expected_updated_at:f.updated_at},{action:'font_delete',family_id:f.id,expected_updated_at:f.updated_at},{action:'font_preview',asset_id:'c5dd3fd5-6207-4fd9-903f-5b8fc2ab6955'},form(f,[])])requests.push(await edgeDenied(body,403))
+ for(const [name,args] of [['get_website_font_management_catalog',{}],['get_website_font_delivery_asset',{p_asset_id:'c5dd3fd5-6207-4fd9-903f-5b8fc2ab6955'}],['save_website_font_family',{p_family_id:f.id,p_family_name:f.family_name,p_enabled:true,p_license_confirmed:false,p_faces:[],p_expected_updated_at:null}],['delete_website_font_family',{p_family_id:f.id,p_expected_updated_at:f.updated_at}]])requests.push(await rpcDenied(name,args))
+ return{role:current,requests}
+})
+document.querySelector('#role').textContent='Current authenticated role: '+await role()
+</script></body></html>

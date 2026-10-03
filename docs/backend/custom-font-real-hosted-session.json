@@ -1,0 +1,257 @@
+{
+  "original": {
+    "adminFont": "Inter, ui-sans-serif, system-ui, sans-serif",
+    "roles": [
+      "Inter",
+      "Inter",
+      "Inter",
+      "Inter"
+    ],
+    "spacing": "0",
+    "weights": [
+      "700",
+      "400"
+    ]
+  },
+  "preview": {
+    "role": "super_admin",
+    "privateMetadataDetected": false,
+    "previews": [
+      {
+        "asset_id": "c5dd3fd5-6207-4fd9-903f-5b8fc2ab6955",
+        "weight": 400,
+        "style": "normal",
+        "status": 200,
+        "contentType": "application/octet-stream",
+        "cache": "private, no-store",
+        "woff2": true
+      },
+      {
+        "asset_id": "025f3c2b-6d22-4ed5-b238-af8ef8ad23b1",
+        "weight": 700,
+        "style": "normal",
+        "status": 200,
+        "contentType": "application/octet-stream",
+        "cache": "private, no-store",
+        "woff2": true
+      }
+    ],
+    "serviceOnlyBrowserDenials": [
+      {
+        "name": "get_website_font_management_catalog",
+        "denied": true,
+        "code": "42501"
+      },
+      {
+        "name": "get_website_font_delivery_asset",
+        "denied": true,
+        "code": "42501"
+      }
+    ]
+  },
+  "activeProtection": {
+    "role": "super_admin",
+    "requests": [
+      {
+        "action": "font_delete",
+        "denied": true,
+        "status": 409,
+        "error": "This font is in use. Choose another storefront font before changing its faces, disabling or deleting it.",
+        "code": "FONT_INVALID"
+      },
+      {
+        "action": "font_toggle",
+        "denied": true,
+        "status": 409,
+        "error": "This font is in use. Choose another storefront font before changing its faces, disabling or deleting it.",
+        "code": "FONT_INVALID"
+      },
+      {
+        "action": "font_save",
+        "denied": true,
+        "status": 409,
+        "error": "This font is in use. Choose another storefront font before changing its faces, disabling or deleting it.",
+        "code": "FONT_INVALID"
+      }
+    ],
+    "familyIntact": true,
+    "faces": 2
+  },
+  "cleanup": {
+    "role": "super_admin",
+    "typography": {
+      "ui_family": "Inter",
+      "body_family": "Inter",
+      "body_weight": 400,
+      "display_family": "Inter",
+      "heading_family": "Inter",
+      "heading_weight": 700,
+      "letter_spacing": 0
+    },
+    "testFamilies": 0,
+    "testFaces": 0,
+    "testCanonicalStorageObjects": 0,
+    "allFamilies": 0,
+    "allFaces": 0,
+    "cleanupRemoved": 0,
+    "privateMetadataDetected": false
+  },
+  "headingRoutes": [
+    {
+      "body": [
+        "PercentBuiltin_inter, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif"
+      ],
+      "headings": [
+        {
+          "font": "PercentBuiltin_inter, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "REDEFINED\nBASICS."
+        },
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "Limited Editions"
+        },
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "Parallel Lines Tee"
+        }
+      ],
+      "roles": [
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ],
+      "route": "/"
+    },
+    {
+      "body": [
+        "PercentBuiltin_inter, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif"
+      ],
+      "headings": [
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "Not Just A Brand,\nIt makes you uniq"
+        },
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "When you look good, you feel unstop"
+        },
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "What we Deliver."
+        }
+      ],
+      "roles": [
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ],
+      "route": "/about"
+    },
+    {
+      "body": [
+        "PercentBuiltin_inter, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif"
+      ],
+      "headings": [
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "Stories, Ideasand What’s Next."
+        },
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "The Story Behind Limited Pieces"
+        },
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "Latest Stories"
+        }
+      ],
+      "roles": [
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ],
+      "route": "/blog"
+    },
+    {
+      "body": [
+        "PercentBuiltin_inter, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif"
+      ],
+      "headings": [
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "Contact / Support"
+        },
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "Submit an Inquiry"
+        },
+        {
+          "font": "PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485, system-ui, -apple-system, \"Segoe UI\", sans-serif, system-ui, sans-serif",
+          "text": "We’re Here for You"
+        }
+      ],
+      "roles": [
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentCustom_e1df4f06_28c2_4455_a518_a0d99187f485\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "\"PercentBuiltin_inter\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ],
+      "route": "/contact"
+    }
+  ],
+  "builtins": [
+    {
+      "font": "PercentBuiltin_inter, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "PercentBuiltin_manrope, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "PercentBuiltin_dm_sans, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "PercentBuiltin_montserrat, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "PercentBuiltin_outfit, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "PercentBuiltin_space_grotesk, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "\"system-ui\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "Georgia, Georgia, \"Times New Roman\", serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "PercentBuiltin_playfair_display, Georgia, \"Times New Roman\", serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "PercentBuiltin_cormorant_garamond, Georgia, \"Times New Roman\", serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "PercentBuiltin_lora, Georgia, \"Times New Roman\", serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    },
+    {
+      "font": "PercentBuiltin_libre_baskerville, Georgia, \"Times New Roman\", serif",
+      "text": "Percent · Less Ordinary. More You.The quick brown fox jumps over the lazy dog. 1234567890"
+    }
+  ],
+  "ordinaryAdmin": "DEFERRED — no real Admin account exists",
+  "customer": "Pending real Customer session"
+}

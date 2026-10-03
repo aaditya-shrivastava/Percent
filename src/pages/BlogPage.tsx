@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { BlogCard } from '../components/blog/BlogCard'
 import { BlogCategoryFilter, type BlogCategorySelection } from '../components/blog/BlogCategoryFilter'
 import { blogArticles, featuredBlogArticle, formatBlogDate } from '../data/blog'
+import './BlogPage.css'
 
 export function BlogPage() {
   const [category, setCategory] = useState<BlogCategorySelection>('All')

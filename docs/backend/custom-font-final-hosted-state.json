@@ -1,0 +1,24 @@
+[
+  {
+    "verification": {
+      "faces": 0,
+      "families": 0,
+      "typography": {
+        "ui_family": "Inter",
+        "body_family": "Inter",
+        "body_weight": 400,
+        "display_family": "Inter",
+        "heading_family": "Inter",
+        "heading_weight": 700,
+        "letter_spacing": 0
+      },
+      "font_objects": 0,
+      "private_bucket": true,
+      "anon_catalog_execute": false,
+      "service_catalog_execute": true,
+      "anon_server_helper_execute": false,
+      "authenticated_catalog_execute": false,
+      "authenticated_server_helper_execute": false
+    }
+  }
+]

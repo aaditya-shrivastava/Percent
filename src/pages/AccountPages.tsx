@@ -36,7 +36,6 @@ function ProfileContent() {
   const saveProfile = async () => {
     const nextErrors: Record<string, string> = {}
     if (!draft.firstName.trim()) nextErrors.firstName = 'First name is required.'
-    if (!draft.lastName.trim()) nextErrors.lastName = 'Last name is required.'
     if (draft.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(draft.email)) nextErrors.email = 'Enter a valid email address.'
     const normalizedPhone = draft.phone.replace(/\D/g, '').replace(/^91(?=\d{10}$)/, '')
     if (draft.phone && !/^[6-9]\d{9}$/.test(normalizedPhone)) nextErrors.phone = 'Enter a valid 10-digit phone number.'

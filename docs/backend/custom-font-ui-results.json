@@ -1,0 +1,53 @@
+{
+  "boundary": "Actual UI/Edge, simulated Supabase SQL/Storage; not hosted acceptance",
+  "widths": [
+    1440,
+    1280,
+    1024,
+    834,
+    768,
+    600,
+    426,
+    425,
+    390,
+    375,
+    360,
+    320
+  ],
+  "passed": [
+    "multiface licensed upload/preview",
+    "Heading only; Body/UI unchanged",
+    "draft then publish",
+    "refresh/direct navigation",
+    "opaque WOFF2/CORS/cache",
+    "Apply Everywhere four roles",
+    "Admin font isolation",
+    "active delete/disable safeguards",
+    "restore original typography",
+    "delete and Storage cleanup/no fixtures",
+    "no console errors"
+  ],
+  "network": [
+    {
+      "status": 200,
+      "cache": "public, max-age=31536000, immutable",
+      "cors": "*"
+    },
+    {
+      "status": 200,
+      "cache": "public, max-age=31536000, immutable",
+      "cors": "*"
+    },
+    {
+      "status": 200,
+      "cache": "public, max-age=31536000, immutable",
+      "cors": "*"
+    },
+    {
+      "status": 200,
+      "cache": "public, max-age=31536000, immutable",
+      "cors": "*"
+    }
+  ],
+  "errors": []
+}

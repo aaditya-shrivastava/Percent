@@ -1,0 +1,20 @@
+{
+  "signedOutGuard": "Profile redirects to login with safe returnTo",
+  "relogin": "Real Customer sign-in completed by user",
+  "refresh": "PASS",
+  "identity": {
+    "role": "customer",
+    "percentUserId": "efc1905b-00d0-4a31-885c-464133552e79",
+    "stableIdentity": true,
+    "matchingProfileCount": 1,
+    "profile": {
+      "id": "efc1905b-00d0-4a31-885c-464133552e79",
+      "display_name": "Aaditya Shrivastava",
+      "first_name": "Aaditya",
+      "last_name": "Shrivastava",
+      "created_at": "2026-10-02T18:58:41.768815+00:00"
+    },
+    "error": null,
+    "sessionName": "Aaditya Shrivastava"
+  }
+}

@@ -1,0 +1,372 @@
+{
+  "bucket": {
+    "id": "percent-website-media",
+    "name": "percent-website-media",
+    "type": "STANDARD",
+    "owner": null,
+    "public": false,
+    "owner_id": null,
+    "created_at": "2026-09-21T16:49:39.951104+00:00",
+    "updated_at": "2026-09-21T16:49:39.951104+00:00",
+    "file_size_limit": 10485760,
+    "versioning_status": "DISABLED",
+    "allowed_mime_types": [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "font/woff2"
+    ],
+    "avif_autodetection": false,
+    "lifecycle_configuration": null,
+    "lifecycle_configuration_generation": null
+  },
+  "content": {
+    "banners": [
+      {
+        "id": "70000000-0000-4000-a000-000000000001",
+        "alt": "Model wearing a white Percent t-shirt",
+        "width": 1800,
+        "height": 2700,
+        "eyebrow": "NEW DROP",
+        "heading": "REDEFINED\nBASICS.",
+        "cta_path": "/shop",
+        "cta_label": "SHOP THE DROP",
+        "image_path": "banners/70000000-0000-4000-a000-000000000001/fdc4882ef6ba6287ef04220ae5c0a51feb29273f820716402b4d4cade8253ed5.jpg",
+        "sort_order": 1,
+        "description": "Every Drop is Limited.\nEvery Piece Tells A Story.",
+        "mobile_width": null,
+        "mobile_height": null,
+        "mobile_image_path": null
+      },
+      {
+        "id": "70000000-0000-4000-a000-000000000002",
+        "alt": "Streetwear model in a fashion campaign",
+        "width": 1800,
+        "height": 2492,
+        "eyebrow": "NEW DROP",
+        "heading": "REDEFINED\nBASICS.",
+        "cta_path": "/shop",
+        "cta_label": "SHOP THE DROP",
+        "image_path": "banners/70000000-0000-4000-a000-000000000002/e70861a50310c5faab7e02f6d24d8bd236880a2681bf7884728b5ea6d34d305c.jpg",
+        "sort_order": 2,
+        "description": "Every Drop is Limited.\nEvery Piece Tells A Story.",
+        "mobile_width": null,
+        "mobile_height": null,
+        "mobile_image_path": null
+      },
+      {
+        "id": "70000000-0000-4000-a000-000000000003",
+        "alt": "Editorial portrait in a fashion campaign",
+        "width": 1800,
+        "height": 1197,
+        "eyebrow": "NEW DROP",
+        "heading": "REDEFINED\nBASICS.",
+        "cta_path": "/shop",
+        "cta_label": "SHOP THE DROP",
+        "image_path": "banners/70000000-0000-4000-a000-000000000003/e34df69983a8468e78eb8851660d41f3af6881230b3bc4fda8cd04c4fee4bdc8.jpg",
+        "sort_order": 3,
+        "description": "Every Drop is Limited.\nEvery Piece Tells A Story.",
+        "mobile_width": null,
+        "mobile_height": null,
+        "mobile_image_path": null
+      },
+      {
+        "id": "70000000-0000-4000-a000-000000000004",
+        "alt": "Minimal apparel campaign in warm tones",
+        "width": 1800,
+        "height": 2700,
+        "eyebrow": "NEW DROP",
+        "heading": "REDEFINED\nBASICS.",
+        "cta_path": "/shop",
+        "cta_label": "SHOP THE DROP",
+        "image_path": "banners/70000000-0000-4000-a000-000000000004/30e385d82a595758f976e2298f4c26f69cfca56ac5d20ce8216099314872935c.jpg",
+        "sort_order": 4,
+        "description": "Every Drop is Limited.\nEvery Piece Tells A Story.",
+        "mobile_width": null,
+        "mobile_height": null,
+        "mobile_image_path": null
+      }
+    ],
+    "sections": [
+      {
+        "key": "limited_editions",
+        "body": null,
+        "heading": "Limited Editions",
+        "cta_path": "/shop?tags=limited-edition",
+        "cta_label": "View All",
+        "media_alt": null,
+        "media_path": null,
+        "sort_order": 1,
+        "subheading": "Creator collaborations, released in limited numbers.",
+        "media_width": null,
+        "media_height": null
+      },
+      {
+        "key": "best_sellers",
+        "body": null,
+        "heading": "Best Sellers",
+        "cta_path": "/shop?tags=best-seller",
+        "cta_label": "View All",
+        "media_alt": null,
+        "media_path": null,
+        "sort_order": 2,
+        "subheading": "Most loved pieces, chosen again and again.",
+        "media_width": null,
+        "media_height": null
+      },
+      {
+        "key": "trending",
+        "body": null,
+        "heading": "Trending",
+        "cta_path": "/shop?tags=trending",
+        "cta_label": "View All",
+        "media_alt": null,
+        "media_path": null,
+        "sort_order": 3,
+        "subheading": "Styles getting noticed right now.",
+        "media_width": null,
+        "media_height": null
+      },
+      {
+        "key": "new_arrivals",
+        "body": null,
+        "heading": "New Arrivals",
+        "cta_path": "/shop",
+        "cta_label": "View All",
+        "media_alt": null,
+        "media_path": null,
+        "sort_order": 4,
+        "subheading": null,
+        "media_width": null,
+        "media_height": null
+      },
+      {
+        "key": "oversized_fit",
+        "body": "LESS\nORDINARY.\nMORE YOU.",
+        "heading": "Oversized Fit",
+        "cta_path": "/shop?fit=oversized",
+        "cta_label": "View All",
+        "media_alt": null,
+        "media_path": null,
+        "sort_order": 5,
+        "subheading": null,
+        "media_width": null,
+        "media_height": null
+      },
+      {
+        "key": "shop_by_design",
+        "body": null,
+        "heading": "Shop by Design",
+        "cta_path": null,
+        "cta_label": null,
+        "media_alt": null,
+        "media_path": null,
+        "sort_order": 6,
+        "subheading": "Find the artwork that speaks to you.",
+        "media_width": null,
+        "media_height": null
+      },
+      {
+        "key": "brand_story",
+        "body": "We create expressive T-shirts in Standard Fit and Oversized Fit, shaped by original design, meaningful collaborations, and the pieces people return to most.",
+        "heading": "What We Do",
+        "cta_path": "/about",
+        "cta_label": "Explore",
+        "media_alt": null,
+        "media_path": null,
+        "sort_order": 7,
+        "subheading": null,
+        "media_width": null,
+        "media_height": null
+      }
+    ],
+    "settings": {
+      "colors": {
+        "text": "#1d1b1b",
+        "muted": "#6f6965",
+        "accent": "#711d32",
+        "border": "#d8d0c8",
+        "surface": "#efe8df",
+        "highlight": "#f5f3ee",
+        "background": "#f7f4ef",
+        "accent_hover": "#6b2737"
+      },
+      "branding": {
+        "tagline": "LESS ORDINARY. MORE YOU.",
+        "logo_alt": null,
+        "logo_path": null,
+        "logo_width": null,
+        "logo_height": null,
+        "display_name": "% PERCENT",
+        "favicon_path": null
+      },
+      "typography": {
+        "ui_family": "Inter",
+        "body_family": "Inter",
+        "body_weight": 400,
+        "display_family": "Inter",
+        "heading_family": "Inter",
+        "heading_weight": 700,
+        "letter_spacing": 0
+      },
+      "navbar_items": [
+        {
+          "id": "collection",
+          "path": "/shop",
+          "label": "Collection",
+          "enabled": true,
+          "sort_order": 1
+        },
+        {
+          "id": "about",
+          "path": "/about",
+          "label": "About Us",
+          "enabled": true,
+          "sort_order": 2
+        }
+      ],
+      "social_links": [],
+      "footer_tagline": "Less Ordinary. More You.",
+      "footer_description": "Limited pieces, made to be remembered."
+    },
+    "updated_at": "2026-09-27T17:44:39.239944+00:00",
+    "font_families": []
+  },
+  "settings": {
+    "id": "storefront",
+    "colors": {
+      "text": "#1d1b1b",
+      "muted": "#6f6965",
+      "accent": "#711d32",
+      "border": "#d8d0c8",
+      "surface": "#efe8df",
+      "highlight": "#f5f3ee",
+      "background": "#f7f4ef",
+      "accent_hover": "#6b2737"
+    },
+    "branding": {
+      "tagline": "LESS ORDINARY. MORE YOU.",
+      "logo_alt": null,
+      "logo_path": null,
+      "logo_width": null,
+      "logo_height": null,
+      "display_name": "% PERCENT",
+      "favicon_path": null
+    },
+    "created_at": "2026-09-21T16:49:39.951104+00:00",
+    "typography": {
+      "ui_family": "Inter",
+      "body_family": "Inter",
+      "body_weight": 400,
+      "display_family": "Inter",
+      "heading_family": "Inter",
+      "heading_weight": 700,
+      "letter_spacing": 0
+    },
+    "updated_at": "2026-09-27T17:44:39.239944+00:00",
+    "navbar_items": [
+      {
+        "id": "collection",
+        "path": "/shop",
+        "label": "Collection",
+        "enabled": true,
+        "sort_order": 1
+      },
+      {
+        "id": "about",
+        "path": "/about",
+        "label": "About Us",
+        "enabled": true,
+        "sort_order": 2
+      }
+    ],
+    "social_links": [],
+    "footer_tagline": "Less Ordinary. More You.",
+    "footer_description": "Limited pieces, made to be remembered."
+  },
+  "functions": [
+    {
+      "acl": "{postgres=X/postgres}",
+      "anon": false,
+      "owner": "postgres",
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "service": false,
+      "signature": "private.website_font_admin_catalog()",
+      "definition": "CREATE OR REPLACE FUNCTION private.website_font_admin_catalog()\n RETURNS jsonb\n LANGUAGE sql\n STABLE\n SET search_path TO ''\nAS $function$\r\n  select coalesce(jsonb_agg(jsonb_build_object(\r\n    'id',f.family->'id','family_name',f.family->'family_name',\r\n    'enabled',f.family->'enabled','created_at',f.family->'created_at',\r\n    'updated_at',f.family->'updated_at','in_use',f.family->'in_use',\r\n    'faces',coalesce((select jsonb_agg(jsonb_build_object(\r\n      'asset_id',x.face->'asset_id','weight',x.face->'weight','style',x.face->'style'\r\n    ) order by x.ordinal) from jsonb_array_elements(f.family->'faces')\r\n      with ordinality x(face,ordinal)), '[]'::jsonb)\r\n  ) order by f.ordinal),'[]'::jsonb)\r\n  from jsonb_array_elements(private.website_font_server_catalog())\r\n    with ordinality f(family,ordinal);\r\n$function$\n",
+      "authenticated": false
+    },
+    {
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "anon": false,
+      "owner": "postgres",
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "service": false,
+      "signature": "delete_website_font_family(uuid,timestamp with time zone)",
+      "definition": "CREATE OR REPLACE FUNCTION public.delete_website_font_family(p_family_id uuid, p_expected_updated_at timestamp with time zone)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\ndeclare\r\n  v_version timestamptz;\r\n  v_paths jsonb;\r\nbegin\r\n  if private.current_user_id() is null or not private.is_admin() then\r\n    raise exception 'Admin access required' using errcode='42501';\r\n  end if;\r\n  perform 1 from public.website_settings where id='storefront' for update;\r\n  select updated_at into v_version from public.website_font_families where id=p_family_id for update;\r\n  if not found or p_expected_updated_at is null or v_version is distinct from p_expected_updated_at then\r\n    raise exception 'Font family changed; reload before deleting' using errcode='PT409';\r\n  end if;\r\n  if private.website_font_in_use(p_family_id) then\r\n    raise exception 'This font is currently used by the storefront. Choose another font before deleting it.' using errcode='22023';\r\n  end if;\r\n  select coalesce(jsonb_agg(storage_path),'[]'::jsonb) into v_paths from public.website_font_faces where family_id=p_family_id;\r\n  delete from public.website_font_families where id=p_family_id;\r\n  -- The authorized Edge Function removes bytes through Storage API, not SQL.\r\n  return jsonb_build_object('removed',true);\r\nend;\r\n$function$\n",
+      "authenticated": true
+    },
+    {
+      "acl": "{postgres=X/postgres,service_role=X/postgres}",
+      "anon": false,
+      "owner": "postgres",
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "service": true,
+      "signature": "get_website_font_delivery_asset(uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION public.get_website_font_delivery_asset(p_asset_id uuid)\n RETURNS jsonb\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\n  select jsonb_build_object(\r\n    'asset_id',x.asset_id,\r\n    'storage_path',x.storage_path,\r\n    'mime_type',x.mime_type,\r\n    'byte_size',x.byte_size,\r\n    'sha256',x.sha256\r\n  )\r\n  from public.website_font_faces x\r\n  join public.website_font_families f on f.id=x.family_id\r\n  where x.asset_id=p_asset_id and f.enabled\r\n    and private.website_font_in_use(f.id)\r\n    and private.website_font_reference_valid('custom:'||f.id::text);\r\n$function$\n",
+      "authenticated": false
+    },
+    {
+      "acl": "{postgres=X/postgres}",
+      "anon": false,
+      "owner": "postgres",
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": false,
+      "service": false,
+      "signature": "private.website_font_server_catalog()",
+      "definition": "CREATE OR REPLACE FUNCTION private.website_font_server_catalog()\n RETURNS jsonb\n LANGUAGE sql\n STABLE\n SET search_path TO ''\nAS $function$\r\n  select coalesce(jsonb_agg(jsonb_build_object(\r\n    'id',f.id,'family_name',f.family_name,'enabled',f.enabled,\r\n    'created_at',f.created_at,'updated_at',f.updated_at,\r\n    'in_use',private.website_font_in_use(f.id),\r\n    'faces',coalesce((select jsonb_agg(jsonb_build_object(\r\n      'asset_id',x.asset_id,'weight',x.weight,'style',x.style,'storage_path',x.storage_path,\r\n      'mime_type',x.mime_type,'byte_size',x.byte_size,'sha256',x.sha256\r\n    ) order by x.weight,x.style) from public.website_font_faces x where x.family_id=f.id),'[]'::jsonb)\r\n  ) order by f.normalized_name), '[]'::jsonb)\r\n  from public.website_font_families f;\r\n$function$\n",
+      "authenticated": false
+    },
+    {
+      "acl": "{postgres=X/postgres,service_role=X/postgres}",
+      "anon": false,
+      "owner": "postgres",
+      "config": [
+        "search_path=\"\""
+      ],
+      "definer": true,
+      "service": true,
+      "signature": "get_website_font_management_catalog()",
+      "definition": "CREATE OR REPLACE FUNCTION public.get_website_font_management_catalog()\n RETURNS jsonb\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\r\n  select private.website_font_server_catalog();\r\n$function$\n",
+      "authenticated": false
+    }
+  ],
+  "font_counts": {
+    "faces": 0,
+    "families": 0
+  },
+  "builtin_acceptance": {
+    "Lora": true,
+    "Inter": true,
+    "Outfit": true,
+    "DM Sans": true,
+    "Georgia": true,
+    "Manrope": true,
+    "system-ui": true,
+    "Montserrat": true,
+    "Space Grotesk": true,
+    "Playfair Display": true,
+    "Libre Baskerville": true,
+    "Cormorant Garamond": true
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "edgeVersion": 15,
+  "checks": [
+    {
+      "label": "Malformed asset ID",
+      "status": 400
+    },
+    {
+      "label": "Unknown asset ID",
+      "status": 404
+    },
+    {
+      "label": "Arbitrary path parameter",
+      "status": 400
+    },
+    {
+      "label": "Anonymous font management",
+      "status": 401
+    },
+    {
+      "label": "Anonymous font preview",
+      "status": 401
+    },
+    {
+      "label": "Anonymous service-only catalog RPC",
+      "status": 401
+    },
+    {
+      "label": "Anonymous service-only delivery RPC",
+      "status": 401
+    },
+    {
+      "label": "Anonymous multipart upload",
+      "status": 401
+    },
+    {
+      "label": "Minimal public storefront font payload",
+      "families": 0
+    },
+    {
+      "label": "Exact original typography and otherwise unchanged Website Editor content",
+      "passed": true,
+      "ignored": "Monotonic top-level updated_at only"
+    }
+  ],
+  "cors": "PASS",
+  "authenticatedHostedAcceptance": "Super Admin and real Customer acceptance passed; ordinary Admin deferred"
+}

@@ -1,0 +1,4 @@
+:is(.storefront-shell,.website-storefront-preview){font-family:var(--font-body),system-ui,sans-serif;font-weight:var(--body-weight)}
+:is(.storefront-shell,.website-storefront-preview) :is(h1,h2,h3,h4,h5,h6){font-family:var(--font-heading),system-ui,sans-serif;font-weight:var(--heading-weight)}
+:is(.storefront-shell,.website-storefront-preview) :is(.hero h1,.shop-hero h1,.archive-hero-copy h1,.about-hero h1,.about-statement,.about-feature h2){font-family:var(--font-display),system-ui,sans-serif}
+:is(.storefront-shell,.website-storefront-preview) :is(button,input,select,textarea,label,nav,.site-header,.filters,.shop-sidebar,.eyebrow,.button){font-family:var(--font-ui),system-ui,sans-serif}

@@ -1,0 +1,130 @@
+{
+  "session": {
+    "firebaseSignedIn": true,
+    "firebaseAnonymous": false,
+    "firebaseStatus": "ready",
+    "percent": {
+      "loading": false,
+      "authenticated": true,
+      "role": "customer",
+      "error": null
+    },
+    "requests": [
+      {
+        "name": "role",
+        "error": null,
+        "status": 200,
+        "role": "customer"
+      },
+      {
+        "name": "content",
+        "error": null,
+        "status": 200
+      },
+      {
+        "name": "products",
+        "error": null,
+        "status": 200,
+        "count": 2
+      },
+      {
+        "name": "website",
+        "error": null,
+        "status": null
+      },
+      {
+        "name": "catalog",
+        "error": null,
+        "status": null
+      }
+    ]
+  },
+  "upload": {
+    "role": "customer",
+    "results": [
+      {
+        "name": "valid WOFF2 create/upload",
+        "status": 403,
+        "error": "Admin access required",
+        "denied": true,
+        "privateMetadataDetected": false
+      },
+      {
+        "name": "enable",
+        "status": 403,
+        "error": "Admin access required",
+        "denied": true,
+        "privateMetadataDetected": false
+      },
+      {
+        "name": "original typography and public catalog",
+        "status": 200,
+        "typography": {
+          "ui_family": "Inter",
+          "body_family": "Inter",
+          "body_weight": 400,
+          "display_family": "Inter",
+          "heading_family": "Inter",
+          "heading_weight": 700,
+          "letter_spacing": 0
+        },
+        "fontFamilies": 0
+      }
+    ]
+  },
+  "denials": {
+    "role": "customer",
+    "requests": [
+      {
+        "action": "font_catalog",
+        "denied": true,
+        "status": 403,
+        "error": "Admin access required"
+      },
+      {
+        "action": "font_toggle",
+        "denied": true,
+        "status": 403,
+        "error": "Admin access required"
+      },
+      {
+        "action": "font_delete",
+        "denied": true,
+        "status": 403,
+        "error": "Admin access required"
+      },
+      {
+        "action": "font_preview",
+        "denied": true,
+        "status": 403,
+        "error": "Admin access required"
+      },
+      {
+        "action": "font_save",
+        "denied": true,
+        "status": 403,
+        "error": "Admin access required"
+      },
+      {
+        "name": "get_website_font_management_catalog",
+        "denied": true,
+        "code": "42501"
+      },
+      {
+        "name": "get_website_font_delivery_asset",
+        "denied": true,
+        "code": "42501"
+      },
+      {
+        "name": "save_website_font_family",
+        "denied": true,
+        "code": "42501"
+      },
+      {
+        "name": "delete_website_font_family",
+        "denied": true,
+        "code": "42501"
+      }
+    ]
+  }
+}

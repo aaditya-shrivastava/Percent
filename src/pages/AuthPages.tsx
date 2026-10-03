@@ -8,7 +8,9 @@ import { firebaseAuth, googleAuthProvider } from '../backend/firebase'
 import { ensureFirebaseAuthenticatedClaim } from '../backend/firebaseSession'
 import { checkUsernameAvailability, finalizeUsernameRegistration, recoverUsernameRegistration, releaseUsernameRegistration, requestUsernamePasswordRecovery, reserveUsernameRegistration, resolveUsernameLogin, sendContactEmailVerification, usernameAuthEnabled } from '../backend/usernameAuth'
 import { authRouteWithReturnTo, getSafeAuthReturnTo } from '../data/auth'
-import { updatePercentProfile, usePercentSession } from '../hooks/usePercentSession'
+import { usePercentSession } from '../hooks/usePercentSession'
+import { completeCustomerSignupName } from '../backend/percentSession'
+import { parseCustomerName } from '../backend/customerName'
 
 const authErrorMessage=(error:unknown)=>{
  if(!(error instanceof FirebaseError))return error instanceof Error?error.message:'Unable to complete your request.'
@@ -42,7 +44,7 @@ function AuthPage({mode}:{mode:'login'|'register'|'recover'|'reset'}) {
  const [availability,setAvailability]=useState<'idle'|'checking'|'available'|'unavailable'>('idle')
  const [agreed,setAgreed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('')
  const title={login:'Sign In',register:'Join Percent',recover:'Forgot Password',reset:'Set New Password'}[mode]
- if(!loading&&isAuthenticated && (mode==='login'||mode==='register'))return <Navigate to={returnTo} replace />
+ if(!busy&&!loading&&isAuthenticated && (mode==='login'||mode==='register'&&!error))return <Navigate to={returnTo} replace />
  const submit=async(event:FormEvent)=>{
   event.preventDefault();setError('');setMessage('');setBusy(true)
   try {
@@ -89,11 +91,11 @@ function AuthPage({mode}:{mode:'login'|'register'|'recover'|'reset'}) {
       throw registrationError
      }
     }else{
+     const parsedName=parseCustomerName(name)
+     if(!parsedName)throw new Error('Enter a full name of up to 120 characters.')
      const credential=await createUserWithEmailAndPassword(firebaseAuth,email.trim(),password)
-     await updateProfile(credential.user,{displayName:name.trim()})
-     await refreshSession()
-     const parts=name.trim().split(/\s+/)
-     await updatePercentProfile({firstName:parts[0]??'',lastName:parts.slice(1).join(' '),phone:''})
+     await updateProfile(credential.user,{displayName:parsedName.display_name})
+     await completeCustomerSignupName(parsedName.display_name)
     }
     setMessage('Your Percent account is ready.')
    }

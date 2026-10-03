@@ -1,0 +1,733 @@
+[
+  {
+    "name": "Inter",
+    "id": "inter",
+    "cssFamily": "PercentBuiltin_inter",
+    "cssPath": "/fonts/builtin/inter/font.css",
+    "fallback": "system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "weights": [
+      100,
+      200,
+      300,
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "styles": [
+      "italic",
+      "normal"
+    ],
+    "package": "@fontsource-variable/inter",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter) Inter-Italic[opsz,wght].ttf: Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)"
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/inter/inter-cyrillic-ext-wght-normal.woff2",
+        "size": 25960,
+        "sha256": "ca157063339ac4ad418f214f3abfed119b0798ab4d377386ce5c9e5a7a435ebd"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-cyrillic-wght-normal.woff2",
+        "size": 18748,
+        "sha256": "71d5ee93cc1e9f1d520a3a8b66456de18c7879d8df09d57fcd2eaff75fef0075"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-greek-ext-wght-normal.woff2",
+        "size": 11232,
+        "sha256": "6e9e020a25f9b56d418f2c085b1d3c09725a4da23fe693a5b463064606732190"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-greek-wght-normal.woff2",
+        "size": 18996,
+        "sha256": "1be3448e292fbf05ffe176fe1e43f135013d50b1e7d324ad1a558f623d3bb6f6"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-vietnamese-wght-normal.woff2",
+        "size": 10252,
+        "sha256": "5c66f9e07e90c6d4ac4922cc68d60de26c17b1858e677fb5e603fce3952b3ff2"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-latin-ext-wght-normal.woff2",
+        "size": 85068,
+        "sha256": "34b9c504cab7a73e37b746343a449132e56cf7b5481af2cb81dc74dcff25c956"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-latin-wght-normal.woff2",
+        "size": 48256,
+        "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-cyrillic-ext-wght-italic.woff2",
+        "size": 27380,
+        "sha256": "39689184132e9fba8fb1066f429125d14445352a566f47f4edcae7c3c90e486d"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-cyrillic-wght-italic.woff2",
+        "size": 19980,
+        "sha256": "47d42151dff6d13f1c2b9a1f278290f625593c1f01c89612ee4ae7f063167f7a"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-greek-ext-wght-italic.woff2",
+        "size": 12096,
+        "sha256": "787fc783f35c913334445a7c4502bb272f94a8328426578776eac5e4ebd03ba1"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-greek-wght-italic.woff2",
+        "size": 20484,
+        "sha256": "29e273a42cac8240f37fbdd94c684f8a255e61c8076942d9b8f18a0e2c014991"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-vietnamese-wght-italic.woff2",
+        "size": 10596,
+        "sha256": "1991ed5832eb07f7523f22a843ca9a8aa83c51c8e87062ce77794855d2f5dee8"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-latin-ext-wght-italic.woff2",
+        "size": 91900,
+        "sha256": "71254244ccb1ec21e14db3480fef6f6826d1136dc4aca1c7d3ca7ce31294fcce"
+      },
+      {
+        "path": "/fonts/builtin/inter/inter-latin-wght-italic.woff2",
+        "size": 51832,
+        "sha256": "7291b5970da2237441273c03b424a504b70b18f09791473fab99687dcc314720"
+      }
+    ]
+  },
+  {
+    "name": "Manrope",
+    "id": "manrope",
+    "cssFamily": "PercentBuiltin_manrope",
+    "cssPath": "/fonts/builtin/manrope/font.css",
+    "fallback": "system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "weights": [
+      200,
+      300,
+      400,
+      500,
+      600,
+      700,
+      800
+    ],
+    "styles": [
+      "normal"
+    ],
+    "package": "@fontsource-variable/manrope",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2019 The Manrope Project Authors (https://github.com/sharanda/manrope)"
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/manrope/manrope-cyrillic-ext-wght-normal.woff2",
+        "size": 2552,
+        "sha256": "de37de877dc17e4577341fa68bb5cb526b53d54cb29721e674208546a3c7849d"
+      },
+      {
+        "path": "/fonts/builtin/manrope/manrope-cyrillic-wght-normal.woff2",
+        "size": 14500,
+        "sha256": "c268b459a9329e59fecf39a17618efd44c71735532048d60b12aab76a8c14914"
+      },
+      {
+        "path": "/fonts/builtin/manrope/manrope-greek-wght-normal.woff2",
+        "size": 9444,
+        "sha256": "2fb2e8cbfd52ae46179a8b6024eb162f1f9c6de3d22d6e3a30d8f395de7220be"
+      },
+      {
+        "path": "/fonts/builtin/manrope/manrope-vietnamese-wght-normal.woff2",
+        "size": 8520,
+        "sha256": "6bbb044ab420e07edb0a3042d2eb314b85e83a0182e945a15ab3b9092668dfd5"
+      },
+      {
+        "path": "/fonts/builtin/manrope/manrope-latin-ext-wght-normal.woff2",
+        "size": 15120,
+        "sha256": "3911b66d9f2e005a4b989223405d0e5032619c668597ba467cc76a23c8fffcfb"
+      },
+      {
+        "path": "/fonts/builtin/manrope/manrope-latin-wght-normal.woff2",
+        "size": 24836,
+        "sha256": "a30ddcd349703aff7464c34bef3fffdff405ee50c113440d7c8693c02d210972"
+      }
+    ]
+  },
+  {
+    "name": "DM Sans",
+    "id": "dm-sans",
+    "cssFamily": "PercentBuiltin_dm_sans",
+    "cssPath": "/fonts/builtin/dm-sans/font.css",
+    "fallback": "system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "weights": [
+      100,
+      200,
+      300,
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "styles": [
+      "italic",
+      "normal"
+    ],
+    "package": "@fontsource-variable/dm-sans",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2014 The DM Sans Project Authors (https://github.com/googlefonts/dm-fonts) DMSans-Italic[opsz,wght].ttf: Copyright 2014 The DM Sans Project Authors (https://github.com/googlefonts/dm-fonts)"
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/dm-sans/dm-sans-latin-ext-wght-normal.woff2",
+        "size": 18228,
+        "sha256": "a5d38fe99f930275684999b462c7123faa063d9e44e73b4b241723d884aa0f49"
+      },
+      {
+        "path": "/fonts/builtin/dm-sans/dm-sans-latin-wght-normal.woff2",
+        "size": 36932,
+        "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543"
+      },
+      {
+        "path": "/fonts/builtin/dm-sans/dm-sans-latin-ext-wght-italic.woff2",
+        "size": 20808,
+        "sha256": "6e646d2022808fb4532e77d38a9348e4dcf832796be2acc43a79052b60900db2"
+      },
+      {
+        "path": "/fonts/builtin/dm-sans/dm-sans-latin-wght-italic.woff2",
+        "size": 39712,
+        "sha256": "f1a235db5bcb8730707844188d35201ecdf63e56c5dcce97bab24a9c7066091d"
+      }
+    ]
+  },
+  {
+    "name": "Montserrat",
+    "id": "montserrat",
+    "cssFamily": "PercentBuiltin_montserrat",
+    "cssPath": "/fonts/builtin/montserrat/font.css",
+    "fallback": "system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "weights": [
+      100,
+      200,
+      300,
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "styles": [
+      "italic",
+      "normal"
+    ],
+    "package": "@fontsource-variable/montserrat",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat) Montserrat-Italic[wght].ttf: Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)"
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-cyrillic-ext-wght-normal.woff2",
+        "size": 26368,
+        "sha256": "0f7f5f2fbb4eae126790fe6f01659ab3ee0806e8038a941908e893020569f51a"
+      },
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-cyrillic-wght-normal.woff2",
+        "size": 23828,
+        "sha256": "a187b077090fe8ae3fd2d7496aabbeae604819c718a282e0afc92df72b450766"
+      },
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-vietnamese-wght-normal.woff2",
+        "size": 12928,
+        "sha256": "26b2403f995ed65fb49037a6498c074d3ec3c36031a69fc368c4c2180e2c01fa"
+      },
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-latin-ext-wght-normal.woff2",
+        "size": 70688,
+        "sha256": "54d9a78b7ff60b689ad9f3017ffac8547b5d871afec733f6c1c3ae36577ee504"
+      },
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-latin-wght-normal.woff2",
+        "size": 37956,
+        "sha256": "06b16db7a969135d48d38c49183be7fb88d4452e2a3011957c7851941f4e4879"
+      },
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-cyrillic-ext-wght-italic.woff2",
+        "size": 26944,
+        "sha256": "eaf57cf096f40598c99a9270dc232a0905833fc05aa38a7a93ad8801bde38960"
+      },
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-cyrillic-wght-italic.woff2",
+        "size": 24536,
+        "sha256": "f44e7241c210c6938410dadc5806bb33e8f526a28a0fdcf58c41b33bcc55321b"
+      },
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-vietnamese-wght-italic.woff2",
+        "size": 13900,
+        "sha256": "cfc214072c52df3721890638bf0dcd8a5a0e2c99653d59b4b766ab867da05b4c"
+      },
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-latin-ext-wght-italic.woff2",
+        "size": 74892,
+        "sha256": "9f7c3dc0c1fdbc8b09d53d1beb4aca048a5aff376ac5423878e03e83e89a7fe8"
+      },
+      {
+        "path": "/fonts/builtin/montserrat/montserrat-latin-wght-italic.woff2",
+        "size": 39632,
+        "sha256": "0eb22e3d769a66a92dbd82e3aefa5740e5bc21afa4485f62f92b22656d49182a"
+      }
+    ]
+  },
+  {
+    "name": "Outfit",
+    "id": "outfit",
+    "cssFamily": "PercentBuiltin_outfit",
+    "cssPath": "/fonts/builtin/outfit/font.css",
+    "fallback": "system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "weights": [
+      100,
+      200,
+      300,
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "styles": [
+      "normal"
+    ],
+    "package": "@fontsource-variable/outfit",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2021 The Outfit Project Authors (https://github.com/Outfitio/Outfit-Fonts)"
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/outfit/outfit-latin-ext-wght-normal.woff2",
+        "size": 14808,
+        "sha256": "0f53d1c03b3918d744a843b5039001ee31695ca1e255e3914188df81beb461e9"
+      },
+      {
+        "path": "/fonts/builtin/outfit/outfit-latin-wght-normal.woff2",
+        "size": 32292,
+        "sha256": "6c18d579fd87c3776be068b762cbc83fde3acb543d49eabd3ade842eb987e887"
+      }
+    ]
+  },
+  {
+    "name": "Space Grotesk",
+    "id": "space-grotesk",
+    "cssFamily": "PercentBuiltin_space_grotesk",
+    "cssPath": "/fonts/builtin/space-grotesk/font.css",
+    "fallback": "system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "weights": [
+      300,
+      400,
+      500,
+      600,
+      700
+    ],
+    "styles": [
+      "normal"
+    ],
+    "package": "@fontsource-variable/space-grotesk",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2020 The Space Grotesk Project Authors (https://github.com/floriankarsten/space-grotesk)"
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/space-grotesk/space-grotesk-vietnamese-wght-normal.woff2",
+        "size": 6712,
+        "sha256": "8895e3d49825128bfa5238e4c96e9b432d7a3dadbe5c17c6081267398305dc71"
+      },
+      {
+        "path": "/fonts/builtin/space-grotesk/space-grotesk-latin-ext-wght-normal.woff2",
+        "size": 18940,
+        "sha256": "952dddb45d2f96f71cbf3b7f510b24379afc3c89ea02fcf89d377b45d62c0166"
+      },
+      {
+        "path": "/fonts/builtin/space-grotesk/space-grotesk-latin-wght-normal.woff2",
+        "size": 22288,
+        "sha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d"
+      }
+    ]
+  },
+  {
+    "name": "Playfair Display",
+    "id": "playfair-display",
+    "cssFamily": "PercentBuiltin_playfair_display",
+    "cssPath": "/fonts/builtin/playfair-display/font.css",
+    "fallback": "Georgia, \"Times New Roman\", serif",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "styles": [
+      "italic",
+      "normal"
+    ],
+    "package": "@fontsource-variable/playfair-display",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2017 The Playfair Display Project Authors (https://github.com/clauseggers/Playfair-Display), with Reserved Font Name \"Playfair Display\". PlayfairDisplay-Italic[wght].ttf: Copyright 2017 The Playfair Display Project Authors (https://github.com/clauseggers/Playfair-Display), with Reserved Font Name \"Playfair Display\"."
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/playfair-display/playfair-display-cyrillic-wght-normal.woff2",
+        "size": 21152,
+        "sha256": "c108681cba6a9820bff52f4a1a4a1d9edf356b347bd79b7c61e916028e8a8b54"
+      },
+      {
+        "path": "/fonts/builtin/playfair-display/playfair-display-vietnamese-wght-normal.woff2",
+        "size": 9112,
+        "sha256": "ef6446229b59773e671021650ef3882cf35806dae723ce047de87c0a6633039a"
+      },
+      {
+        "path": "/fonts/builtin/playfair-display/playfair-display-latin-ext-wght-normal.woff2",
+        "size": 21140,
+        "sha256": "42898ad49a6b23f32b109243e1df596edf831015ed685f429e4dafbb181d599d"
+      },
+      {
+        "path": "/fonts/builtin/playfair-display/playfair-display-latin-wght-normal.woff2",
+        "size": 38404,
+        "sha256": "e0c764a8e9e1cce92163c55bac4b2ad6cd4cf8c696ce2289ab5c41565e65b7e2"
+      },
+      {
+        "path": "/fonts/builtin/playfair-display/playfair-display-cyrillic-wght-italic.woff2",
+        "size": 23304,
+        "sha256": "51b2dac698333379dc3a3486393fba787d17f1dcbcb50f46582ca759d53c25fc"
+      },
+      {
+        "path": "/fonts/builtin/playfair-display/playfair-display-vietnamese-wght-italic.woff2",
+        "size": 9568,
+        "sha256": "6b8bfd228577635a5f45bee13c8dd4a900eba6aeb36af1680838aea3cbd7e412"
+      },
+      {
+        "path": "/fonts/builtin/playfair-display/playfair-display-latin-ext-wght-italic.woff2",
+        "size": 23380,
+        "sha256": "b9dff4aec6d8ef27af595330c808c455fcc3ff46881642aa6028ed4e27a96f89"
+      },
+      {
+        "path": "/fonts/builtin/playfair-display/playfair-display-latin-wght-italic.woff2",
+        "size": 38804,
+        "sha256": "54af24bd0f911f0fd7399d5445ea2023ff501d6a69f2d728f1213072f977ab14"
+      }
+    ]
+  },
+  {
+    "name": "Cormorant Garamond",
+    "id": "cormorant-garamond",
+    "cssFamily": "PercentBuiltin_cormorant_garamond",
+    "cssPath": "/fonts/builtin/cormorant-garamond/font.css",
+    "fallback": "Georgia, \"Times New Roman\", serif",
+    "weights": [
+      300,
+      400,
+      500,
+      600,
+      700
+    ],
+    "styles": [
+      "italic",
+      "normal"
+    ],
+    "package": "@fontsource-variable/cormorant-garamond",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2015 The Cormorant Project Authors (github.com/CatharsisFonts/Cormorant) CormorantGaramond-Italic[wght].ttf: Copyright 2015 The Cormorant Project Authors (github.com/CatharsisFonts/Cormorant)"
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-cyrillic-ext-wght-normal.woff2",
+        "size": 23416,
+        "sha256": "a4d7cf345b8091e1d2c8c5c8fa3bd0f9bb9d00bc8988185471db398ddb5ae4c4"
+      },
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-cyrillic-wght-normal.woff2",
+        "size": 21168,
+        "sha256": "017fab69b4be8ffc08ca312823327989ade6dc3d948f0afa125e12ec2e5e7ca1"
+      },
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-vietnamese-wght-normal.woff2",
+        "size": 11220,
+        "sha256": "6252e819a7665ae512c2d046308a9016ada63c06d0d8f96984c4b29f6c9e1bd2"
+      },
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-latin-ext-wght-normal.woff2",
+        "size": 33736,
+        "sha256": "cfa9a397d86f66c5c51775a2500a712d5f632a04f0c5eca6930dfaf612d4566d"
+      },
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-latin-wght-normal.woff2",
+        "size": 37640,
+        "sha256": "d80df8ff5aecd299a61549f9e29ab1ed0b9b05f4ea71d50fe978e07d5240b235"
+      },
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-cyrillic-ext-wght-italic.woff2",
+        "size": 25184,
+        "sha256": "ae25de0507a445fd9e953e90432ae75b1ee2eccb48370a6ced4934551eb56fc3"
+      },
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-cyrillic-wght-italic.woff2",
+        "size": 21300,
+        "sha256": "cb13c04533ee98c94e49a053b9f4d39bf616fd7ba6360d71aead92a78dc571f7"
+      },
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-vietnamese-wght-italic.woff2",
+        "size": 11516,
+        "sha256": "b8ecb4ae898cd9ccae2f2d18fd364f6593bb67776060f9b5d833cec65d34d112"
+      },
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-latin-ext-wght-italic.woff2",
+        "size": 34392,
+        "sha256": "cd5bf126b2c84ab41b254a6a9a1ffb5c326a0f9f82c22fb4704daa31c9aaa415"
+      },
+      {
+        "path": "/fonts/builtin/cormorant-garamond/cormorant-garamond-latin-wght-italic.woff2",
+        "size": 39260,
+        "sha256": "6f2f5c3b1abc3d0bb035a927f66a90ca873f94fc31c4966c8d024142c2036e55"
+      }
+    ]
+  },
+  {
+    "name": "Lora",
+    "id": "lora",
+    "cssFamily": "PercentBuiltin_lora",
+    "cssPath": "/fonts/builtin/lora/font.css",
+    "fallback": "Georgia, \"Times New Roman\", serif",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "styles": [
+      "italic",
+      "normal"
+    ],
+    "package": "@fontsource-variable/lora",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic), with Reserved Font Name \"Lora\". Lora-Italic[wght].ttf: Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic), with Reserved Font Name \"Lora\"."
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/lora/lora-cyrillic-ext-wght-normal.woff2",
+        "size": 23636,
+        "sha256": "0e523e4bc3c6308f002a3208ea2990cb4f64282d4fbb67c12f5726d13b66eef6"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-cyrillic-wght-normal.woff2",
+        "size": 21232,
+        "sha256": "c57d9ca3bd42e6bc093badc7744dd2059a78f66a3a4dc6ca40574480c870f553"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-math-wght-normal.woff2",
+        "size": 29240,
+        "sha256": "a8c4cb778ab6202d22bdea2ccc8d7e7caf802cfe0a7ce37df7b212f82341468f"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-symbols-wght-normal.woff2",
+        "size": 17248,
+        "sha256": "2df52199eac56e2ec7a735e609bb151bdab79422c3e73948f4b6580c66bb5a50"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-vietnamese-wght-normal.woff2",
+        "size": 8992,
+        "sha256": "98c22de85f6e83bcd6ae1a443e12e256fbc8de7142bec4f76b059f8ff9c2797e"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-latin-ext-wght-normal.woff2",
+        "size": 20088,
+        "sha256": "2a2d9c22c9863086a23f5013fede1428585321812b25f2662542c39d02967c5e"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-latin-wght-normal.woff2",
+        "size": 37788,
+        "sha256": "ddb8c66035104e233fc024669183aad3738b6daa16deee2ebb1241bd0f98ace1"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-cyrillic-ext-wght-italic.woff2",
+        "size": 27348,
+        "sha256": "b67b0f50d1d03fc36a1b3ded113de24a0ab71b838cc27e493d4f62cea00be99b"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-cyrillic-wght-italic.woff2",
+        "size": 22972,
+        "sha256": "405b30a5bea8b70446e08e40e5d70b7bf5262ef3c4a9e4f3e4672e079a01a4cd"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-math-wght-italic.woff2",
+        "size": 31364,
+        "sha256": "49e796554ee2343f0d7a7f111d5dbc64fc5da47ad7168734e9a2d1f302ef3245"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-symbols-wght-italic.woff2",
+        "size": 18892,
+        "sha256": "db2a8b067f0fd836ae1e5155575a1afdb93e7ebc07b4680c4c2438e69e37515f"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-vietnamese-wght-italic.woff2",
+        "size": 9344,
+        "sha256": "3acfc1db6992c092405884cf12763e512e21229cc040a1eea94549869006736a"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-latin-ext-wght-italic.woff2",
+        "size": 21128,
+        "sha256": "45f989df83f3a9f40007d2ecdea98bff248c8767a1a0bbe60e94fb37b605ecee"
+      },
+      {
+        "path": "/fonts/builtin/lora/lora-latin-wght-italic.woff2",
+        "size": 40772,
+        "sha256": "d824d807d4d832d12c87932d0b8ec1314dcfd502157a56dee6bb04cf8a3768ae"
+      }
+    ]
+  },
+  {
+    "name": "Libre Baskerville",
+    "id": "libre-baskerville",
+    "cssFamily": "PercentBuiltin_libre_baskerville",
+    "cssPath": "/fonts/builtin/libre-baskerville/font.css",
+    "fallback": "Georgia, \"Times New Roman\", serif",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "styles": [
+      "italic",
+      "normal"
+    ],
+    "package": "@fontsource/libre-baskerville",
+    "version": "5.3.0",
+    "license": {
+      "type": "OFL-1.1",
+      "url": "https://openfontlicense.org",
+      "attribution": "Copyright 2012 The Libre Baskerville Project Authors (https://github.com/impallari/Libre-Baskerville) LibreBaskerville-Italic[wght].ttf: Copyright 2012 The Libre Baskerville Project Authors (https://github.com/impallari/Libre-Baskerville)"
+    },
+    "assets": [
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-ext-400-italic.woff2",
+        "size": 23036,
+        "sha256": "3874c62309273fb7aea1b2cd50345557940b621b93af608538a3e6a7c6dcc31b"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-400-italic.woff2",
+        "size": 21564,
+        "sha256": "efb7e5f4376a557314f5bb9f5197ef837d86c0ab38e1a50a0ff5c60c3400c629"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-ext-400-normal.woff2",
+        "size": 21272,
+        "sha256": "3fc071cd0f715bfcf79df9aa61fe6112278ac62f859b486d3956fe19b64a02fb"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-400-normal.woff2",
+        "size": 20108,
+        "sha256": "3eb80fbca70498126925ce16ff5c20b2fa35e67ae7123ddb46302d2778dfbf0e"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-ext-500-italic.woff2",
+        "size": 23952,
+        "sha256": "d9d5518863df4e7a76aabaac00896d6cf2723cb629f4a7d6ac26318cb7712578"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-500-italic.woff2",
+        "size": 22076,
+        "sha256": "22ff8990ab8a2dd2a63665902aacf10df5987e59178e517e3cac22a253195b63"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-ext-500-normal.woff2",
+        "size": 22232,
+        "sha256": "c37a365be7be4fe1c791e23e59a686c7eb2b85861722b5d4882940ab2ed1fc4f"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-500-normal.woff2",
+        "size": 20916,
+        "sha256": "b1aab25688ac94f44f727c79b9090198d6cfe39676a2995a6e59e8e2f6d049f6"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-ext-600-italic.woff2",
+        "size": 23856,
+        "sha256": "19ece3b8c6c4ebaa55ad1f458f0abaa8f321c00fac077972e80f5d18890834e3"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-600-italic.woff2",
+        "size": 22012,
+        "sha256": "00f57efe77d4ebc8257ffaa9d7952b37c27d319138c1651247a0ce41b3c80df3"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-ext-600-normal.woff2",
+        "size": 22192,
+        "sha256": "ceae376d99472b2be5797a638516fee858d3e0387afac51c349a6f8f5f8cd09e"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-600-normal.woff2",
+        "size": 21112,
+        "sha256": "77377dafc0579fdc4e45266cc74f09d0c9ef5a309805fb576f491a48f1ddad08"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-ext-700-italic.woff2",
+        "size": 23540,
+        "sha256": "76232bbe0c34501524e58a6de833bf6d99bdd2481206113c27fa3a861657e74f"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-700-italic.woff2",
+        "size": 21840,
+        "sha256": "41cee933f4b0f98abfdcee0f5188f96e885f40fff88c7fe771ba95c0e1309579"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-ext-700-normal.woff2",
+        "size": 21708,
+        "sha256": "676ac40c0c9ed3a60897731cf2879f6006a17b294e423043d5a5505ae05cb9af"
+      },
+      {
+        "path": "/fonts/builtin/libre-baskerville/libre-baskerville-latin-700-normal.woff2",
+        "size": 20436,
+        "sha256": "96fa63376eed93029fa2514a02f5cb80276b016e239426858787de6e794d8619"
+      }
+    ]
+  },
+  {
+    "name": "system-ui",
+    "cssFamily": "system-ui",
+    "fallback": "sans-serif",
+    "assets": []
+  },
+  {
+    "name": "Georgia",
+    "cssFamily": "Georgia",
+    "fallback": "\"Times New Roman\", serif",
+    "assets": []
+  }
+]

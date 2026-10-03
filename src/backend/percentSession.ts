@@ -1,9 +1,10 @@
 import type { User as FirebaseUser } from 'firebase/auth'
 import type { User as SupabaseUser } from '@supabase/supabase-js'
 import { firebaseAuth } from './firebase'
-import { getFirebaseSessionSnapshot, subscribeToFirebaseSession } from './firebaseSession'
+import { ensureFirebaseAuthenticatedClaim, getFirebaseSessionSnapshot, subscribeToFirebaseSession } from './firebaseSession'
 import { firebaseSupabase } from './firebaseSupabase'
 import { legacySupabaseAuth } from './legacySupabaseAuth'
+import { customerDisplayName, isUninitializedCustomerName, parseCustomerName, type CustomerNameProfile } from './customerName'
 
 export type PercentRole = 'customer' | 'admin' | 'super_admin'
 export interface PercentSessionUser { id:string; displayName:string; firstName?:string; lastName?:string; phone?:string; email?:string; memberSince?:string; isDemo?:boolean }
@@ -31,6 +32,33 @@ const contactEmail=(firebaseUser:FirebaseUser)=>{
  return email
 }
 
+async function initializeCustomerName(id:string,profile:CustomerNameProfile,fullName:string|null,signup=false) {
+ const name=parseCustomerName(fullName)
+ if(!name||(!signup&&name.display_name==='Percent Customer')||!isUninitializedCustomerName(profile))return profile
+ // Compare the fields read above so a concurrent profile edit always wins.
+ let query=firebaseSupabase.from('profiles').update(name).eq('id',id)
+ for(const field of ['display_name','first_name','last_name'] as const){const value=profile[field];query=value===null?query.is(field,null):query.eq(field,value)}
+ const {error}=await query
+ if(error)throw new Error('Unable to save your name. Please try again.')
+ const {data,error:readError}=await firebaseSupabase.from('profiles').select('display_name,first_name,last_name').eq('id',id).single()
+ if(readError||!data)throw new Error('Unable to load your profile name. Please try again.')
+ return data
+}
+
+export async function completeCustomerSignupName(fullName:string) {
+ const name=parseCustomerName(fullName)
+ if(!name)throw new Error('Enter a full name of up to 120 characters.')
+ await ensureFirebaseAuthenticatedClaim()
+ const {data:id,error}=await firebaseSupabase.rpc('provision_my_percent_identity')
+ if(error||typeof id!=='string')throw new Error('Unable to finish your Percent account.')
+ const [{data:role,error:roleError},{data:profile,error:profileError}]=await Promise.all([firebaseSupabase.rpc('get_my_role'),firebaseSupabase.from('profiles').select('display_name,first_name,last_name').eq('id',id).single()])
+ if(roleError||profileError||!profile||role!=='customer')throw new Error('Unable to finish your Customer profile.')
+ await initializeCustomerName(id,profile,name.display_name,true)
+ // Claim hydration may still be running after Firebase account creation.
+ if(getFirebaseSessionSnapshot().status==='loading')await new Promise<void>(resolve=>{const unsubscribe=subscribeToFirebaseSession(()=>{if(getFirebaseSessionSnapshot().status!=='loading'){unsubscribe();resolve()}})})
+ await refreshPercentSession()
+}
+
 async function resolveFirebaseUser(firebaseUser:FirebaseUser,request:number){
  const {data:percentUserId,error:provisionError}=await firebaseSupabase.rpc('provision_my_percent_identity')
  if(provisionError||typeof percentUserId!=='string')throw new Error(provisionError?.message??'Unable to provision the Percent identity.')
@@ -42,10 +70,11 @@ async function resolveFirebaseUser(firebaseUser:FirebaseUser,request:number){
  if(profileError||!profile)throw new Error(profileError?.message??'Unable to load the Percent profile.')
  const role=normalizeRole(roleValue)
  if(!role)throw new Error('The Percent account has no valid role.')
+ const resolvedName=role==='customer'?await initializeCustomerName(percentUserId,profile,firebaseUser.displayName):profile
  const isCustomer=await customerEligibility(percentUserId,role)
  if(request!==revision||firebaseAuth.currentUser?.uid!==firebaseUser.uid)return
  const safeEmail=contactEmail(firebaseUser)
- const user:PercentSessionUser={id:percentUserId,displayName:profile.display_name||firebaseUser.displayName||safeEmail||'Percent Member',firstName:profile.first_name??undefined,lastName:profile.last_name??undefined,phone:profile.phone??undefined,email:safeEmail,memberSince:memberSince(profile.created_at)}
+ const user:PercentSessionUser={id:percentUserId,displayName:role==='customer'?customerDisplayName(resolvedName,firebaseUser.displayName):profile.display_name||firebaseUser.displayName||safeEmail||'Percent Member',firstName:resolvedName.first_name??undefined,lastName:resolvedName.last_name??undefined,phone:profile.phone??undefined,email:safeEmail,memberSince:memberSince(profile.created_at)}
  publish({loading:false,authenticated:true,isCustomer,firebaseUser,percentUserId,role,isAdmin:role==='admin'||role==='super_admin',isSuperAdmin:role==='super_admin',user,error:null})
 }
 
@@ -60,7 +89,7 @@ async function resolveLegacyUser(legacyUser:SupabaseUser,request:number){
  if(!role)throw new Error('The Percent account has no valid role.')
  const isCustomer=await customerEligibility(legacyUser.id,role)
  if(request!==revision||firebaseAuth.currentUser)return
- const user:PercentSessionUser={id:legacyUser.id,displayName:profile.display_name||legacyUser.email||'Percent Member',firstName:profile.first_name??undefined,lastName:profile.last_name??undefined,phone:profile.phone??undefined,email:legacyUser.email,memberSince:memberSince(profile.created_at)}
+ const user:PercentSessionUser={id:legacyUser.id,displayName:role==='customer'?customerDisplayName(profile):profile.display_name||legacyUser.email||'Percent Member',firstName:profile.first_name??undefined,lastName:profile.last_name??undefined,phone:profile.phone??undefined,email:legacyUser.email,memberSince:memberSince(profile.created_at)}
  publish({loading:false,authenticated:true,isCustomer,firebaseUser:null,percentUserId:legacyUser.id,role,isAdmin:role==='admin'||role==='super_admin',isSuperAdmin:role==='super_admin',user,error:null})
 }
 

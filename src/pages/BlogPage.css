@@ -1,0 +1,71 @@
+/* Listing-only card sizing: preserve complete article strings in the DOM. */
+.storefront-shell main.journal-page .journal-grid > .journal-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.storefront-shell main.journal-page .journal-card-image {
+  flex: none;
+  aspect-ratio: 4 / 3;
+}
+
+.storefront-shell main.journal-page .journal-card-image img {
+  object-fit: cover;
+}
+
+.storefront-shell main.journal-page .journal-card-copy {
+  flex: 1;
+  gap: .8rem;
+  min-height: 0;
+}
+
+.storefront-shell main.journal-page .journal-card-meta {
+  flex: none;
+  block-size: 1lh;
+  margin: 0;
+}
+
+.storefront-shell main.journal-page .journal-card-meta > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.storefront-shell main.journal-page .journal-card-meta > time {
+  flex: none;
+  white-space: nowrap;
+}
+
+.storefront-shell main.journal-page .journal-card h3,
+.storefront-shell main.journal-page .journal-card-copy > p:not(.journal-card-meta) {
+  flex: none;
+  width: 100%;
+  block-size: 2lh;
+  margin: 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.storefront-shell main.journal-page .journal-card-link {
+  flex: none;
+  margin-top: auto;
+  padding-top: 0;
+}
+
+@media (max-width: 1023.98px) {
+  .storefront-shell main.journal-page .journal-card h3,
+  .storefront-shell main.journal-page .journal-card-copy > p:not(.journal-card-meta) {
+    block-size: 3lh;
+    -webkit-line-clamp: 3;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  .storefront-shell main.journal-page .journal-grid > .journal-card:last-child:nth-child(odd) {
+    width: calc((100% - clamp(1.1rem, 2vw, 2rem)) / 2);
+  }
+}

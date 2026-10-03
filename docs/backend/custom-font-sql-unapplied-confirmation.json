@@ -1,0 +1,43 @@
+{
+  "project": "gijyjdeohvdrnvqfqdha",
+  "readOnly": true,
+  "confirmation": {
+    "bucket": {
+      "public": false,
+      "file_size_limit": 10485760,
+      "allowed_mime_types": [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+      ]
+    },
+    "functions": [
+      {
+        "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}",
+        "md5": "453c2de414efb68bea242db4c5f488e1",
+        "signature": "get_storefront_content()"
+      },
+      {
+        "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+        "md5": "29115fdedc8af0fafbfb82198e46bb88",
+        "signature": "get_website_editor()"
+      },
+      {
+        "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+        "md5": "259697bcdcfe4c4b087574456a4a87f6",
+        "signature": "save_website_global_settings(jsonb,timestamp with time zone)"
+      }
+    ],
+    "typography": {
+      "ui_family": "Inter",
+      "body_family": "Inter",
+      "body_weight": 400,
+      "display_family": "Inter",
+      "heading_family": "Inter",
+      "heading_weight": 700,
+      "letter_spacing": 0
+    },
+    "font_tables_present": false,
+    "private_wrappers_present": false
+  }
+}
