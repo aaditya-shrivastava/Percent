@@ -129,6 +129,7 @@ footer { border-top:1px solid var(--border); padding:2rem clamp(1rem,4vw,4rem); 
 
 @media (max-width:639px) {
   .main-nav { width:100%; height:60px; padding-inline:16px; gap:0; }
+  .desktop-links { display:none; }
   .mobile-menu-trigger { position:relative; z-index:1110; order:3; flex:0 0 40px; width:40px; height:40px; margin-left:2px; display:grid; background:var(--surface); }
   .mobile-menu-trigger:hover,.mobile-menu-trigger:focus-visible { background:#e6ddd2; }
   .mobile-menu-glyph { position:relative; width:20px; height:20px; display:block; }
@@ -140,8 +141,10 @@ footer { border-top:1px solid var(--border); padding:2rem clamp(1rem,4vw,4rem); 
   .wordmark { position:relative; left:auto; order:1; width:112px; min-width:112px; transform:none; margin-right:auto; gap:2px; text-align:left; }
   .wordmark strong { font-size:.94rem; line-height:1; letter-spacing:.15em; white-space:nowrap; }
   .wordmark small { font-size:.34rem; line-height:1; letter-spacing:.22em; white-space:nowrap; }
+  .wordmark img { max-width:100%; }
   .header-actions { order:2; margin-left:0; gap:2px; }
-  .header-actions>a:nth-child(2) { display:none; }
+  .header-actions .cart-action { order:1; }
+  .header-actions .profile-action { order:2; }
   .header-actions .icon-button { width:40px; height:40px; }
   .header-actions .icon-button svg { width:21px; height:21px; stroke-width:1.8; }
   .mobile-menu-backdrop { position:fixed; inset:60px 0 0; z-index:1090; width:100%; height:auto; padding:0; border:0; display:block; background:rgba(20,14,16,.10); opacity:0; visibility:hidden; pointer-events:none; backdrop-filter:blur(1px); transition:opacity .2s ease,visibility .2s ease; }
